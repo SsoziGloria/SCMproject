@@ -18,15 +18,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
-    
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
-            return redirect()->intended('dashboard');
+            return redirect()->route('dashboard'); // Redirect to the intended route after login
         }
 
         return back()->withErrors([

@@ -17,17 +17,22 @@ class LoginController extends Controller
     // Handle the login POST request
     public function login(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
-            return redirect()->intended('dashboard');
+            return redirect()->route('dashboard');
+        } else {
+            return back()->withErrors([
+                'email' => 'Invalid credentials.',
+            ])->withInput($request->except('password'));
         }
-
-        return back()->withErrors([
-            'email' => 'Invalid credentials.',
-        ])->withInput($request->except('password'));
     }
+
 
     // Optional: Logout method
     public function logout(Request $request)
@@ -38,3 +43,4 @@ class LoginController extends Controller
         return redirect('/login');
     }
 }
+

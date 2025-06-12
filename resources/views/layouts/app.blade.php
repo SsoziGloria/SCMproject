@@ -2,9 +2,16 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 @include('layouts.head')
 
-<body>
+@include('layouts.header')
+
+@include('layouts.aside')
+
+<main id="main" class="main">
     @yield('content')
-    @include('layouts.scripts')
-</body>
+</main>
+
+@include('layouts.footer')
+@include('layouts.scripts')
+
 
 </html>
