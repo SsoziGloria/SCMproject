@@ -17,7 +17,7 @@
                             <div class="d-flex justify-content-center py-4">
                                 <a href="index.html" class="logo d-flex align-items-center w-auto">
                                     <img src="assets/img/logo.png" alt="">
-                                    <span class="d-none d-lg-block">NiceAdmin</span>
+                                    <span class="d-none d-lg-block">ChocolateSCM</span>
                                 </a>
                             </div><!-- End Logo -->
 
@@ -30,15 +30,14 @@
                                         <p class="text-center small">Enter your username & password to login</p>
                                     </div>
 
-                                    <form action="{{ route('login') }}" method="post" class="row g-3 needs-validation"
-                                        novalidate>
+                                    <form method="POST" action="{{ route('login') }}" class="row g-3 needs-validation">
                                         @csrf
 
                                         <div class="col-12">
                                             <label for="yourUsername" class="form-label">Username</label>
                                             <div class="input-group has-validation">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                                <input type="text" name="username" class="form-control"
+                                                <input type="email" name="username" class="form-control"
                                                     id="yourUsername" required>
                                                 <div class="invalid-feedback">Please enter your username.</div>
                                             </div>
@@ -63,7 +62,8 @@
                                         </div>
                                         <div class="col-12">
                                             <p class="small mb-0">Don't have account? <a
-                                                    href="pages-register.html">Create an account</a></p>
+                                                    href="{{ asset('pages-register.html') }}">Register</a>Create an
+                                                account</a></p>
                                         </div>
                                     </form>
 
