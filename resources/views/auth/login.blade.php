@@ -62,8 +62,8 @@
                                         </div>
                                         <div class="col-12">
                                             <p class="small mb-0">Don't have account? <a
-                                                    href="{{ asset('pages-register.html') }}">Register</a>Create an
-                                                account</a></p>
+                                                    href="{{ route('register') }}">Register | Create an
+                                                    account</a></a></p>
                                         </div>
                                     </form>
 
