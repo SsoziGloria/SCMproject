@@ -35,7 +35,8 @@
                                         @csrf
                                         <div class="col-12">
                                             <label for="yourName" class="form-label">Your Name</label>
-                                            <input type="text" name="name" class="form-control" id="yourName" required>
+                                            <input type="text" name="name" class="form-control" id="yourName"
+                                                value="{{ old('name') }}" required>
                                             <div class="invalid-feedback">Please, enter your name!</div>
                                         </div>
 
@@ -44,7 +45,7 @@
                                             <div class="input-group has-validation">
                                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
                                                 <input type="email" name="email" class="form-control" id="yourEmail"
-                                                    required>
+                                                    value="{{ old('email') }}" required>
                                                 <div class="invalid-feedback">Please enter a valid Email adddress!</div>
                                             </div>
                                         </div>
@@ -55,6 +56,16 @@
                                                 id="yourPassword" required>
                                             <div class="invalid-feedback">Please enter your password!</div>
                                         </div>
+
+                                        @if ($errors->any())
+                                            <div class="alert alert-danger">
+                                                <ul class="mb-0">
+                                                    @foreach ($errors->all() as $error)
+                                                        <li>{{ $error }}</li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
 
                                         <div class="col-12">
                                             <legend class="col-form-label col-sm-2 pt-0">Role</legend>
