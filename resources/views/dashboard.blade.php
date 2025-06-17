@@ -3,6 +3,8 @@
 @section('content')
     <div class="pagetitle">
         <h1>Dashboard</h1>
+        <p>Total Inventory Items: {{$inventoryCount}}</p>
+        
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.html">Home</a></li>
