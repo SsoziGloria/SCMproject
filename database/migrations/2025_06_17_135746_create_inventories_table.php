@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->string('location');
+            $table->string('product_name');
             $table->timestamps();
         });
     }
