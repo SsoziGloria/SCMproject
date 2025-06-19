@@ -21,4 +21,5 @@ class SupplierController extends Controller
         return view('dashboard', compact('inventoryCount'));
 
 }
+
 }

@@ -10,9 +10,11 @@ return new class extends Migration {
      */
     public function up()
     {
+        if (!Schema::hasColumn('users', 'role')){
         Schema::table('users', function (Blueprint $table) {
             $table->string('role')->default('user');
         });
+    }
     }
 
     public function down()
