@@ -2,10 +2,11 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>Dashboard</h1>
-        <p>Total Inventory Items: {{$inventoryCount}}</p>
+        <h1>📦 Dashboard</h1>
 
-        <h2>Low Stock Items (Below 10):</h2>
+        <h2>Total Inventory Items: {{$inventoryCount}}</h2>
+
+        <h3>Low Stock Items (Below 10):</h3>
 <ul>
     @forelse($lowStock as $item)
         <li>Product ID: {{ $item->id }} - Quantity: {{ $item->quantity }}</li>
@@ -14,7 +15,7 @@
     @endforelse
 </ul>
 
-<h3>Items Nearing Expiry (Next 30 Days):</h3>
+<h4>Items Nearing Expiry (Next 30 Days):</h4>
 <ul>
     @forelse($nearExpiry as $item)
         <li>Product ID: {{ $item->product_id }} - Expires: {{ $item->expiration_date }}</li>
@@ -56,6 +57,12 @@
                                     <li><a class="dropdown-item" href="#">This Year</a></li>
                                 </ul>
                             </div>
+                            <div class="section-heading" style="margin-top: 30px; margin-bottom: 10px;">
+                                    <h2>Total Inventory Items</h2>
+                                    <h3>Low Stock Items</h3>
+                                    <h4>Items Nearing Expiry</h4>
+                                    </div>
+
 
                             <div class="card-body">
                                 <h5 class="card-title">Sales <span>| Today</span></h5>
