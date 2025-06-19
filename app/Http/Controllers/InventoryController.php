@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Inventory;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\StockAlertNotification;
 
 class InventoryController extends Controller
 {
@@ -67,11 +69,19 @@ public function destroy($id)
 
 public function dashboard()
 {
-    $lowStock = Inventory::where('quantity', '<', 10)->get();
-    $nearExpiry = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(25))->get();
+    $inventoryCount = \App\Models\Inventory::count(); 
+    $lowStock = \App\Models\Inventory::where('quantity', '<', 10)->get();
+    $nearExpiry = \App\Models\Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
 
-    return view('dashboard', compact('lowStock', 'nearExpiry'));
+if ($lowStock->count() > 0 || $nearExpiry->count() > 0) {
+    Notification::route('mail', 'admin@emma.com')->notify(new StockAlertNotification());
 }
+return view('dashboard', compact('inventoryCount', 'lowStock', 'nearExpiry'));
+
+
+}
+
+
 
     }
 

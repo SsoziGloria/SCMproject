@@ -4,6 +4,26 @@
     <div class="pagetitle">
         <h1>Dashboard</h1>
         <p>Total Inventory Items: {{$inventoryCount}}</p>
+
+        <h2>Low Stock Items (Below 10):</h2>
+<ul>
+    @forelse($lowStock as $item)
+        <li>Product ID: {{ $item->id }} - Quantity: {{ $item->quantity }}</li>
+    @empty
+        <li>No low stock items.</li>
+    @endforelse
+</ul>
+
+<h3>Items Nearing Expiry (Next 30 Days):</h3>
+<ul>
+    @forelse($nearExpiry as $item)
+        <li>Product ID: {{ $item->product_id }} - Expires: {{ $item->expiration_date }}</li>
+    @empty
+        <li>No items nearing expiry.</li>
+    @endforelse
+</ul>
+
+
         
         <nav>
             <ol class="breadcrumb">
