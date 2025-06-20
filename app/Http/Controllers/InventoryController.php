@@ -14,16 +14,16 @@ class InventoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'id' => 'required|numeric',
+        'product_id' => 'required|numeric',
         'product_name' => 'required|string',
-        'quantity' => 'required|integer',
+        'quantity' => 'required|string',
         'location' => 'required|string',
         'expiration_date' => 'required|date',
         ]);
 
         Inventory::create($request->all());
 
-    return redirect()->route('inventory.index')->with('success', 'Inventory added.');
+    return redirect()->route('dashboard')->with('success', 'Inventory added.');
 }
 
 public function index()
@@ -56,7 +56,7 @@ public function update(Request $request, $id)
 
     $inventory->update($request->all());
 
-    return redirect()->route('inventories.index')->with('success', 'Inventory updated.');
+    return redirect()->route('dashboard')->with('success', 'Inventory updated.');
 }
 
 public function destroy($id)
@@ -85,7 +85,4 @@ return view('dashboard', compact('inventoryCount', 'lowStock', 'nearExpiry'));
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-
+    

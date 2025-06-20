@@ -6,13 +6,13 @@
     <form action="{{ route('inventories.store') }}" method="POST">
         @csrf
         <label>Product ID:</label>
-        <input type="number" name="id" required><br>
+        <input type="number" name="product_id" required><br>
         <br>
         <label>Product Name:</label>
         <input type="text" name="product_name" required><br>
         <br>
         <label>Quantity:</label>
-        <input type="number" name="quantity" required><br>
+        <input type="text" name="quantity" required><br>
         <br>
         <label>Location:</label>
         <input type="text" name="location" required><br>

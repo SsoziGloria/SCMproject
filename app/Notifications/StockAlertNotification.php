@@ -11,11 +11,12 @@ class StockAlertNotification extends Notification
 {
     use Queueable;
 
-    
-    public function __construct($lowStock, $nearExpiry)
+    /**
+     * Create a new notification instance.
+     */
+    public function __construct()
     {
-        $this->lowStock = $lowStock;
-        $this->nearExpiry = $nearExpiry;
+        //
     }
 
     /**
@@ -40,8 +41,7 @@ class StockAlertNotification extends Notification
             ->line('Please review them immediately.');
     }
 
-            
-    
+
 
     /**
      * Get the array representation of the notification.
