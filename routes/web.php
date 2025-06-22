@@ -33,7 +33,5 @@ Route::get('/', function () {
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::get('/dashboard', [SupplierController::class, 'dashboard'])->middleware('auth')->name('dashboard');
-Route::get('/dashboard', [InventoryController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');

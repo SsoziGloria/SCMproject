@@ -1,6 +1,44 @@
 @extends('supplier.app')
 
 @section('content')
+    <!--    
+    <div class="pagetitle">
+            <h1>📦 Dashboard</h1>
+            <br>
+
+            <h2>Total Inventory Items: {{$inventoryCount}}</h2>
+            <br>
+
+            <h3>Low Stock Items (Below 10):</h3>
+
+            <ul>
+                @forelse($lowStock as $item)
+                    <li>Product ID: {{ $item->id }} - Quantity: {{ $item->quantity }}</li>
+                @empty
+                    <li>No low stock items.</li>
+                @endforelse
+            </ul>
+            <br>
+
+            <h4>Items Nearing Expiry (Next 30 Days):</h4>
+
+            <ul>
+                @forelse($nearExpiry as $item)
+                    <li>Product ID: {{ $item->product_id }} - Expires: {{ $item->expiration_date }}</li>
+                @empty
+                    <li>No items nearing expiry.</li>
+                @endforelse
+            </ul>
+        -->
+
+
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+    </div><!-- End Page Title -->
     <div class="container">
         <!-- Breadcrumb -->
         <div class="row mb-3">
@@ -8,7 +46,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/'dashboard.supplier'>Home</a></li>
-                        <li class=" breadcrumb-item"><a href="/'dashboard.supplier'">cocoa suppliers</a></li>
+                                <li class=" breadcrumb-item"><a href="/'dashboard.supplier'">cocoa suppliers</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Uganda Cocoa Suppliers</li>
                     </ol>
                 </nav>
@@ -681,8 +719,6 @@
                         </div><!-- End News & Updates -->
 
                     </div><!-- End Right side columns -->
-
-                    >>>>>>> 5dde75e (View templates)
                 </div>
         </div>
 
