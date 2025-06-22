@@ -17,7 +17,7 @@ Route::middleware('auth')->group(function () {
                 return view('dashboard.retailer');
             case 'user':
             default:
-                return view('dashboard');
+                return view('dashboard.user');
         }
     })->name('dashboard');
 });
