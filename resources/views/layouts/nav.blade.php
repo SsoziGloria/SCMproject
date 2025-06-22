@@ -157,12 +157,7 @@
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li class="dropdown-header">
-                    <h6>
-                        <p>{{ auth()->user()->name }}</p>
-                    </h6>
-                    @auth
-                        @if(auth()->user()->role === 'admin')
-                            <span>Admin</span>
+                    <h6>{{ auth()->user()->name }}</h6 @auth @if(auth()->user()->role === 'admin') <span>Admin</span>
                         @elseif(auth()->user()->role === 'supplier')
                             <span>Supplier</span>
                         @elseif(auth()->user()->role === 'retailer')

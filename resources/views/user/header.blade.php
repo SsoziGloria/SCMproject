@@ -5,23 +5,31 @@
             <img src="assets/img/logo.png" alt="">
             <span class="d-none d-lg-block">ChocolateSCM</span>
         </a>
-        <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
             <li class="nav-item">
-                <a class="nav-link" href="#">Product</a>
+                <a class="nav-link nav-icon" href="#" style="display: flex; flex-direction: row; align-items: center;">
+                    <i class="ri-shopping-bag-2-line"></i>
+                    <h4 style="margin-bottom: 0;">Shop</h4>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Order</a>
+                <a class="nav-link nav-icon" href="#" style="display: flex; flex-direction: row; align-items: center;">
+                    <i class="ri-shopping-cart-2-line"></i>
+                    <h4 style="margin-bottom: 0;">Cart</h4>
+                </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Track</a>
+                <a class="nav-link nav-icon" href="#" style="display: flex; flex-direction: row; align-items: center;">
+                    <i class="ri-funds-box-line"></i>
+                    <h4 style="margin-bottom: 0;">Orders</h4>
+                </a>
             </li>
         </ul>
     </nav>
 
-    @include('layouts.nav')<!-- End Icons Navigation -->
+    @include('user.nav')<!-- End Icons Navigation -->
 
 </header>
