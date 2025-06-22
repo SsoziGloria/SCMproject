@@ -1,41 +1,42 @@
 <?php
-  /**
-  * Requires the "PHP Email Form" library
-  * The "PHP Email Form" library is available only in the pro version of the template
-  * The library should be uploaded to: vendor/php-email-form/php-email-form.php
-  * For more info and help: https://bootstrapmade.com/php-email-form/
-  */
+$host = 'localhost';
+$dbname = 'CONTACT';
+$username = 'root';
+$password = '';
 
-  // Replace contact@example.com with your real receiving email address
-  $receiving_email_address = 'contact@example.com';
+$message = "";
 
-  if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
-    include( $php_email_form );
-  } else {
-    die( 'Unable to load the "PHP Email Form" Library!');
-  }
+$conn = new mysqli($host, $username, $password, $dbname);
 
-  $contact = new PHP_Email_Form;
-  $contact->ajax = true;
-  
-  $contact->to = $receiving_email_address;
-  $contact->from_name = $_POST['name'];
-  $contact->from_email = $_POST['email'];
-  $contact->subject = $_POST['subject'];
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
-  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-  /*
-  $contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-  );
-  */
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = htmlspecialchars(trim($_POST["name"]));
+    $email = htmlspecialchars(trim($_POST["email"]));
+    $subject = htmlspecialchars(trim($_POST["subject"]));
+    $message_content = htmlspecialchars(trim($_POST["message"]));
 
-  $contact->add_message( $_POST['name'], 'From');
-  $contact->add_message( $_POST['email'], 'Email');
-  $contact->add_message( $_POST['message'], 'Message', 10);
+    $stmt = $conn->prepare("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $name, $email, $subject, $message_content);
 
-  echo $contact->send();
+    if ($stmt->execute()) {
+        // Email sending
+        $to = "ataho955@gmail.com"; // <-- Replace with your email
+        $subject_line = "New Contact Message from $name";
+        $email_message = "Name: $name\nEmail: $email\nSubject: $subject\nMessage:\n$message_content";
+
+        if (mail($to, $subject_line, $email_message)) {
+            $message = "<div class='success'>Your message has been sent successfully, and we've received it via email too!</div>";
+        } else {
+            $message = "<div class='error'>Message saved, but email could not be sent.</div>";
+        }
+    } else {
+        $message = "<div class='error'>Error saving message: " . $stmt->error . "</div>";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
 ?>

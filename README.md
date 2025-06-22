@@ -78,4 +78,3 @@ Run the following command to start the Laravel development server:
 php artisan serve
 ```
 You can now access the application in your web browser at ⁠http://localhost:8000
-
