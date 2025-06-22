@@ -16,14 +16,17 @@ Route::middleware('auth')->group(function () {
             case 'admin':
                 return view('dashboard.admin');
             case 'supplier':
-                return view('dashboard.supplier');
+                return redirect()->route('dashboard.supplier');
             case 'retailer':
                 return view('dashboard.retailer');
             case 'user':
             default:
                 return view('dashboard.user');
         }
+
     })->name('dashboard');
+    Route::get('/dashboard-s', [InventoryController::class, 'dashboard'])
+        ->name('dashboard.supplier');
 });
 
 Route::get('/', function () {
