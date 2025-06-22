@@ -11,7 +11,18 @@ Route::resource('inventories', InventoryController::class)->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $role = auth()->user()->role;
+        switch ($role) {
+            case 'admin':
+                return view('dashboard.admin');
+            case 'supplier':
+                return view('dashboard.supplier');
+            case 'retailer':
+                return view('dashboard.retailer');
+            case 'user':
+            default:
+                return view('dashboard.user');
+        }
     })->name('dashboard');
 });
 
@@ -21,5 +32,8 @@ Route::get('/', function () {
 
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+
 Route::get('/dashboard', [SupplierController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 Route::get('/dashboard', [InventoryController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
