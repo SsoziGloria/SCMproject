@@ -28,3 +28,5 @@ Route::get('/', function () {
 
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
