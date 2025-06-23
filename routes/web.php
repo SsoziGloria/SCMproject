@@ -27,5 +27,8 @@ Route::get('/test-mail', function () {
 
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+
 Route::get('/dashboard', [InventoryController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->middleware('auth')->name('check.stock.alert');
+
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
