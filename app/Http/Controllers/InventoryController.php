@@ -10,13 +10,32 @@ use App\Notifications\StockAlertNotification;
 
 class InventoryController extends Controller
 {
+    /**
+     * Display a paginated listing of the inventory.
+     */
+    public function index()
+    {
+        $inventories = Inventory::paginate(25); // Use pagination to avoid memory issues
+        return view('inventories.index', compact('inventories'));
+    }
 
+    /**
+     * Show the form for creating a new inventory record.
+     */
+    public function create()
+    {
+        return view('inventories.create');
+    }
+
+    /**
+     * Store a newly created inventory record in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
             'product_id' => 'required|numeric',
             'product_name' => 'required|string',
-            'quantity' => 'required|string',
+            'quantity' => 'required|integer',
             'location' => 'required|string',
             'expiration_date' => 'required|date',
         ]);
@@ -26,27 +45,19 @@ class InventoryController extends Controller
         return redirect()->route('dashboard.supplier')->with('success', 'Inventory added.');
     }
 
-    public function index()
+    /**
+     * Show the form for editing the specified inventory record.
+     */
+    public function edit(Inventory $inventory)
     {
-        $inventories = Inventory::all();
-        return view('inventories.index', compact('inventories'));
-    }
-
-    public function create()
-    {
-        return view('inventories.create');
-    }
-
-    public function edit($id)
-    {
-        $inventory = Inventory::findOrFail($id);
         return view('inventories.edit', compact('inventory'));
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified inventory record in storage.
+     */
+    public function update(Request $request, Inventory $inventory)
     {
-        $inventory = Inventory::findOrFail($id);
-
         $request->validate([
             'product_id' => 'required|numeric',
             'product_name' => 'required|string',
@@ -60,14 +71,19 @@ class InventoryController extends Controller
         return redirect()->route('dashboard.supplier')->with('success', 'Inventory updated.');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified inventory record from storage.
+     */
+    public function destroy(Inventory $inventory)
     {
-        $inventory = Inventory::findOrFail($id);
         $inventory->delete();
 
         return redirect()->route('inventories.index')->with('success', 'Inventory deleted.');
     }
 
+    /**
+     * Show the supplier dashboard with inventory stats.
+     */
     public function dashboard()
     {
         $inventoryCount = Inventory::count();
@@ -77,13 +93,7 @@ class InventoryController extends Controller
         if ($lowStock->count() > 0 || $nearExpiry->count() > 0) {
             Notification::route('mail', 'admin@emma.com')->notify(new StockAlertNotification());
         }
+
         return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'nearExpiry'));
-
-
     }
-
-
-
 }
-
-

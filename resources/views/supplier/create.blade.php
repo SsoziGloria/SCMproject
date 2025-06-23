@@ -1,13 +1,12 @@
-@extends('layouts.app')
+@extends('supplier.app')
 
 @section('content')
         <h2 style="text-align: center; margin-bottom: 20px; font-weight: bold;">Add Inventory Record</h2>
         <br>
 
-        <form action="{{ route('inventories.store') }}" method="POST" class="inventory-form>
-                        @csrf
-
-        <div class=" form-group">
+        <form action="{{ route('inventories.store') }}" method="POST"
+                        class="inventory-form>@csrf                                                        
+                                                                                                                                                                                                                                                        <div class=" form-group">
                         <label for="product_id">Product ID:</label><br>
                         <input type="number" name="product_id" id="product_id" required>
                         </div>

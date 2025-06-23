@@ -2,13 +2,7 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>User Dashboard</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-        </nav>
+        <h1>Featured Products</h1>
     </div><!-- End Page Title -->
 
     <section class="section dashboard">

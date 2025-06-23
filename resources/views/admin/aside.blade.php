@@ -1,42 +1,68 @@
+@php
+    // List all route names for User Management group
+    $userManagementRoutes = [
+        'users',
+        'admin.users.byRole',
+        // add more if needed
+    ];
+    // Check if current route matches any in the group
+    $isUserManagementActive = false;
+    foreach ($userManagementRoutes as $route) {
+        if (request()->routeIs($route) || (request()->routeIs('admin.users.byRole') && in_array(request()->route('role'), ['user', 'retailer', 'supplier', 'admin']))) {
+            $isUserManagementActive = true;
+            break;
+        }
+    }
+@endphp
+
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('dashboard') }}">
+            <a class="nav-link {{ request()->routeIs('dashboard') ? '' : 'collapsed' }}"
+                href="{{ route('dashboard') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
         </li><!-- End Dashboard Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ request()->routeIs($userManagementRoutes) ? '' : 'collapsed' }}"
+                data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"
+                class="{{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
                 <i class="ri-user-3-line"></i><span>User Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="components-nav" class="nav-content collapse {{ $isUserManagementActive ? 'show' : '' }} "
+                data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('users') }}"
+                        class="nav-link {{ request()->routeIs('users') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>All Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.users.byRole', 'user') }}"
+                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Customers</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('admin.users.byRole', 'retailer') }}"
+                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Retailers</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('admin.users.byRole', 'supplier') }}"
+                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Suppliers</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('admin.users.byRole', 'admin') }}"
+                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'admin')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Admins</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Suspended Accounts</span>
                     </a>
                 </li>
             </ul>
