@@ -1,33 +1,61 @@
+
+
 @extends('layouts.app')
 
 @section('content')
     <div class="pagetitle">
         <h1>📦 Dashboard</h1>
         <br>
-        
-        <h2>Total Inventory Items: {{$inventoryCount}}</h2>
-        <br>
-        
-        <h3>Low Stock Items (Below 10):</h3>
-        
-<ul>
-    @forelse($lowStock as $item)
-        <li>Product ID: {{ $item->id }} - Quantity: {{ $item->quantity }}</li>
-    @empty
-        <li>No low stock items.</li>
-    @endforelse
-</ul>
-<br>
+        <p>Total Inventory: {{ $inventoryCount }}</p>
+        <p>Low Stock Items: {{ $lowStock->count() }}</p>
+        <p>Expiring Soon: {{ $expiringSoon->count() }}</p>
+        <p>Total Suppliers: {{ $supplierCount }}</p>
 
-<h4>Items Nearing Expiry (Next 30 Days):</h4>
+    <div class="container mt-4">
 
-<ul>
-    @forelse($nearExpiry as $item)
-        <li>Product ID: {{ $item->product_id }} - Expires: {{ $item->expiration_date }}</li>
-    @empty
-        <li>No items nearing expiry.</li>
-    @endforelse
-</ul>
+    {{-- Low Stock Items --}}
+
+    @if($lowStock->isNotEmpty())
+
+    <div class="card border-warning mb-4 shadow-sm">
+        <div class="card-header bg-warning text-dark fw-bold">
+            <i class="bi bi-exclamation-triangle-fill"></i> Low Stock Items
+        </div>
+
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                @foreach ($lowStock as $item)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ $item->product->name }}</span>
+                    <span class="badge bg-warning text-dark">Qty: {{ $item->quantity }}</span>
+                </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+    @endif
+
+    @if(isset($expiringSoon) && $expiringSoon->isNotEmpty())
+    <div class="card border-danger shadow-sm mb-4">
+        <div class="card-header bg-danger text-white fw-bold">
+            <i class="bi bi-hourglass-split"></i> Expiring Soon
+        </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                @foreach ($expiringSoon as $item)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ $item->product->name }}</span>
+                        <span class="badge bg-danger">{{ \Carbon\Carbon::parse($item->expiration_date)->format('M d, Y') }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+@endif
+
+
+</div>
+
 
 
         
