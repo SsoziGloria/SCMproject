@@ -129,7 +129,7 @@
                 <i class="bi bi-chat-left-quote"></i>
                 <span>Chat</span>
             </a>
-        </li><!-- End Profile Page Nav -->
+        </li><!-- End Chat Page Nav -->
 
         <li class="nav-heading">Account</li>
 

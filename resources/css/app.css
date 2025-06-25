@@ -2,3 +2,9 @@
 @source "../views";
 @source '../../vendor/namu/wirechat/resources/views/**/*.blade.php';
 @source '../../vendor/namu/wirechat/src/Livewire/**/*.php';
+
+div.collapse,
+ul.collapse,
+nav.collapse {
+    visibility: visible !important;
+}

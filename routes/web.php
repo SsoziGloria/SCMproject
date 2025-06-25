@@ -75,3 +75,10 @@ Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+// Chat routes
+Route::group(['prefix' => ''], function () {
+    Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chats', [App\Http\Controllers\ChatController::class, 'index'])->name('chats.index');
+    Route::get('/chats/{id}', [App\Http\Controllers\ChatController::class, 'show'])->name('chats.show');
+});

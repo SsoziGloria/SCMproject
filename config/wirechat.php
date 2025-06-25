@@ -65,7 +65,7 @@ return [
     | This will be used to highlight buttons and elements.
     |
     */
-    'color' => '#a855f7',
+    'color' => '#f59e0b',
 
     /*
     |--------------------------------------------------------------------------
@@ -103,7 +103,7 @@ return [
     | the dynamic chat content.
     |
     */
-    'layout' => 'views::chat.layout',
+    'layout' => 'chat.layout',
 
     /*
     |--------------------------------------------------------------------------
@@ -152,7 +152,7 @@ return [
     | Set a limit to how many users can be added to a single group chat.
     |
     */
-    'max_group_members' => 1000,
+    'max_group_members' => 100,
 
     /*
     |--------------------------------------------------------------------------
