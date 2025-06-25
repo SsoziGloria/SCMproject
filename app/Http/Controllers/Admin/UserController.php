@@ -62,4 +62,6 @@ class UserController extends Controller
 
         return view('admin.users.roles', compact('users', 'role'));
     }
+
+
 }

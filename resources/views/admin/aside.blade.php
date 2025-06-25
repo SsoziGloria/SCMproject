@@ -163,10 +163,18 @@
             </ul>
         </li><!-- End Analytics Nav -->
 
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('chats') }}">
+                <i class="bi bi-chat-left-quote"></i>
+                <span>Chat</span>
+            </a>
+        </li><!-- End Chat Page Nav -->
+
         <li class="nav-heading">Account</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="users-profile.html">
+            <a class="nav-link {{ request()->routeIs('profile.show') ? '' : 'collapsed' }}"
+                href="{{ route('profile.show') }}">
                 <i class="bi bi-person"></i>
                 <span>Profile</span>
             </a>

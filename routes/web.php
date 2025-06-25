@@ -4,6 +4,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ProfileController;
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -65,3 +66,12 @@ Route::get('/admin/users/role/{role}', [App\Http\Controllers\Admin\UserControlle
     ->name('admin.users.byRole');
 
 Route::get('/user-management', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
+
+Route::get('/profile', function () {
+    return view('admin.profile');
+})->middleware('auth')->name('profile');
+
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
