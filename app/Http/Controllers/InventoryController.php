@@ -25,7 +25,7 @@ class InventoryController extends Controller
         $data = $request->only(['product_id', 'product_name', 'quantity', 'location', 'expiration_date']);
         Inventory::create($data);
 
-        return redirect()->route('dashboard')->with('success', 'Inventory added.');
+        return redirect()->route('inventories.create')->with('success', 'Inventory submitted.');
     }
 
     public function index()
@@ -36,7 +36,9 @@ class InventoryController extends Controller
 
     public function create()
     {
-        return view('inventories.create');
+        $products = \App\Models\Product::all();
+    return view('inventories.create', compact('products'));
+        
     }
 
     public function edit($id)

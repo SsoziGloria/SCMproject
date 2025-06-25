@@ -10,6 +10,15 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::resource('inventories', InventoryController::class)->middleware('auth');
 
 
+
+Route::get('/home', function () {
+    return redirect()->route('dashboard');
+})->middleware('auth')->name('home');
+
+Route::get('/supplier', function () {
+    return view('supplier');
+})->name('supplier');
+
 Route::get('/', function () {
     return auth()->check()
     ? redirect()->route('dashboard'):
