@@ -5,6 +5,7 @@ use App\Http\Controllers\InventoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OrderController;
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -81,4 +82,14 @@ Route::group(['prefix' => ''], function () {
     Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
     Route::get('/chats', [App\Http\Controllers\ChatController::class, 'index'])->name('chats.index');
     Route::get('/chats/{id}', [App\Http\Controllers\ChatController::class, 'show'])->name('chats.show');
+});
+
+// Order routes
+Route::middleware('auth')->group(function () {
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
+    Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.inProgress');
+    Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
+    Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
+    Route::resource('orders', OrderController::class)->middleware('auth');
 });

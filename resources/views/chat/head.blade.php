@@ -42,15 +42,15 @@
             --green-chat: #cffdce;
 
 
-            --wc-light-primary: #f59e0b;
+            --wc-light-primary: #ececec;
             /* white */
-            --wc-light-secondary: rgb(30, 24, 15);
+            --wc-light-secondary: #ffffff;
             /* --color-gray-100 */
             --wc-light-accent: rgb(30, 24, 15);
             /* --color-gray-50 */
-            --wc-light-border: rgb(30, 24, 15);
+            --wc-light-border: #c27f20;
             /* --color-gray-200 */
-            --color-white: rgb(27, 16, 16);
+            --color-white: #a66d1f;
 
             --wc-dark-primary: #ececec;
             /* --color-zinc-900 */
