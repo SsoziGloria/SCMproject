@@ -46,7 +46,7 @@
             /* white */
             --wc-light-secondary: #ffffff;
             /* --color-gray-100 */
-            --wc-light-accent: rgb(30, 24, 15);
+            --wc-light-accent: #c27f20;
             /* --color-gray-50 */
             --wc-light-border: #c27f20;
             /* --color-gray-200 */

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 

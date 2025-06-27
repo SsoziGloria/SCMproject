@@ -14,9 +14,9 @@ class StockAlertNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($lowStockItems)
     {
-        //
+        $this->lowStockItems = $lowStockItems;
     }
 
     /**
@@ -24,7 +24,7 @@ class StockAlertNotification extends Notification
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
+    public function via( $notifiable)
     {
         return ['mail'];
     }
@@ -34,11 +34,15 @@ class StockAlertNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-        ->subject('Inventory Alert')
-            ->line('Some inventory items are low or near expiration.')
-            ->action('View Inventory', url('/inventories'))
-            ->line('Please review them immediately.');
+        $message = (new MailMessage)
+            ->subject('Inventory Alert')
+            ->line('Some inventory items are low or near expiration.');
+
+        foreach ($this->lowStockItems as $item) {
+            $message->line($item->product_name . ' (Quantity: ' . $item->quantity . ')');
+        }
+
+        return $message;
     }
 
 

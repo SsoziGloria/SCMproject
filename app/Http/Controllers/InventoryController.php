@@ -7,6 +7,7 @@ use App\Models\Inventory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
+use App\Models\Supplier;
 
 class InventoryController extends Controller
 {
@@ -35,65 +36,99 @@ class InventoryController extends Controller
         $request->validate([
             'product_id' => 'required|numeric',
             'product_name' => 'required|string',
+            'quantity' => 'required|string',
             'quantity' => 'required|integer',
             'location' => 'required|string',
             'expiration_date' => 'required|date',
         ]);
 
-        Inventory::create($request->all());
-
-        return redirect()->route('dashboard.supplier')->with('success', 'Inventory added.');
+        try {
+            $data = $request->only(['product_id', 'product_name', 'quantity', 'location', 'expiration_date']);
+            Inventory::create($data);
+            return redirect()->route('inventories.create')->with('success', 'Inventory submitted.');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Failed to submit inventory: ' . $e->getMessage()]);
+        }
+    }
+    public function index()
+    {
+        $inventories = Inventory::all();
+        return view('inventories.index', compact('inventories'));
     }
 
-    /**
-     * Show the form for editing the specified inventory record.
-     */
-    public function edit(Inventory $inventory)
+    public function create()
     {
+        $products = \App\Models\Product::all();
+        return view('inventories.create', compact('products'));
+
+    }
+
+    public function edit($id)
+    {
+        $inventory = Inventory::findOrFail($id);
         return view('inventories.edit', compact('inventory'));
     }
 
-    /**
-     * Update the specified inventory record in storage.
-     */
-    public function update(Request $request, Inventory $inventory)
+    public function update(Request $request, $id)
     {
+        $inventory = Inventory::findOrFail($id);
+
         $request->validate([
             'product_id' => 'required|numeric',
             'product_name' => 'required|string',
-            'quantity' => 'required|integer',
+            'quantity' => 'required|string',
             'location' => 'required|string',
             'expiration_date' => 'required|date',
         ]);
 
-        $inventory->update($request->all());
+        $data = $request->only(['product_id', 'product_name', 'quantity', 'location', 'expiration_date']);
+        $inventory->update($data);
 
-        return redirect()->route('dashboard.supplier')->with('success', 'Inventory updated.');
+        $lowStock = Inventory::where('quantity', '<', 10)->get();
+        $expiringSoon = Inventory::where('expiration_date', '<=', \Carbon\Carbon::now()->addDays(30))->get();
+        //send notification if there's low stock or expiring soon items
+        if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
+            Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification());
+        }
+        return redirect()->route('dashboard')->with('success', 'Inventory updated.');
     }
 
-    /**
-     * Remove the specified inventory record from storage.
-     */
-    public function destroy(Inventory $inventory)
+    public function destroy($id)
     {
+        $inventory = Inventory::findOrFail($id);
         $inventory->delete();
 
         return redirect()->route('inventories.index')->with('success', 'Inventory deleted.');
     }
 
-    /**
-     * Show the supplier dashboard with inventory stats.
-     */
     public function dashboard()
     {
         $inventoryCount = Inventory::count();
         $lowStock = Inventory::where('quantity', '<', 10)->get();
-        $nearExpiry = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
+        $expiringSoon = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
+        $supplierCount = Supplier::count();
+        $suppliers = Supplier::all();
 
-        if ($lowStock->count() > 0 || $nearExpiry->count() > 0) {
-            Notification::route('mail', 'admin@emma.com')->notify(new StockAlertNotification());
+
+        return view('dashboard', compact('inventoryCount', 'lowStock', 'expiringSoon', 'supplierCount', 'suppliers'));
+
+
+    }
+
+    public function checkStockAlert()
+    {
+        $lowStock = Inventory::where('quantity', '<', 10)->get();
+        $expiringSoon = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
+
+        if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
+            Notification::route('mail', env('MAIL_USERNAME'))->notify(
+                new StockAlertNotification($lowStock, $expiringSoon)
+            );
+            return back()->with('success', 'Stock alert email sent!');
         }
 
-        return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'nearExpiry'));
+        return back()->with('info', 'No low stock or expiring items found.');
     }
+
+
 }

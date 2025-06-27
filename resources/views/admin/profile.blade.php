@@ -169,7 +169,7 @@
             </li><!-- End Analytics Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="{{ route('chats') }}">
+                <a class="nav-link collapsed" href="{{ route('chat.index') }}">
                     <i class="bi bi-chat-left-quote"></i>
                     <span>Chat</span>
                 </a>
