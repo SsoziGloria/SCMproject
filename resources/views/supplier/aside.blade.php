@@ -1,9 +1,27 @@
+@php
+    // List all route names for User Management group
+    $userManagementRoutes = [
+        'users',
+        'admin.users.byRole',
+        // add more if needed
+    ];
+    // Check if current route matches any in the group
+    $isUserManagementActive = false;
+    foreach ($userManagementRoutes as $route) {
+        if (request()->routeIs($route) || (request()->routeIs('admin.users.byRole') && in_array(request()->route('role'), ['user', 'retailer', 'supplier', 'admin']))) {
+            $isUserManagementActive = true;
+            break;
+        }
+    }
+@endphp
+
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('dashboard') }}">
+            <a class="nav-link {{ request()->fullUrlIs(route('dashboard.supplier', '')) ? '' : 'collapsed' }}"
+                href="{{ route('dashboard') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
@@ -82,7 +100,8 @@
         <li class="nav-heading">Communication</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link {{ request()->fullUrlIs(route('chat.index', '')) ? '' : 'collapsed' }}"
+                href="{{ route('chat.index') }}">
                 <i class="bi bi-chat-left-quote"></i>
                 <span>Chat</span>
             </a>
@@ -91,7 +110,8 @@
         <li class="nav-heading">Account</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('profile.show') }}">
+            <a class="nav-link {{ request()->fullUrlIs(route('profile.show', '')) ? '' : 'collapsed' }}"
+                href="{{ route('profile.show') }}">
                 <i class="bi bi-person"></i>
                 <span>Profile</span>
             </a>

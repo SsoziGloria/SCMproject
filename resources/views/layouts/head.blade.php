@@ -36,7 +36,7 @@
         }
 
         :root {
-            --wc-brand-primary: '#f59e0b';
+            --wc-brand-primary: '#c27f21';
             color: #000;
             background-color: #000;
             --green-chat: #cffdce;
