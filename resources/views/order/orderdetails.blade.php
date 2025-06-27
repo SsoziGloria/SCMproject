@@ -29,16 +29,16 @@
                 <div class="card-body">
                     <p><strong>Customer:</strong> {{ $order->user->name ?? 'N/A' }}</p>
                     <p><strong>Supplier:</strong> {{ $order->supplier->name ?? 'N/A' }}</p>
-                    <p><strong>Total Amount:</strong> ${{ number_format($order->total_amount, 2) }}</p>
+                    <p><strong>Total Amount:</strong> UGX{{ number_format($order->total_amount, 0) }}</p>
                     <p><strong>Status:</strong>
                         <span class="badge 
-                                    @if($order->status === 'pending') bg-warning
-                                    @elseif($order->status === 'processing') bg-info
-                                    @elseif($order->status === 'shipped') bg-primary
-                                    @elseif($order->status === 'delivered') bg-success
-                                    @elseif($order->status === 'cancelled') bg-danger
-                                        @else bg-secondary
-                                    @endif">
+                                            @if($order->status === 'pending') bg-warning
+                                            @elseif($order->status === 'processing') bg-info
+                                            @elseif($order->status === 'shipped') bg-primary
+                                            @elseif($order->status === 'delivered') bg-success
+                                            @elseif($order->status === 'cancelled') bg-danger
+                                                @else bg-secondary
+                                            @endif">
                             {{ ucfirst($order->status) }}
                         </span>
                     </p>

@@ -44,16 +44,17 @@
                                 <td>{{ $order->order_number }}</td>
                                 <td>{{ $order->user->name ?? 'N/A' }}</td>
                                 <td>{{ $order->supplier->name ?? 'N/A' }}</td>
-                                <td>${{ number_format($order->total_amount, 2) }}</td>
+                                <td>UGX{{ number_format($order->total_amount, 0) }}</td>
                                 <td>
-                                    <span class="badge 
-                                                                                                                        @if($order->status === 'pending') bg-warning
-                                                                                                                        @elseif($order->status === 'processing') bg-info
-                                                                                                                        @elseif($order->status === 'shipped') bg-primary
-                                                                                                                        @elseif($order->status === 'delivered') bg-success
-                                                                                                                        @elseif($order->status === 'cancelled') bg-danger
-                                                                                                                            @else bg-secondary
-                                                                                                                        @endif">
+                                    <span
+                                        class="badge 
+                                                                                                                                                @if($order->status === 'pending') bg-warning
+                                                                                                                                                @elseif($order->status === 'processing') bg-info
+                                                                                                                                                @elseif($order->status === 'shipped') bg-primary
+                                                                                                                                                @elseif($order->status === 'delivered') bg-success
+                                                                                                                                                @elseif($order->status === 'cancelled') bg-danger
+                                                                                                                                                    @else bg-secondary
+                                                                                                                                                @endif">
                                         {{ ucfirst($order->status) }}
                                     </span>
                                 </td>
