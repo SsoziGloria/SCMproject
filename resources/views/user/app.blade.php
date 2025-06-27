@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-@include('layouts.head')
+@include('user.head')
 
-@include('layouts.header')
-
-@include('user.aside')
+@include('user.header')
 
 <main id="main" class="main">
     @yield('content')

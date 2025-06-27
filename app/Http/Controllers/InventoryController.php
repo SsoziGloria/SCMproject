@@ -11,13 +11,33 @@ use App\Models\Supplier;
 
 class InventoryController extends Controller
 {
+    /**
+     * Display a paginated listing of the inventory.
+     */
+    public function index()
+    {
+        $inventories = Inventory::paginate(25); // Use pagination to avoid memory issues
+        return view('inventories.index', compact('inventories'));
+    }
 
+    /**
+     * Show the form for creating a new inventory record.
+     */
+    public function create()
+    {
+        return view('inventories.create');
+    }
+
+    /**
+     * Store a newly created inventory record in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
             'product_id' => 'required|numeric',
             'product_name' => 'required|string',
             'quantity' => 'required|string',
+            'quantity' => 'required|integer',
             'location' => 'required|string',
             'expiration_date' => 'required|date',
         ]);
@@ -30,7 +50,6 @@ class InventoryController extends Controller
             return back()->withInput()->withErrors(['error' => 'Failed to submit inventory: ' . $e->getMessage()]);
         }
     }
-
     public function index()
     {
         $inventories = Inventory::all();
@@ -113,5 +132,3 @@ class InventoryController extends Controller
 
 
 }
-
-
