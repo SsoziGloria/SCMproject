@@ -48,9 +48,9 @@
             /* --color-gray-100 */
             --wc-light-accent: #c27f20;
             /* --color-gray-50 */
-            --wc-light-border: #a66d1f;
+            --wc-light-border: #c27f20;
             /* --color-gray-200 */
-            --color-white: rgb(27, 16, 16);
+            --color-white: #a66d1f;
 
             --wc-dark-primary: #ececec;
             /* --color-zinc-900 */
