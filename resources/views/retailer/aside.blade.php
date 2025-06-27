@@ -134,7 +134,7 @@
         <li class="nav-heading">Account</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="{{ route('profile.show') }}">
                 <i class="bi bi-person"></i>
                 <span>Profile</span>
             </a>

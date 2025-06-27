@@ -2,7 +2,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\InventoryController;
-
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
@@ -27,7 +26,7 @@ Route::middleware('auth')->group(function () {
             case 'supplier':
                 return redirect()->route('dashboard.supplier');
             case 'retailer':
-                return view('dashboard.retailer');
+                return app(InventoryController::class)->dashboard();
             case 'user':
             default:
                 return redirect()->route('dashboard.user');
@@ -36,7 +35,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     Route::get('/dashboard-s', [InventoryController::class, 'dashboard'])
         ->name('dashboard.supplier');
-  Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->middleware('auth')->name('check.stock.alert');
+    Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->middleware('auth')->name('check.stock.alert');
 
 
     Route::get('/home', function () {
@@ -56,14 +55,14 @@ Route::fallback(function () {
 //Redirect to dashboard or login
 Route::get('/', function () {
     return auth()->check()
-    ? redirect()->route('dashboard'):
-    redirect()->route('login');
+        ? redirect()->route('dashboard') :
+        redirect()->route('login');
 });
 
 Route::get('/test-mail', function () {
     Mail::raw('This is a stock alert test email from Gmail SMTP!', function ($message) {
-        $message->to('irenemargi256@gmail.com') 
-                ->subject('Stock Notification Test');
+        $message->to('irenemargi256@gmail.com')
+            ->subject('Stock Notification Test');
     });
 
     return 'Email sent!';
@@ -99,12 +98,8 @@ Route::group(['prefix' => ''], function () {
     Route::get('/chats/{id}', [App\Http\Controllers\ChatController::class, 'show'])->name('chats.show');
 });
 
-// Order routes
-Route::middleware('auth')->group(function () {
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
-    Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.inProgress');
-    Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
-    Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
-    Route::resource('orders', OrderController::class)->middleware('auth');
-});
+
+Route::get('/orders/incoming', [OrderController::class, 'index'])->name('orders');
+Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'index'])->name('orders.incoming');
+Route::middleware('auth')->get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+// Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'incoming'])->name('orders.incoming');

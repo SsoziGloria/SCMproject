@@ -14,7 +14,16 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        return view('admin.profile', compact('user'));
+
+        if ($user->role === 'admin') {
+            return view('admin.profile', compact('user'));
+        } elseif ($user->role === 'retailer') {
+            return view('retailer.profile', compact('user'));
+        } elseif ($user->role === 'supplier') {
+            return view('supplier.profile', compact('user'));
+        } else {
+            return view('user.profile', compact('user'));
+        }
     }
 
     public function updatePassword(Request $request)

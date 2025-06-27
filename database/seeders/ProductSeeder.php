@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -11,6 +12,17 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
+
+        // Create or get supplier users
+        $supplier1 = User::firstOrCreate(
+            ['email' => 'supplier1@example.com'],
+            ['name' => 'Supplier One', 'password' => bcrypt('password'), 'role' => 'supplier']
+        );
+        $supplier2 = User::firstOrCreate(
+            ['email' => 'supplier2@example.com'],
+            ['name' => 'Supplier Two', 'password' => bcrypt('password'), 'role' => 'supplier']
+        );
+
         DB::table('products')->insert([
             [
                 'product_id' => 'CHOC-DARK-70',
@@ -21,7 +33,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/dark_chocolate.jpg',
                 'featured' => true,
                 'stock' => 150,
-                'supplier_id' => 1,
+                'supplier_id' => $supplier1->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -34,7 +46,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/milk_chips.jpg',
                 'featured' => false,
                 'stock' => 80,
-                'supplier_id' => 2,
+                'supplier_id' => $supplier2->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -47,7 +59,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/white_block.jpg',
                 'featured' => true,
                 'stock' => 60,
-                'supplier_id' => 1,
+                'supplier_id' => $supplier1->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

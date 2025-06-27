@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('supplier.app')
 
 @section('content')
     <h2 style="text-align: center; margin-bottom: 20px; font-weight: bold;">Add Inventory Record</h2>

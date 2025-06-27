@@ -26,6 +26,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('inventories.create') }}">
+                        <i class="bi bi-circle"></i><span>Add Inventory</span>
+                    </a>
+                </li>
+                <li>
                     <a href="#">
                         <i class="bi bi-circle"></i><span>Edit Product</span>
                     </a>
@@ -39,12 +44,12 @@
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.incoming') }}">
                         <i class="bi bi-circle"></i><span>Incoming Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="">
                         <i class="bi bi-circle"></i><span>Order Details</span>
                     </a>
                 </li>
@@ -86,7 +91,7 @@
         <li class="nav-heading">Account</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="{{ route('profile.show') }}">
                 <i class="bi bi-person"></i>
                 <span>Profile</span>
             </a>

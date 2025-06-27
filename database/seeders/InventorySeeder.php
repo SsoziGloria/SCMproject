@@ -9,10 +9,14 @@ class InventorySeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('inventories')->insert([
+        $product1 = \App\Models\Product::where('product_id', 'CHOC-DARK-70')->first();
+        $product2 = \App\Models\Product::where('product_id', 'CHOC-MILK-CHIPS')->first();
+        $product3 = \App\Models\Product::where('product_id', 'CHOC-WHITE-BLOCK')->first();
+
+        \DB::table('inventories')->insert([
             [
-                'product_id' => 1,
-                'product_name' => 'Dark Chocolate Bar 70%',
+                'product_id' => $product1->id,
+                'product_name' => $product1->name,
                 'quantity' => 150,
                 'unit' => 'pcs',
                 'batch_number' => 'BATCH-DK-001',
@@ -20,13 +24,13 @@ class InventorySeeder extends Seeder
                 'received_date' => now()->subDays(5),
                 'expiration_date' => now()->addMonths(10),
                 'location' => 'Warehouse A',
-                'supplier_id' => 1,
+                'supplier_id' => $product1->supplier_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'product_id' => 2,
-                'product_name' => 'Milk Chocolate Chips',
+                'product_id' => $product2->id,
+                'product_name' => $product2->name,
                 'quantity' => 80,
                 'unit' => 'kg',
                 'batch_number' => 'BATCH-MC-002',
@@ -34,13 +38,13 @@ class InventorySeeder extends Seeder
                 'received_date' => now()->subDays(10),
                 'expiration_date' => now()->addMonths(6),
                 'location' => 'Warehouse B',
-                'supplier_id' => 2,
+                'supplier_id' => $product2->supplier_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'product_id' => 3,
-                'product_name' => 'White Chocolate Blocks',
+                'product_id' => $product3->id,
+                'product_name' => $product3->name,
                 'quantity' => 60,
                 'unit' => 'pcs',
                 'batch_number' => 'BATCH-WH-003',
@@ -48,7 +52,7 @@ class InventorySeeder extends Seeder
                 'received_date' => now()->subDays(2),
                 'expiration_date' => now()->addMonths(12),
                 'location' => 'Cold Storage',
-                'supplier_id' => 1,
+                'supplier_id' => $product3->supplier_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

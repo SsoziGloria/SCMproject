@@ -4,7 +4,16 @@
 @include('layouts.head')
 
 <body>
-    @include('layouts.header')
+    @auth
+        @if(auth()->user()->role === 'user')
+            @include('user.header')
+            @yield('user-content')
+        @else
+            @include('layouts.header')
+        @endif
+    @else
+        @include('layouts.header')
+    @endauth
 
     @yield('content')
 
