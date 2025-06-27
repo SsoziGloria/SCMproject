@@ -36,25 +36,25 @@
             <ul id="components-nav" class="nav-content collapse {{ $isUserManagementActive ? 'show' : '' }} "
                 data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('users') }}"
+                    <a href="{{ route('users') }}">
                         class="nav-link {{ request()->routeIs('users') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Users</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.users.byRole', 'user') }}"
+                    < href="{{ route('admin.users.byRole', 'user') }}">
                         class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Customers</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.users.byRole', 'retailer') }}"
+                    < href="{{ route('admin.users.byRole', 'retailer') }}">
                         class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Retailers</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.users.byRole', 'supplier') }}"
+                    < href="{{ route('admin.users.byRole', 'supplier') }}">
                         class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Suppliers</span>
                     </a>
@@ -97,33 +97,34 @@
             </ul>
         </li><!-- End Product Management Nav -->
 
+        <!-- Begin Order Management Nav -->
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-swap-box-line"></i><span>Order Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.index') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.pending') }}">
                         <i class="bi bi-circle"></i><span>Pending Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.inProgress') }}">
                         <i class="bi bi-circle"></i><span>In Progress</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.completed') }}">
                         <i class="bi bi-circle"></i><span>Completed</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.cancelled') }}">
                         <i class="bi bi-circle"></i><span>Cancelled</span>
                     </a>
                 </li>

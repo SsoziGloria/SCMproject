@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductReviewController;
+
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -93,3 +97,21 @@ Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
     Route::resource('orders', OrderController::class)->middleware('auth');
 });
+
+
+Route::get('/dashboard', [OrderController::class, 'dashboard'])->name('dashboard');
+
+
+// Product Catalog routes
+
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/product-reviews', [ProductReviewController::class, 'index'])->name('productReviews.index');
+Route::get('/stock-levels', [InventoryController::class, 'index'])->name('stockLevels.index');
+
+// Product CRUD routes
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');

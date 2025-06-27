@@ -5,7 +5,7 @@
 @include('layouts.header')
 
 @include('retailer.aside')
-
+<body>
 <main id="main" class="main">
     @yield('content')
 </main>
@@ -13,5 +13,6 @@
 @include('layouts.footer')
 @include('layouts.scripts')
 
+</body>
 
 </html>

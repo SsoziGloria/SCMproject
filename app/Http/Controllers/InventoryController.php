@@ -15,7 +15,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::paginate(25); // Use pagination to avoid memory issues
+        $inventories = Inventory::paginate(25); 
         return view('inventories.index', compact('inventories'));
     }
 
