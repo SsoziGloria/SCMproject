@@ -2,6 +2,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\InventoryController;
+
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -33,6 +35,8 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     Route::get('/dashboard-s', [InventoryController::class, 'dashboard'])
         ->name('dashboard.supplier');
+  Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->middleware('auth')->name('check.stock.alert');
+
 
     Route::get('/home', function () {
         return view('dashboard.user');
@@ -50,7 +54,18 @@ Route::fallback(function () {
 
 //Redirect to dashboard or login
 Route::get('/', function () {
-    return redirect()->route('login');
+    return auth()->check()
+    ? redirect()->route('dashboard'):
+    redirect()->route('login');
+});
+
+Route::get('/test-mail', function () {
+    Mail::raw('This is a stock alert test email from Gmail SMTP!', function ($message) {
+        $message->to('irenemargi256@gmail.com') 
+                ->subject('Stock Notification Test');
+    });
+
+    return 'Email sent!';
 });
 
 Route::get('/create', function () {
