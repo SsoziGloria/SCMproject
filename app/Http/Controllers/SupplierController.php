@@ -6,21 +6,22 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Models\Inventory;
 
+
 class SupplierController extends Controller
 {
     public function index()
     {
+        $supplierCount = Supplier::count();
         $suppliers = Supplier::all();
-        return view('suppliers.index', compact('suppliers'));
+        return view('suppliers.index', compact('suppliers','supplierCount'));
     }
-    public function dashboard()
-{
-    $inventoryCount = Inventory::count();
+    public function create(){
 
-
-        return view('dashboard', compact('inventoryCount'));
+    }
+    public function store(Request $request){
 
 }
+public function show($id){
 
 public function approved()
 {
@@ -42,4 +43,6 @@ public function messages()
 {
     return view('supplier.messages');
 }
+}
+public function edit($id){}
 }

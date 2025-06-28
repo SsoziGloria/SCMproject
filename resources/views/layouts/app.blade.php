@@ -7,6 +7,9 @@
 
 </head>
 
+<body>
+
+
 @include('layouts.header')
 
 @include('layouts.aside')
@@ -17,6 +20,6 @@
 
 @include('layouts.footer')
 @include('layouts.scripts')
-
+</body>
 
 </html>
