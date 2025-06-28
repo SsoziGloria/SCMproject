@@ -17,6 +17,23 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+//for mySupplier
+Route::get('/supplier/approved', [SupplierController::class, 'approved'])->name('supplier.approved');
+Route::get('/supplier/requests', [SupplierController::class, 'requests'])->name('supplier.requests');
+Route::get('/supplier/orders', [SupplierController::class, 'orders'])->name('supplier.orders');
+Route::get('/supplier/messages', [SupplierController::class, 'messages'])->name('supplier.messages');
+
+
+//for reorders
+Route::get('/inventories/reorders', [InventoryController::class, 'reorders'])->name('inventories.reorders');
+
+
+//for adjustments
+Route::get('/inventories/adjustments', [InventoryController::class, 'adjustments'])->name('inventories.adjustments');
+Route::get('/inventories/adjustments/create', [InventoryController::class, 'createAdjustment'])->name('inventories.adjustments.create');
+Route::post('/inventories/adjustments', [InventoryController::class, 'storeAdjustment'])->name('inventories.adjustments.store');
+
 Route::resource('inventories', InventoryController::class)->middleware('auth');
 
 //Dashboard and Inventory routes
@@ -43,7 +60,7 @@ Route::middleware('auth')->group(function () {
         return view('dashboard.user');
     })->name('dashboard.user');
 });
-Route::resource('inventories', InventoryController::class);
+
 
 //Search functionality
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
@@ -90,7 +107,7 @@ Route::group(['prefix' => ''], function () {
 
 // Order routes
 Route::middleware('auth')->group(function () {
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
     Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.inProgress');
     Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
@@ -98,20 +115,25 @@ Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::resource('orders', OrderController::class)->middleware('auth');
 });
 
-
-Route::get('/dashboard', [OrderController::class, 'dashboard'])->name('dashboard');
-
-
 // Product Catalog routes
-
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/product-reviews', [ProductReviewController::class, 'index'])->name('productReviews.index');
+Route::get('/product-reviews/create', [ProductReviewController::class, 'create'])->name('productReviews.create');
+Route::post('/product-reviews', [ProductReviewController::class, 'store'])->name('productReviews.store');
 Route::get('/stock-levels', [InventoryController::class, 'index'])->name('stockLevels.index');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 
 // Product CRUD routes
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
-Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+
+Route::resource('products', ProductController::class);
+
+//category
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+//for stock levels
+Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index');

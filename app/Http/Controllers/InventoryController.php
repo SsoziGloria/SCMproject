@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Inventory;
 use Carbon\Carbon;
+use App\Models\Product;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
+use App\Models\Adjustment;
 
 class InventoryController extends Controller
 {
@@ -15,8 +17,10 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::paginate(25); 
+        $inventories = Inventory::all(); 
         return view('inventories.index', compact('inventories'));
+
+        
     }
 
     /**
@@ -96,4 +100,65 @@ class InventoryController extends Controller
 
         return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'nearExpiry'));
     }
+
+    
+public function stockLevels()
+{
+    $products = Product::paginate(25);
+    return view('stockLevels.index', compact('products'));
+}
+
+public function show(Inventory $inventory)
+{
+    
+    return view('inventories.show', compact('inventory'));
+}
+//products where reorders are below...
+public function reorders()
+{
+    
+    $reorders = Inventory::with('product')
+        ->whereColumn('quantity', '<', 'reorder_level')
+        ->get();
+
+    return view('inventories.reorders', compact('reorders'));
+}
+
+// List all adjustments
+public function adjustments()
+{
+    $adjustments = Adjustment::with('inventory')->latest()->get();
+    return view('inventories.adjustments', compact('adjustments'));
+}
+
+// Show form to create a new adjustment
+public function createAdjustment()
+{
+    $inventories = Inventory::all();
+    return view('inventories.adjustments_create', compact('inventories'));
+}
+
+// Store a new adjustment
+public function storeAdjustment(Request $request)
+{
+    $request->validate([
+        'inventory_id' => 'required|exists:inventories,id',
+        'type' => 'required|in:add,remove',
+        'amount' => 'required|integer|min:1',
+        'reason' => 'nullable|string|max:255',
+    ]);
+
+    $adjustment = Adjustment::create($request->all());
+
+    // Update inventory quantity
+    $inventory = $adjustment->inventory;
+    if ($request->type === 'add') {
+        $inventory->quantity += $request->amount;
+    } else {
+        $inventory->quantity -= $request->amount;
+    }
+    $inventory->save();
+
+    return redirect()->route('inventories.adjustments')->with('success', 'Adjustment recorded.');
+}
 }

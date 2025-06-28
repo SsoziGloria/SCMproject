@@ -42,6 +42,7 @@
             </ul>
         </li><!-- End Order Nav -->
 
+        <!-- Product Management Nav -->
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-shopping-bag-2-line"></i><span>Product Catalog</span><i
@@ -49,22 +50,22 @@
             </a>
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('products.index') }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('categories.index') }}">
                         <i class="bi bi-circle"></i><span>Categories</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('productReviews.index') }}">
                         <i class="bi bi-circle"></i><span>Product Reviews</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('stockLevels.index') }}">
                         <i class="bi bi-circle"></i><span>Stock Levels</span>
                     </a>
                 </li>
@@ -77,17 +78,17 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('inventories.index') }}">
                         <i class="bi bi-circle"></i><span>Current Stock</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('inventories.reorders') }}">
                         <i class="bi bi-circle"></i><span>Reorders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('inventories.adjustments') }}">
                         <i class="bi bi-circle"></i><span>Adjustments</span>
                     </a>
                 </li>
@@ -100,7 +101,7 @@
             </a>
             <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="">
                         <i class="bi bi-circle"></i><span>Approved</span>
                     </a>
                 </li>

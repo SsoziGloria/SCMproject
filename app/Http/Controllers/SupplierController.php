@@ -22,4 +22,24 @@ class SupplierController extends Controller
 
 }
 
+public function approved()
+{
+    $suppliers = Supplier::all();
+    return view('supplier.approved', compact('suppliers'));
+}
+
+public function requests()
+{
+    return view('supplier.requests');
+}
+
+public function orders()
+{
+    return view('supplier.orders');
+}
+
+public function messages()
+{
+    return view('supplier.messages');
+}
 }

@@ -4,7 +4,7 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0"><i class="bi bi-box-seam"></i> All Products</h2>
-        <a href="#" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Product</a>
+        <a href="{{ route('products.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Product</a>
     </div>
     <div class="card shadow-sm border-primary">
         <div class="card-body p-0">
@@ -38,11 +38,11 @@
                             </span>
                         </td>
                         <td>
-                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-outline-info" class="btn btn-sm btn-outline-info">View</a>
+                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-outline-info" class="btn btn-sm btn-outline-info">View</a><br>
 
-                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-outline-warning" class="btn btn-sm btn-outline-warning">Edit</a>
+                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-outline-warning" class="btn btn-sm btn-outline-warning">Edit</a><br>
                             <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
-                            @csr
+                            @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this product?')">Delete</button>
                             </form>

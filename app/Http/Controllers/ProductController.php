@@ -34,7 +34,7 @@ class ProductController extends Controller
 
     // Show a single product
     public function show($id){
-      $product = Product::with('category')->findOrFail($id);
+    $product = Product::with('category')->findOrFail($id);
         return view('products.show', compact('product'));
     }
 
@@ -69,8 +69,6 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted!');
     }
-
-
 
 
 
