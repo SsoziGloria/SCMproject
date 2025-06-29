@@ -3,7 +3,8 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('dashboard') }}">
+            <a class="nav-link {{ request()->fullUrlIs(route('dashboard.retailer', '')) ? '' : 'collapsed' }}"
+                href="{{ route('dashboard') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
@@ -15,7 +16,7 @@
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.incoming') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
@@ -125,7 +126,8 @@
         <li class="nav-heading">Communication</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link {{ request()->fullUrlIs(route('chat.index', '')) ? '' : 'collapsed' }}"
+                href="{{ route('chat.index') }}">
                 <i class="bi bi-chat-left-quote"></i>
                 <span>Chat</span>
             </a>
@@ -134,7 +136,8 @@
         <li class="nav-heading">Account</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('profile.show') }}">
+            <a class="nav-link {{ request()->fullUrlIs(route('profile.show', '')) ? '' : 'collapsed' }}"
+                href="{{ route('profile.show') }}">
                 <i class="bi bi-person"></i>
                 <span>Profile</span>
             </a>

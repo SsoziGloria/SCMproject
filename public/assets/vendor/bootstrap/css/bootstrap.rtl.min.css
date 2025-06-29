@@ -2630,8 +2630,8 @@ textarea.form-control-lg {
 }
 
 .form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #d98323;
+    border-color: #d98323
 }
 
 .form-check-input:checked[type=checkbox] {
@@ -2643,8 +2643,8 @@ textarea.form-control-lg {
 }
 
 .form-check-input[type=checkbox]:indeterminate {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: #d98323;
+    border-color: #d98323;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10h8'/%3e%3c/svg%3e")
 }
 
@@ -3239,13 +3239,13 @@ fieldset:disabled .btn {
 
 .btn-primary {
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #d98323;
+    border-color: #d98323
 }
 
 .btn-primary:hover {
     color: #fff;
-    background-color: #0b5ed7;
+    background-color: #ffa725;
     border-color: #ffa725
 }
 
@@ -5330,7 +5330,7 @@ fieldset:disabled .btn {
 }
 
 .accordion-button:not(.collapsed) {
-    color: #0c63e4;
+    color: #d98323;
     background-color: #e7f1ff;
     box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125)
 }

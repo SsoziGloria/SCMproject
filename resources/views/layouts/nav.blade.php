@@ -13,7 +13,9 @@
 
             <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                 <i class="bi bi-chat-left-text"></i>
-                <span class="badge bg-success badge-number">2</span>
+                <span class="badge bg-success badge-number">@if (auth()->user()->getUnreadCount() > 0)
+                    {{ auth()->user()->getUnreadCount() }}
+                @endif</span>
             </a><!-- End Messages Icon -->
 
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
@@ -22,7 +24,7 @@
                 </li>
                 <li style="min-width: 350px; max-width: 400px; max-height: 500px; overflow-y: auto;">
                     <div style="height: 400px;">
-                        <livewire:wirechat.chats widget="true" :allowChatsSearch="false" :showNewChatModalButton="true"
+                        <livewire:wirechat.chats widget="true" :allowChatsSearch="false" :showNewChatModalButton="false"
                             :showHomeRouteButton="false" title="Messages" />
                     </div>
                 </li>

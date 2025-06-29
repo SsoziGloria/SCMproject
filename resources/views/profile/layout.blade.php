@@ -1,33 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+@php $user = auth()->user(); @endphp
 
-@include('layouts.head')
+@if ($user->role === 'user')
+    @include('user.head')
+    @include('user.header')
+@else
+    @include('layouts.head')
+    @include('layouts.header')
+@endif
 
 <body>
-    @auth
-        @if(auth()->user()->role === 'user')
-            @include('user.header')
-            @yield('user-content')
-        @else
-            @include('layouts.header')
-        @endif
-    @else
-        @include('layouts.header')
-    @endauth
-
     @yield('content')
 
     <main id="main" class="main">
 
         <div class="pagetitle">
             <h1>Profile</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item">Users</li>
-                    <li class="breadcrumb-item active">Profile</li>
-                </ol>
-            </nav>
         </div><!-- End Page Title -->
 
         <section class="section profile">
@@ -127,11 +116,30 @@
                                         <div class="col-lg-3 col-md-4 label">Email</div>
                                         <div class="col-lg-9 col-md-8">{{ $user->email }}</div>
                                     </div>
+                                    @if (!($user->role === 'user' && $user->hasVerifiedEmail()))
+                                        @if ($user->hasVerifiedEmail())
+                                            <div class="row">
+                                                <div class="col-lg-3 col-md-4 label">Certification Status</div>
+                                                <div class="col-lg-9 col-md-8">{{ $user->certification_status }}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-3 col-md-4 label">Verified</div>
+                                            </div>
+                                        @else
+                                            <form method="POST" action="{{ route('verification.send') }}">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    Resend Verification Email
+                                                </button>
+                                            </form>
+                                        @endif
 
-                                    <div class="row">
-                                        <div class="col-lg-3 col-md-4 label">Certification Status</div>
-                                        <div class="col-lg-9 col-md-8">{{$user->certification_status}}</div>
-                                    </div>
+                                    @elseif ($user->role === 'user' && $user->hasVerifiedEmail())
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label">Verified</div>
+                                        </div>
+                                    @endif
+
 
                                 </div>
 
@@ -303,7 +311,8 @@
                                         @method('PUT')
                                         <div class="row mb-3">
                                             <label for="currentPassword"
-                                                class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                                class="col-md-4 col-lg-3 col-form-label">Current
+                                                Password</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="current_password" type="password" class="form-control"
                                                     id="currentPassword" required>
@@ -335,7 +344,8 @@
                                             </div>
                                         @endif
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Change Password</button>
+                                            <button type="submit" class="btn btn-primary">Change
+                                                Password</button>
                                         </div>
                                     </form><!-- End Change Password Form -->
 

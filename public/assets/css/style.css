@@ -16,15 +16,18 @@ body {
   font-family: "Open Sans", sans-serif;
   background: #fffdf6;
   color: #1e1e1e;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 a {
-  color: #452d0a;
+  color: #c27f21;
   text-decoration: none;
 }
 
 a:hover {
-  color: #c27f21;
+  color: #ffa725;
   text-decoration: none;
 }
 
@@ -1246,4 +1249,14 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #241500;
+}
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-fill {
+  flex: 1 1 auto;
 }

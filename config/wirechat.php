@@ -103,7 +103,7 @@ return [
     | the dynamic chat content.
     |
     */
-    'layout' => 'chat.layout',
+    'layout' => 'wirechat::layouts.app',
 
     /*
     |--------------------------------------------------------------------------
@@ -129,7 +129,7 @@ return [
     |
     */
     'notifications' => [
-        'enabled' => true,
+        'enabled' => false,
         'main_sw_script' => '/sw.js', // Relative to public path
     ],
 

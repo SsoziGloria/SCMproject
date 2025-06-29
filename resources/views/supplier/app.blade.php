@@ -2,16 +2,19 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 @include('layouts.head')
 
-@include('layouts.header')
+<body>
+    @include('layouts.header')
 
-@include('supplier.aside')
+    @include('supplier.aside')
+    <div class="wrapper d-flex flex-column min-vh-100">
+        <main id="main" class="flex-fill">
+            @yield('content')
+        </main>
 
-<main id="main" class="main">
-    @yield('content')
-</main>
 
-@include('layouts.footer')
-@include('layouts.scripts')
-
+        @include('layouts.footer')
+    </div>
+    @include('layouts.scripts')
+</body>
 
 </html>

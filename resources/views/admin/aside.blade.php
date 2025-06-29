@@ -103,7 +103,7 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.incoming') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
@@ -164,7 +164,8 @@
         </li><!-- End Analytics Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('chat.index') }}">
+            <a class="nav-link {{ request()->fullUrlIs(route('chat.index', '')) ? '' : 'collapsed' }}"
+                href="{{ route('chat.index') }}">
                 <i class="bi bi-chat-left-quote"></i>
                 <span>Chat</span>
             </a>
