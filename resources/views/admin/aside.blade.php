@@ -75,7 +75,7 @@
             </a>
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('products.index') }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>

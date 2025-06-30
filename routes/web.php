@@ -1,12 +1,16 @@
 <?php
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SearchController;
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -45,7 +49,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::resource('inventories', InventoryController::class);
 
 //Search functionality
-Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
+Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/search/advanced', [SearchController::class, 'advanced'])->name('search.advanced');
 
 //Error handling
 Route::fallback(function () {
@@ -138,3 +143,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/faq', function () {
     return view('faq.pages-faq');
 })->name('faq');
+
+//Products routes
+Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
+
+//Export routes
+Route::get('/products/export', function (Request $request) {
+    $filters = $request->only(['category', 'supplier', 'stock']);
+    return Excel::download(new ProductsExport($filters), 'products.xlsx');
+})->name('products.export');
