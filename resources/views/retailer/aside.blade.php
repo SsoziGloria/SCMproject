@@ -101,25 +101,21 @@
             </a>
             <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="">
+                    <a href="{{ route('supplier.approved') }}">
                         <i class="bi bi-circle"></i><span>Approved</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('supplier.requests') }}">
                         <i class="bi bi-circle"></i><span>New Requests</span>
                     </a>
                 </li>
+               
                 <li>
                     <a href="#">
-                        <i class="bi bi-circle"></i><span>Purchase Orders</span>
+                       <!-- <i class="bi bi-circle"></i><span>Messages</span>
                     </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Messages</span>
-                    </a>
-                </li>
+                </li>-->
             </ul>
         </li><!-- End mySupplier Nav -->
 

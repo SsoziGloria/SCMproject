@@ -21,10 +21,15 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 //for mySupplier
+Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
 Route::get('/supplier/approved', [SupplierController::class, 'approved'])->name('supplier.approved');
 Route::get('/supplier/requests', [SupplierController::class, 'requests'])->name('supplier.requests');
 Route::get('/supplier/orders', [SupplierController::class, 'orders'])->name('supplier.orders');
 Route::get('/supplier/messages', [SupplierController::class, 'messages'])->name('supplier.messages');
+Route::get('/supplier/register', [SupplierController::class, 'showRegisterForm'])->name('suppliers.register.form');
+Route::post('/supplier/register', [SupplierController::class, 'register'])->name('suppliers.register');
+
+Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
 
 
 //for reorders

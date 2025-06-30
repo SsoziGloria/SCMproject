@@ -29,7 +29,8 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        return view('inventories.create');
+        $products = Product::all();
+        return view('inventories.create', compact('products'));
     }
 
     /**
@@ -40,7 +41,6 @@ class InventoryController extends Controller
         $request->validate([
             'product_id' => 'required|numeric',
             'product_name' => 'required|string',
-            'quantity' => 'required|string',
             'quantity' => 'required|integer',
             'location' => 'required|string',
             'expiration_date' => 'required|date',
@@ -54,15 +54,16 @@ class InventoryController extends Controller
             return back()->withInput()->withErrors(['error' => 'Failed to submit inventory: ' . $e->getMessage()]);
         }
     }
-    public function index()
+    //for displaying all inventories
+    public function retailerIndex()
     {
         $inventories = Inventory::all();
         return view('inventories.index', compact('inventories'));
     }
 
-    public function create()
+    public function retailerCreate()
     {
-        $products = \App\Models\Product::all();
+        $products = Product::all();
         return view('inventories.create', compact('products'));
 
     }
@@ -89,10 +90,10 @@ class InventoryController extends Controller
         $inventory->update($data);
 
         $lowStock = Inventory::where('quantity', '<', 10)->get();
-        $expiringSoon = Inventory::where('expiration_date', '<=', \Carbon\Carbon::now()->addDays(30))->get();
+        $expiringSoon = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
         //send notification if there's low stock or expiring soon items
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
-            Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification());
+            Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification($lowStock));
         }
         return redirect()->route('dashboard')->with('success', 'Inventory updated.');
     }
@@ -121,13 +122,38 @@ class InventoryController extends Controller
 
     public function checkStockAlert()
     {
+        $inventoryCount = Inventory::count();
         $lowStock = Inventory::where('quantity', '<', 10)->get();
         $expiringSoon = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
 
-        if ($lowStock->count() > 0 || $nearExpiry->count() > 0) {
-            Notification::route('mail', 'admin@emma.com')->notify(new StockAlertNotification());
+        if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
+            Notification::route('mail', 'irenemargi256@gmail.com')->notify(new StockAlertNotification($lowStock));
         }
 
-        return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'nearExpiry'));
+        return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'expiringSoon'));
     }
+    public function stockLevels()
+{
+    $products = Product::with('category')->get();
+    return view('stockLevels.index', compact('products'));
+}
+
+public function reorders()
+{
+    // Show inventories that are low in stock
+    $reorders = Inventory::where('quantity', '<', 10)->get();
+    return view('inventories.reorders', compact('reorders'));
+}
+
+
+public function adjustments()
+{
+    $adjustments = Adjustment::with('inventory')->get();
+    return view('inventories.adjustments', compact('adjustments'));
+}
+public function createAdjustment()
+{
+    $inventories = Inventory::all();
+    return view('inventories.adjustments_create', compact('inventories'));
+}
 }

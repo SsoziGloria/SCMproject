@@ -7,7 +7,7 @@
 
 @include('orders._order_table', ['orders' => $orders])
 @if($orders->isEmpty())
-    <p>No pending orders.</p>
+    <p>No returned orders.</p>
 @else
 <table class="table">
     <thead>
