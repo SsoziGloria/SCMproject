@@ -56,6 +56,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getCoverUrlAttribute(): ?string
     {
-        return $this->avatar_url ?? null;
+        return $this->avatar_url
+            ?? ($this->profile_photo ? asset('storage/' . $this->profile_photo) : null)
+            ?? asset('assets/img/profile-img.jpg');
+    }
+
+    public function canCreateGroups(): bool
+    {
+        return in_array($this->role, ['admin', 'supplier']);
     }
 }

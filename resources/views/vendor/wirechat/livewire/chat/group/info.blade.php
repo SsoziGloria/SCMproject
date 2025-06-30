@@ -22,7 +22,7 @@
 
         {{-- Edit group form --}}
         @if ($authIsAdminInGroup || $group?->allowsMembersToEditGroupInfo())
-            <div @dusk="edit_group_information_section" class="flex  flex-col items-center gap-4 py-5  px-4    ">
+            <div @dusk="edit_group_information_section" class="flex  flex-col items-center gap-4 py-4  px-4    ">
 
                 {{-- Avatar --}}
                 <section class="mx-auto items-center justify-center grid">
@@ -126,7 +126,7 @@
 
 
                 {{-- About --}}
-                <section class=" px-8 py-5 ">
+                <section class=" px-8 py-4 ">
                     <div @dusk="edit_description_section" x-data="{ editing: false }" @click.outside="editing=false"
                         class="grid grid-cols-12 items-center">
 
@@ -185,7 +185,7 @@
             </div>
         @else
             {{-- Plain group information --}}
-            <div @dusk="non_editable_group_information_section" class="flex  flex-col items-center gap-4 py-5 px-4  ">
+            <div @dusk="non_editable_group_information_section" class="flex  flex-col items-center gap-4 py-4 px-4  ">
                 <x-wirechat::avatar :src="$cover_url" class=" h-32 w-32 mx-auto" />
                 <h4 dusk="group_name" class="font-medium  break-all   whitespace-pre-line   text-2xl ">{{ $groupName }}
                 </h4>
@@ -209,7 +209,7 @@
             widget="{{ $this->isWidget() }}">
             {{-- Members count --}}
             <button class="cursor-pointer flex w-full justify-between items-center px-8 focus:outline-hidden ">
-                <span class="text-gray-600 dark:text-gray-300">{{ __('wirechat::chat.group.info.labels.members') }}
+                <span class="text-black dark:text-gray-300">{{ __('wirechat::chat.group.info.labels.members') }}
                     {{ $totalParticipants }}</span>
                 {{-- Search icon --}}
                 <span>
@@ -227,7 +227,7 @@
             <x-wirechat::actions.open-modal component="wirechat.chat.group.add-members"
                 conversation="{{ $conversation?->id }}" widget="{{ $this->isWidget() }}">
                 <button @dusk="open_add_members_modal_button"
-                    class="cursor-pointer w-full py-5 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] focus:outline-hidden transition  flex gap-3 items-center">
+                    class="cursor-pointer w-full py-4 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] focus:outline-hidden transition  flex gap-3 items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6 w-5 h-5">
                         <path
                             d="M5.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM2.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
@@ -251,7 +251,7 @@
             {{-- Delete group --}}
             <button wire:confirm="{{ __('wirechat::chat.group.info.actions.delete_group.confirmation_message') }}"
                 wire:click="deleteGroup"
-                class="cursor-pointer w-full py-5 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] transition text-start space-y-2   gap-3   text-red-500">
+                class="cursor-pointer w-full py-4 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] transition text-start space-y-2   gap-3   text-red-500">
                 <div class="flex gap-3 items-center ">
 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -271,7 +271,7 @@
                 <x-wirechat::actions.open-chat-drawer component='wirechat.chat.group.permissions'
                     conversation="{{ $conversation?->id }}">
                     <button
-                        class="cursor-pointer w-full py-5 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] transition text-start space-y-2   gap-3   dark:text-white/90">
+                        class="cursor-pointer w-full py-4 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] transition text-start space-y-2   gap-3   dark:text-white/90">
                         <div class="flex gap-3 items-center ">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6 w-5 h-5 dark:text-gray-400">
@@ -288,7 +288,7 @@
             {{-- Exit Group --}}
             <button wire:confirm="{{ __('wirechat::chat.group.info.actions.exit_group.confirmation_message') }}"
                 wire:click="exitConversation"
-                class="cursor-pointer w-full py-5 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] transition flex gap-3 items-center text-red-500">
+                class="cursor-pointer w-full py-4 px-8 hover:bg-[var(--wc-light-secondary)] dark:hover:bg-[var(--wc-dark-secondary)] transition flex gap-3 items-center text-red-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-box-arrow-right w-5 h-5" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"

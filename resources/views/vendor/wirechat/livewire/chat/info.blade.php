@@ -25,7 +25,7 @@
 
             <div class=" grid  ">
 
-                <a class="px-8 py-5 " @dusk="receiver_name" href="{{ $receiver?->profile_url }}">
+                <a class="px-8 py-4 " @dusk="receiver_name" href="{{ $receiver?->profile_url }}">
                     <h5 class="text-2xl">{{ $receiver?->display_name }}</h5>
                 </a>
             </div>
