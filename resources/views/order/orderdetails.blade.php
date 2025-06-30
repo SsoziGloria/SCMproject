@@ -13,15 +13,14 @@
 @extends($layout)
 
 @section('content')
-<div class="container mt-4">
-    <h2 class="mb-4">Order Details</h2>
+    <div class="container mt-4">
+        <h2 class="mb-4">Order Details</h2>
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if(isset($order))
-        <main>
+        @if(isset($order))
+            {{-- Display order details --}}
             <div class="card mb-4">
                 <div class="card-header">
                     <strong>Order #{{ $order->order_number }}</strong>
@@ -32,13 +31,13 @@
                     <p><strong>Total Amount:</strong> UGX{{ number_format($order->total_amount, 0) }}</p>
                     <p><strong>Status:</strong>
                         <span class="badge 
-                                            @if($order->status === 'pending') bg-warning
-                                            @elseif($order->status === 'processing') bg-info
-                                            @elseif($order->status === 'shipped') bg-primary
-                                            @elseif($order->status === 'delivered') bg-success
-                                            @elseif($order->status === 'cancelled') bg-danger
-                                                @else bg-secondary
-                                            @endif">
+                                                                                            @if($order->status === 'pending') bg-warning
+                                                                                            @elseif($order->status === 'processing') bg-info
+                                                                                            @elseif($order->status === 'shipped') bg-primary
+                                                                                            @elseif($order->status === 'delivered') bg-success
+                                                                                            @elseif($order->status === 'cancelled') bg-danger
+                                                                                                @else bg-secondary
+                                                                                            @endif">
                             {{ ucfirst($order->status) }}
                         </span>
                     </p>
@@ -46,12 +45,14 @@
                     <p><strong>Ordered At:</strong>
                         {{ $order->ordered_at ? \Carbon\Carbon::parse($order->ordered_at)->format('M d, Y') : '-' }}</p>
                     <p><strong>Delivered At:</strong>
-                        {{ $order->delivered_at ? \Carbon\Carbon::parse($order->delivered_at)->format('M d, Y') : '-' }}</p>
+                        {{ $order->delivered_at ? \Carbon\Carbon::parse($order->delivered_at)->format('M d, Y') : '-' }}
+                    </p>
                 </div>
             </div>
             {{-- Add more details or related items here if needed --}}
             <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
-    @else
+        @else
                 <div class="alert alert-danger">Order not found.</div>
-            </main>
+            </div>
         @endif
+@endsection

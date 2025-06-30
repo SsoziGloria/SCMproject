@@ -10,8 +10,6 @@
         <main id="main" class="flex-fill">
             @yield('content')
         </main>
-
-
         @include('layouts.footer')
     </div>
     @include('layouts.scripts')

@@ -135,3 +135,8 @@ Route::middleware('auth')->group(function () {
         return back()->with('status', 'verification-link-sent');
     })->middleware(['throttle:6,1'])->name('verification.send');
 });
+
+// Route to faq page
+Route::get('/faq', function () {
+    return view('faq.pages-faq');
+})->name('faq');

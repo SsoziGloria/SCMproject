@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@include('layouts.head')
 
-<head>
-
-    @include('layouts.head')
-
-
-</head>
 
 <body>
-
-
     @include('layouts.header')
 
-
     <div class="wrapper d-flex flex-column min-vh-100">
-        <main class="flex-fill">
+        <main class="flex-fill" id="main">
             @yield('content')
         </main>
         @include('layouts.footer')

@@ -1,31 +1,48 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+@php $user = auth()->user(); @endphp
 
-@include('chat.head')
+@if ($user->role === 'user')
+    @include('user.head')
 
-<body>
-    <div class="wrapper d-flex flex-column min-vh-100">
-        @include('layouts.header')
+    <body>
+        @include('user.header')
+@elseif ($user->role === 'supplier')
+        @include('layouts.head')
 
-        @auth
-            @if(auth()->user()->role === 'admin')
-                @include('admin.aside')
-            @elseif(auth()->user()->role === 'supplier')
-                @include('supplier.aside')
-            @elseif(auth()->user()->role === 'retailer')
+        <body>
+            @include('layouts.header')
+            @include('supplier.aside')
+    @elseif ($user->role === 'retailer')
+            @include('layouts.head')
+
+            <body>
+                @include('layouts.header')
                 @include('retailer.aside')
+        @elseif ($user->role === 'admin')
+                @include('layouts.head')
+
+                <body>
+                    @include('layouts.header')
+                    @include('admin.aside')
             @else
-            @endif
-        @endauth
+                    @include('layouts.head')
 
-        <main id="main" class="main pt-24 h-[calc(100vh_-_5rem)] tw-chat">
-            <livewire:wirechat />
-        </main>
+                    <body>
+                        @include('layouts.header')
+                        @include('layouts.aside')
+                @endif
 
-        @wirechatAssets
-        @livewireScripts
-        @vite(['resources/js/app.js']) <!-- Vite JS -->
-</body>
-@include('layouts.footer')
-@include('layouts.scripts')
+                    <main id="main" class="main pt-24 h-[calc(100vh_-_5rem)] tw-chat">
+                        <livewire:wirechat />
+
+
+                        @wirechatAssets
+                        @livewireScripts
+                        @vite(['resources/js/app.js']) <!-- Vite JS -->
+                    </main>
+                    @include('layouts.footer')
+                    @include('layouts.scripts')
+                </body>
 
 </html>
