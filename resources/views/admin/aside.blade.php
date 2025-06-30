@@ -36,26 +36,26 @@
             <ul id="components-nav" class="nav-content collapse {{ $isUserManagementActive ? 'show' : '' }} "
                 data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('users') }}">
+                    <a href="{{ route('users') }}"
                         class="nav-link {{ request()->routeIs('users') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Users</span>
                     </a>
                 </li>
                 <li>
-                    < href="{{ route('admin.users.byRole', 'user') }}">
-                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
+                    <a href="{{ route('admin.users.byRole', 'user') }}" class="nav-link
+                        {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Customers</span>
                     </a>
                 </li>
                 <li>
-                    < href="{{ route('admin.users.byRole', 'retailer') }}">
-                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
+                    <a href="{{ route('admin.users.byRole', 'retailer') }}" class="nav-link
+                        {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Retailers</span>
                     </a>
                 </li>
                 <li>
-                    < href="{{ route('admin.users.byRole', 'supplier') }}">
-                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
+                    <a href="{{ route('admin.users.byRole', 'supplier') }}" class="nav-link
+                        {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Suppliers</span>
                     </a>
                 </li>
