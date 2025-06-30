@@ -35,14 +35,14 @@
                     <a href={{ route('chat.index') }}>Show all messages</a>
                 </li>
 
-            </ul> <!-- <-- This was missing! -->
+            </ul>
         </li><!-- End Messages Nav -->
 
         <!-- Profile Dropdown -->
         <li class="nav-item dropdown pe-3">
 
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                @if(auth()->user()->profile_image)
+                @if(auth()->user()->profile_photo)
                     <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile" class="rounded-circle">
                 @else
                     <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
@@ -77,7 +77,7 @@
                 </li>
 
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('faq') }}">
                         <i class="bi bi-question-circle"></i>
                         <span>Need Help?</span>
                     </a>

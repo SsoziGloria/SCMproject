@@ -82,14 +82,12 @@ Route::get('/admin/users/role/{role}', [App\Http\Controllers\Admin\UserControlle
 
 Route::get('/user-management', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
 
-Route::get('/profile', function () {
-    return view('admin.profile');
-})->middleware('auth')->name('profile');
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
 
 // Chat routes
 //Route::group(['prefix' => ''], function () {
