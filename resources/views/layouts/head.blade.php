@@ -26,4 +26,25 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+
+    @vite(['resources/css/app.css'])<!-- Vite CSS -->
+    @livewireStyles
+    @wirechatStyles
+    <style>
+        :root {
+            --wc-brand-primary: #c27f21;
+            --green-chat: #cffdce;
+            --wc-light-primary: #ececec;
+            --wc-light-secondary: #ffffff;
+            --wc-light-accent: #c27f20;
+            --wc-light-border: #c27f20;
+            --color-white: #a66d1f;
+            --wc-dark-primary: #ececec;
+            --wc-dark-secondary: #ffffff;
+            --wc-dark-accent: #c27f20;
+            --wc-dark-border: #a66d1f;
+        }
+
+        body {}
+    </style>
 </head>

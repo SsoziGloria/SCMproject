@@ -70,7 +70,7 @@
                                     <h6 @class(['transition-all truncate group-hover:underline col-span-10' ])>
                                         {{ $loopParticipantIsAuth ? 'You' : $participant->participantable->display_name }}</h6>
                                         @if ($participant->isOwner()|| $participant->isAdmin())
-                                        <span  style="background-color: var(--wirechat-primary-color);" class=" flex items-center col-span-2 text-white text-xs font-medium ml-auto px-2.5 py-px rounded-sm ">
+                                        <span  style="background-color: var(--wirechat-primary-color);" class=" flex items-center col-span-2 text-brown text-xs font-medium ml-auto px-2.5 py-px rounded-sm ">
                                             {{$participant->isOwner()? __('wirechat::chat.group.members.labels.owner'): __('wirechat::chat.group.members.labels.admin')}}
                                         </span>
                                         @endif

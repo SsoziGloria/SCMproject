@@ -27,8 +27,10 @@ class OrderController extends Controller
     //show the form for creating a new order
     public function create()
     {
-        $products = Inventory::all();
-        return view('orders.create', compact('products'));
+        // Fetch all users with role 'supplier' for selection
+        $suppliers = \App\Models\User::where('role', 'supplier')->get();
+        $retailers = \App\Models\User::where('role', 'retailer')->get();
+        return view('orders.create', compact('suppliers', 'retailers'));
     }
 
     //store a new order
@@ -64,6 +66,7 @@ class OrderController extends Controller
     {
         return view('orders.show', compact('order'));
     }
+
 
 
     // Show the form for editing the specified resource.
@@ -139,13 +142,13 @@ class OrderController extends Controller
     }
 
     public function dashboard()
-{
-    $deliveredOrders = Order::where('user_id', Auth::id())
-        ->where('status', 'completed')
-        ->count();
+    {
+        $deliveredOrders = Order::where('user_id', Auth::id())
+            ->where('status', 'completed')
+            ->count();
 
-    
 
-    return view('dashboard.retailer', compact('deliveredOrders'));
-}
+
+        return view('dashboard.retailer', compact('deliveredOrders'));
+    }
 }

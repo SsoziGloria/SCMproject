@@ -16,11 +16,17 @@ class Order extends Model
     ];
 
 
-    public function inventory() {
-    return $this->belongsTo(Inventory::class, 'product_id',);
-}
-public function user() {
-    return $this->belongsTo(User::class);
-}
+    public function inventory()
+    {
+        return $this->belongsTo(Inventory::class, 'product_id', );
+    }
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
+    }
+    public function supplier()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'supplier_id');
+    }
 
 }

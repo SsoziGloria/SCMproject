@@ -4,7 +4,11 @@
         <li class="nav-item dropdown pe-3">
 
             <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                @if(auth()->user()->profile_photo)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile" class="rounded-circle">
+                @else
+                    <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile" class="rounded-circle">
+                @endif
                 <span class="d-none d-md-block dropdown-toggle ps-2">{{ auth()->user()->name }}</span>
             </a><!-- End Profile Image Icon -->
 
@@ -25,7 +29,7 @@
                 </li>
 
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.show') }}">
                         <i class="bi bi-person"></i>
                         <span>My Profile</span>
                     </a>
@@ -35,7 +39,7 @@
                 </li>
 
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="#">
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('chat.index') }}">
                         <i class="ri-message-3-line"></i>
                         <span>Messages</span>
                     </a>
@@ -45,7 +49,7 @@
                 </li>
 
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('faq') }}">
                         <i class="bi bi-question-circle"></i>
                         <span>Need Help?</span>
                     </a>

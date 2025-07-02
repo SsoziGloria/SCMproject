@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -15,8 +16,8 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
+            return redirect()->route('dashboard');
+        }
         return view('auth.login');
     }
 
@@ -55,7 +56,14 @@ class AuthController extends Controller
             'role' => $validated['role'],
             'remember_token' => Str::random(60), // Add remember token for "remember me" functionality
         ]);
-        return redirect()->route('dashboard')->with('success', 'Registration successful!');
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        // Optionally, you can send a welcome email or perform other actions here
+
+        return redirect()->route('dashboard');
     }
 
     // Show the registration form

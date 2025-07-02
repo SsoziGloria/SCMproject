@@ -1,20 +1,48 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+@php $user = auth()->user(); @endphp
 
-@include('chat.head')
-@include('layouts.header')
+@if ($user->role === 'user')
+    @include('user.head')
 
-@include('admin.aside')
+    <body>
+        @include('user.header')
+@elseif ($user->role === 'supplier')
+        @include('layouts.head')
 
-<body>
-    <main id="main" class="main pt-24 h-[calc(100vh_-_5rem)] tw-chat">
-        <livewire:wirechat />
-    </main>
+        <body>
+            @include('layouts.header')
+            @include('supplier.aside')
+    @elseif ($user->role === 'retailer')
+            @include('layouts.head')
 
-    @wirechatAssets
-    @livewireScripts
-    @vite(['resources/js/app.js']) <!-- Vite JS -->
-</body>
-@include('layouts.footer')
-@include('layouts.scripts')
+            <body>
+                @include('layouts.header')
+                @include('retailer.aside')
+        @elseif ($user->role === 'admin')
+                @include('layouts.head')
+
+                <body>
+                    @include('layouts.header')
+                    @include('admin.aside')
+            @else
+                    @include('layouts.head')
+
+                    <body>
+                        @include('layouts.header')
+                        @include('layouts.aside')
+                @endif
+
+                    <main id="main" class="main pt-24 h-[calc(100vh_-_5rem)] tw-chat">
+                        <livewire:wirechat />
+
+
+                        @wirechatAssets
+                        @livewireScripts
+                        @vite(['resources/js/app.js']) <!-- Vite JS -->
+                    </main>
+                    @include('layouts.footer')
+                    @include('layouts.scripts')
+                </body>
 
 </html>

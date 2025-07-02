@@ -75,7 +75,7 @@
             </a>
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('products.index') }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>
@@ -165,7 +165,8 @@
         </li><!-- End Analytics Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('chat.index') }}">
+            <a class="nav-link {{ request()->fullUrlIs(route('chat.index', '')) ? '' : 'collapsed' }}"
+                href="{{ route('chat.index') }}">
                 <i class="bi bi-chat-left-quote"></i>
                 <span>Chat</span>
             </a>
@@ -180,13 +181,6 @@
                 <span>Profile</span>
             </a>
         </li><!-- End Profile Page Nav -->
-
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-contact.html">
-                <i class="bi bi-envelope"></i>
-                <span>Contact</span>
-            </a>
-        </li><!-- End Contact Page Nav -->
 
     </ul>
 

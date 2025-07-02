@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+@php $user = auth()->user(); @endphp
 
-@include('layouts.head')
+@if ($user->role === 'user')
+    @include('user.head')
+    @include('user.header')
+@else
+    @include('layouts.head')
+    @include('layouts.header')
+@endif
 
 <body>
-    @include('layouts.header')
-
     @yield('content')
 
     <main id="main" class="main">
 
         <div class="pagetitle">
             <h1>Profile</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item">Users</li>
-                    <li class="breadcrumb-item active">Profile</li>
-                </ol>
-            </nav>
         </div><!-- End Page Title -->
 
         <section class="section profile">
@@ -28,7 +26,12 @@
                     <div class="card">
                         <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-                            <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                            @if(auth()->user()->profile_photo)
+                                <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile"
+                                    class="profile-square">
+                            @else
+                                <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile" class="profile-square">
+                            @endif
                             <h2>{{ auth()->user()->name }}</h2>
                             <h3>@auth @if(auth()->user()->role === 'admin')
                                     <span>Admin</span>
@@ -118,11 +121,30 @@
                                         <div class="col-lg-3 col-md-4 label">Email</div>
                                         <div class="col-lg-9 col-md-8">{{ $user->email }}</div>
                                     </div>
+                                    @if (!($user->role === 'user' && $user->hasVerifiedEmail()))
+                                        @if ($user->hasVerifiedEmail())
+                                            <div class="row">
+                                                <div class="col-lg-3 col-md-4 label">Certification Status</div>
+                                                <div class="col-lg-9 col-md-8">{{ $user->certification_status }}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-lg-3 col-md-4 label">Verified</div>
+                                            </div>
+                                        @else
+                                            <form method="POST" action="{{ route('verification.send') }}">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    Resend Verification Email
+                                                </button>
+                                            </form>
+                                        @endif
 
-                                    <div class="row">
-                                        <div class="col-lg-3 col-md-4 label">Certification Status</div>
-                                        <div class="col-lg-9 col-md-8">{{$user->certification_status}}</div>
-                                    </div>
+                                    @elseif ($user->role === 'user' && $user->hasVerifiedEmail())
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-4 label">Verified</div>
+                                        </div>
+                                    @endif
+
 
                                 </div>
 
@@ -138,21 +160,21 @@
                                                 Image</label>
 
                                             <div class="col-md-8 col-lg-9">
-                                                <img src="assets/img/profile-img.jpg" alt="Profile">
+                                                @if(auth()->user()->profile_photo)
+                                                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                                                        alt="Profile" class="profile-square" id="profile-preview">
+                                                @else
+                                                    <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile"
+                                                        class="profile-square">
+                                                @endif
                                                 <div class="pt-2">
-                                                    @if ($user->profile_photo)
-                                                        <div class="mb-3">
-                                                            <img src="{{ asset('storage/' . $user->profile_photo) }}"
-                                                                alt="Profile Photo" width="120">
-                                                        </div>
-                                                    @endif
-                                                    <a href="#" class="btn btn-primary btn-sm"
-                                                        title="Upload new profile image"><i
-                                                            class="bi bi-upload"></i></a>
-                                                    <a href="#" class="btn btn-danger btn-sm"
-                                                        title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                                                    <label for="profile_photo" class="btn btn-primary btn-sm"
+                                                        title="Upload new profile image" style="cursor:pointer;">
+                                                        <i class="bi bi-upload"></i>
+                                                    </label>
+                                                    <input class="form-control" type="file" name="profile_photo"
+                                                        id="profile_photo" style="display:none;">
                                                 </div>
-                                                <input type="file" name="profile_photo" class="form-control">
                                             </div>
                                         </div>
 
@@ -239,7 +261,21 @@
                                         </div>
                                     </form><!-- End Profile Edit Form -->
 
+
+                                    @if(auth()->user()->profile_photo)
+                                        <form method="POST" action="{{ route('profile.photo.delete') }}"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm mt-2"
+                                                title="Remove my profile image"
+                                                onclick="return confirm('Remove profile image?')">
+                                                <i class="bi bi-trash"></i> Remove Profile Photo
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
+
 
                                 <div class="tab-pane fade pt-3" id="profile-settings">
 
@@ -294,7 +330,8 @@
                                         @method('PUT')
                                         <div class="row mb-3">
                                             <label for="currentPassword"
-                                                class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                                                class="col-md-4 col-lg-3 col-form-label">Current
+                                                Password</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="current_password" type="password" class="form-control"
                                                     id="currentPassword" required>
@@ -326,7 +363,8 @@
                                             </div>
                                         @endif
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Change Password</button>
+                                            <button type="submit" class="btn btn-primary">Change
+                                                Password</button>
                                         </div>
                                     </form><!-- End Change Password Form -->
 
@@ -346,6 +384,31 @@
     @include('layouts.footer')
 
     @include('layouts.scripts')
+    <script>
+        document.getElementById('profile_photo').addEventListener('change', function (event) {
+            const [file] = event.target.files;
+            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
+
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file.');
+                    event.target.value = '';
+                    return;
+                }
+                if (file.size > maxSize) {
+                    alert('File is too large. Maximum allowed size is 2MB.');
+                    event.target.value = '';
+                    return;
+                }
+                document.getElementById('profile-preview').src = URL.createObjectURL(file);
+            }
+        });
+
+        const img = document.getElementById('profile-preview');
+        img.onload = function () {
+            URL.revokeObjectURL(img.src);
+        };
+    </script>
 </body>
 
 </html>

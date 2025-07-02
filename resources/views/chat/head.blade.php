@@ -26,41 +26,25 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-
     @vite(['resources/css/app.css'])<!-- Vite CSS -->
     @livewireStyles
     @wirechatStyles
     <style>
-        .tw-chat {
-            height: calc(100vh - 5rem);
-        }
-
         :root {
-            --wc-brand-primary: '#f59e0b';
-            color: #000;
-            background-color: #000;
+            --wc-brand-primary: #c27f21;
             --green-chat: #cffdce;
-
-
             --wc-light-primary: #ececec;
-            /* white */
             --wc-light-secondary: #ffffff;
-            /* --color-gray-100 */
             --wc-light-accent: #c27f20;
-            /* --color-gray-50 */
             --wc-light-border: #c27f20;
-            /* --color-gray-200 */
             --color-white: #a66d1f;
-
             --wc-dark-primary: #ececec;
-            /* --color-zinc-900 */
             --wc-dark-secondary: #ffffff;
-            /* --color-zinc-800 */
             --wc-dark-accent: #c27f20;
-            /* --color-zinc-700 */
             --wc-dark-border: #a66d1f;
-            /* --color-zinc-700 */
         }
+
+        body {}
     </style>
 
 </head>

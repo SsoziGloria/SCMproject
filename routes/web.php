@@ -1,10 +1,10 @@
 <?php
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\InventoryController;
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
@@ -12,6 +12,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductReviewController;
 
+use App\Http\Controllers\SearchController;
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -44,7 +47,7 @@ Route::post('/inventories/adjustments', [InventoryController::class, 'storeAdjus
 Route::resource('inventories', InventoryController::class)->middleware('auth');
 
 //Dashboard and Inventory routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         $role = auth()->user()->role;
         switch ($role) {
@@ -53,7 +56,7 @@ Route::middleware('auth')->group(function () {
             case 'supplier':
                 return redirect()->route('dashboard.supplier');
             case 'retailer':
-                return view('dashboard.retailer');
+                return app(InventoryController::class)->dashboard();
             case 'user':
             default:
                 return redirect()->route('dashboard.user');
@@ -62,7 +65,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     Route::get('/dashboard-s', [InventoryController::class, 'dashboard'])
         ->name('dashboard.supplier');
-  Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->middleware('auth')->name('check.stock.alert');
+    Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->middleware('auth')->name('check.stock.alert');
 
 
     Route::get('/home', function () {
@@ -72,7 +75,8 @@ Route::middleware('auth')->group(function () {
 
 
 //Search functionality
-Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
+Route::get('/search', [SearchController::class, 'index'])->name('search');
+Route::get('/search/advanced', [SearchController::class, 'advanced'])->name('search.advanced');
 
 //Error handling
 Route::fallback(function () {
@@ -82,14 +86,14 @@ Route::fallback(function () {
 //Redirect to dashboard or login
 Route::get('/', function () {
     return auth()->check()
-    ? redirect()->route('dashboard'):
-    redirect()->route('login');
+        ? redirect()->route('dashboard') :
+        redirect()->route('login');
 });
 
 Route::get('/test-mail', function () {
     Mail::raw('This is a stock alert test email from Gmail SMTP!', function ($message) {
-        $message->to('irenemargi256@gmail.com') 
-                ->subject('Stock Notification Test');
+        $message->to('irenemargi256@gmail.com')
+            ->subject('Stock Notification Test');
     });
 
     return 'Email sent!';
@@ -109,31 +113,71 @@ Route::get('/admin/users/role/{role}', [App\Http\Controllers\Admin\UserControlle
 
 Route::get('/user-management', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
 
-Route::get('/profile', function () {
-    return view('admin.profile');
-})->middleware('auth')->name('profile');
 
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
 
 // Chat routes
-Route::group(['prefix' => ''], function () {
-    Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
-    Route::get('/chats', [App\Http\Controllers\ChatController::class, 'index'])->name('chats.index');
-    Route::get('/chats/{id}', [App\Http\Controllers\ChatController::class, 'show'])->name('chats.show');
+//Route::group(['prefix' => ''], function () {
+//    Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+//    Route::get('/chats', [App\Http\Controllers\ChatController::class, 'index'])->name('chats.index');
+//    Route::get('/chats/{id}', [App\Http\Controllers\ChatController::class, 'show'])->name('chats.show');
+//});
+Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+
+
+
+Route::get('/orders/incoming', [OrderController::class, 'index'])->name('orders');
+Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'index'])->name('orders.incoming');
+Route::middleware('auth')->get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+// Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'incoming'])->name('orders.incoming');
+
+Route::middleware('auth')->group(function () {
+    // The page users see after clicking the verification link
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email'); // Create this view
+    })->name('verification.notice');
+
+    // The link clicked in the email
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/'); // Or redirect to /dashboard, etc.
+    })->middleware(['signed'])->name('verification.verify');
+
+    // To resend the verification link
+    Route::post('/email/verification-notification', function () {
+        $user = auth()->user();
+
+        if (!$user) {
+            abort(403, 'Not authenticated');
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect('/');
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return back()->with('status', 'verification-link-sent');
+    })->middleware(['throttle:6,1'])->name('verification.send');
 });
 
-// Order routes
-Route::middleware('auth')->group(function () {
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
-    Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.inProgress');
-    Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
-    Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
-    Route::resource('orders', OrderController::class)->middleware('auth');
-});
+// Route to faq page
+Route::get('/faq', function () {
+    return view('faq.pages-faq');
+})->name('faq');
+
+//Products routes
+Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
+
+//Export routes
+Route::get('/products/export', function (Request $request) {
+    $filters = $request->only(['category', 'supplier', 'stock']);
+    return Excel::download(new ProductsExport($filters), 'products.xlsx');
+})->name('products.export');
 
 // Product Catalog routes
 

@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('image')->nullable(); // Path to product image
             $table->boolean('featured')->default(false); // For special listing
             $table->unsignedInteger('stock')->default(0); // Quantity available
+            $table->string('category')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable(); // Foreign key if needed
             $table->timestamps(); // created_at and updated_at
 
