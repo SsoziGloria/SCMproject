@@ -8,8 +8,10 @@ use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Shipment;
 use Carbon\Carbon;
+use App\Models\Product;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
+use App\Models\Adjustment;
 
 class InventoryController extends Controller
 {
@@ -20,6 +22,8 @@ class InventoryController extends Controller
     {
         $inventories = Inventory::with(['product', 'supplier'])->paginate(25); // Eager load relations
         return view('inventories.index', compact('inventories'));
+
+
     }
 
     /**
@@ -54,6 +58,19 @@ class InventoryController extends Controller
             return back()->withInput()->withErrors(['error' => 'Failed to submit inventory: ' . $e->getMessage()]);
         }
     }
+    //for displaying all inventories
+    public function retailerIndex()
+    {
+        $inventories = Inventory::all();
+        return view('inventories.index', compact('inventories'));
+    }
+
+    public function retailerCreate()
+    {
+        $products = Product::all();
+        return view('inventories.create', compact('products'));
+
+    }
 
     public function edit($id)
     {
@@ -84,9 +101,7 @@ class InventoryController extends Controller
 
         //send notification if there's low stock or expiring soon items
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
-            Notification::route('mail', env('MAIL_USERNAME'))->notify(
-                new StockAlertNotification($lowStock, $expiringSoon)
-            );
+            Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification($lowStock));
         }
         return redirect()->route('dashboard')->with('success', 'Inventory updated.');
     }
@@ -129,16 +144,38 @@ class InventoryController extends Controller
 
     public function checkStockAlert()
     {
+        $inventoryCount = Inventory::count();
         $lowStock = Inventory::where('quantity', '<', 10)->get();
         $expiringSoon = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
 
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
-            Notification::route('mail', env('MAIL_USERNAME'))->notify(
-                new StockAlertNotification($lowStock, $expiringSoon)
-            );
-            return back()->with('success', 'Stock alert email sent!');
+            Notification::route('mail', 'irenemargi256@gmail.com')->notify(new StockAlertNotification($lowStock));
         }
 
-        return back()->with('info', 'No low stock or expiring items found.');
+        return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'expiringSoon'));
+    }
+    public function stockLevels()
+    {
+        $products = Product::with('category')->get();
+        return view('stockLevels.index', compact('products'));
+    }
+
+    public function reorders()
+    {
+        // Show inventories that are low in stock
+        $reorders = Inventory::where('quantity', '<', 10)->get();
+        return view('inventories.reorders', compact('reorders'));
+    }
+
+
+    public function adjustments()
+    {
+        $adjustments = Adjustment::with('inventory')->get();
+        return view('inventories.adjustments', compact('adjustments'));
+    }
+    public function createAdjustment()
+    {
+        $inventories = Inventory::all();
+        return view('inventories.adjustments_create', compact('inventories'));
     }
 }

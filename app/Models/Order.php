@@ -3,12 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Inventory;
 
 class Order extends Model
 {
-    public function product()
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'quantity',
+        'status',
+        'order_date',
+    ];
+
+
+    public function inventory()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Inventory::class, 'product_id', );
     }
     public function user()
     {
@@ -18,4 +28,5 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'supplier_id');
     }
+
 }

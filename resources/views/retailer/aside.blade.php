@@ -16,33 +16,34 @@
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('orders.incoming') }}">
+                    <a href="{{ route('orders.index') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.pending') }}">
                         <i class="bi bi-circle"></i><span>Pending</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.inProgress') }}">
                         <i class="bi bi-circle"></i><span>Shipped</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.completed') }}">
                         <i class="bi bi-circle"></i><span>Delivered</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.cancelled') }}">
                         <i class="bi bi-circle"></i><span>Returns</span>
                     </a>
                 </li>
             </ul>
         </li><!-- End Order Nav -->
 
+        <!-- Product Management Nav -->
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-shopping-bag-2-line"></i><span>Product Catalog</span><i
@@ -50,22 +51,22 @@
             </a>
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('products.index') }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('categories.index') }}">
                         <i class="bi bi-circle"></i><span>Categories</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('productReviews.index') }}">
                         <i class="bi bi-circle"></i><span>Product Reviews</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('stockLevels.index') }}">
                         <i class="bi bi-circle"></i><span>Stock Levels</span>
                     </a>
                 </li>
@@ -78,17 +79,17 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('inventories.index') }}">
                         <i class="bi bi-circle"></i><span>Current Stock</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('inventories.reorders') }}">
                         <i class="bi bi-circle"></i><span>Reorders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('inventories.adjustments') }}">
                         <i class="bi bi-circle"></i><span>Adjustments</span>
                     </a>
                 </li>
@@ -101,25 +102,21 @@
             </a>
             <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
+                    <a href="{{ route('supplier.approved') }}">
                         <i class="bi bi-circle"></i><span>Approved</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('supplier.requests') }}">
                         <i class="bi bi-circle"></i><span>New Requests</span>
                     </a>
                 </li>
+
                 <li>
                     <a href="#">
-                        <i class="bi bi-circle"></i><span>Purchase Orders</span>
+                        <!-- <i class="bi bi-circle"></i><span>Messages</span>
                     </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Messages</span>
-                    </a>
-                </li>
+                </li>-->
             </ul>
         </li><!-- End mySupplier Nav -->
 
@@ -149,6 +146,13 @@
                 <span>F.A.Q</span>
             </a>
         </li><!-- End F.A.Q Page Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href=#">
+                <i class="bi bi-envelope"></i>
+                <span>Contact</span>
+            </a>
+        </li><!-- End Contact Page Nav -->
 
     </ul>
 

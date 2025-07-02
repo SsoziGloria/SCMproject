@@ -8,6 +8,10 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductReviewController;
+
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,6 +22,28 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+//for mySupplier
+Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
+Route::get('/supplier/approved', [SupplierController::class, 'approved'])->name('supplier.approved');
+Route::get('/supplier/requests', [SupplierController::class, 'requests'])->name('supplier.requests');
+Route::get('/supplier/orders', [SupplierController::class, 'orders'])->name('supplier.orders');
+Route::get('/supplier/messages', [SupplierController::class, 'messages'])->name('supplier.messages');
+Route::get('/supplier/register', [SupplierController::class, 'showRegisterForm'])->name('suppliers.register.form');
+Route::post('/supplier/register', [SupplierController::class, 'register'])->name('suppliers.register');
+
+Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
+
+
+//for reorders
+Route::get('/inventories/reorders', [InventoryController::class, 'reorders'])->name('inventories.reorders');
+
+
+//for adjustments
+Route::get('/inventories/adjustments', [InventoryController::class, 'adjustments'])->name('inventories.adjustments');
+Route::get('/inventories/adjustments/create', [InventoryController::class, 'createAdjustment'])->name('inventories.adjustments.create');
+Route::post('/inventories/adjustments', [InventoryController::class, 'storeAdjustment'])->name('inventories.adjustments.store');
+
 Route::resource('inventories', InventoryController::class)->middleware('auth');
 
 //Dashboard and Inventory routes
@@ -46,7 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('dashboard.user');
     })->name('dashboard.user');
 });
-Route::resource('inventories', InventoryController::class);
+
 
 //Search functionality
 Route::get('/search', [SearchController::class, 'index'])->name('search');
@@ -152,3 +178,26 @@ Route::get('/products/export', function (Request $request) {
     $filters = $request->only(['category', 'supplier', 'stock']);
     return Excel::download(new ProductsExport($filters), 'products.xlsx');
 })->name('products.export');
+
+// Product Catalog routes
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/product-reviews', [ProductReviewController::class, 'index'])->name('productReviews.index');
+Route::get('/product-reviews/create', [ProductReviewController::class, 'create'])->name('productReviews.create');
+Route::post('/product-reviews', [ProductReviewController::class, 'store'])->name('productReviews.store');
+Route::get('/stock-levels', [InventoryController::class, 'index'])->name('stockLevels.index');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+
+// Product CRUD routes
+
+Route::resource('products', ProductController::class);
+
+//category
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+//for stock levels
+Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index');

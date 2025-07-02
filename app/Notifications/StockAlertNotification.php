@@ -12,6 +12,13 @@ class StockAlertNotification extends Notification
     use Queueable;
 
     /**
+     * The low stock items.
+     *
+     * @var mixed
+     */
+    protected $lowStockItems;
+
+    /**
      * Create a new notification instance.
      */
     public function __construct($lowStockItems)
@@ -55,7 +62,13 @@ class StockAlertNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'low_stock_items' => collect($this->lowStockItems)->map(function($item) {
+            return [
+                'product_name' => $item->product_name,
+                'quantity' => $item->quantity,
+            ];
+        })->toArray(),
+        'message' => 'Some inventory items are low or near expiration.',
         ];
     }
 }
