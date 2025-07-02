@@ -16,27 +16,27 @@
             </a>
             <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('orders.index') }}">
+                    <a href="{{ route('orders.incoming') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.pending') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Pending</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.inProgress') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Shipped</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.completed') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Delivered</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.cancelled') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Returns</span>
                     </a>
                 </li>

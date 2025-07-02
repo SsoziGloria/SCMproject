@@ -8,7 +8,6 @@ use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Shipment;
 use Carbon\Carbon;
-use App\Models\Product;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
 use App\Models\Adjustment;

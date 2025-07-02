@@ -18,8 +18,10 @@ return new class extends Migration {
             $table->decimal('total_amount', 10, 2);
             $table->string('status')->default('pending'); // e.g. pending, processing, shipped, delivered, cancelled
             $table->text('shipping_address')->nullable();
+            $table->integer('quantity');
             $table->date('ordered_at')->nullable();
             $table->date('delivered_at')->nullable();
+            $table->timestamp('order_date')->useCurrent();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('supplier_id')->references('id')->on('users')->nullOnDelete();

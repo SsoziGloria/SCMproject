@@ -104,27 +104,27 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('orders.index') }}">
+                    <a href="{{ route('orders.incoming') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.pending') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Pending Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.inProgress') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>In Progress</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.completed') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Completed</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.cancelled') }}">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Cancelled</span>
                     </a>
                 </li>

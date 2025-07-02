@@ -201,3 +201,12 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name(
 
 //for stock levels
 Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index');
+
+// Order routes
+Route::resource('orders', OrderController::class)->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
+    Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.in_progress');
+    Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
+    Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
+});

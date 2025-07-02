@@ -32,8 +32,7 @@
                                         </div>
                                         <div class="ps-3">
                                             <h6 class="fw-bold">{{ $pendingOrders ?? 0 }}</h6>
-                                            <a href="{{ route('orders.pending') }}"
-                                                class="btn btn-sm btn-outline-info mt-2">View</a>
+                                            <a href="#" class="btn btn-sm btn-outline-info mt-2">View</a>
 
                                         </div>
                                     </div>
@@ -58,8 +57,7 @@
                                         </div>
                                         <div class="ps-3">
                                             <h6 class="fw-bold">{{ $returns ?? 0 }}</h6>
-                                            <a href="{{ route('orders.cancelled') }}"
-                                                class="btn btn-sm btn-outline-warning mt-2">View</a>
+                                            <a href="#" class="btn btn-sm btn-outline-warning mt-2">View</a>
 
                                         </div>
                                     </div>
@@ -85,8 +83,7 @@
                                         <div class="ps-3">
 
                                             <h6 class="fw-bold">{{ $deliveredOrders ?? 0 }}</h6>
-                                            <a href="{{ route('orders.completed') }}"
-                                                class="btn btn-sm btn-outline-success mt-2">View</a>
+                                            <a href="#" class="btn btn-sm btn-outline-success mt-2">View</a>
 
                                         </div>
                                     </div>
