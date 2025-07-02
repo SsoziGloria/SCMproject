@@ -11,6 +11,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\ProductController;
+
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -146,9 +148,41 @@ Route::get('/faq', function () {
 
 //Products routes
 Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
+Route::get('/product-details', [App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 
 //Export routes
 Route::get('/products/export', function (Request $request) {
     $filters = $request->only(['category', 'supplier', 'stock']);
     return Excel::download(new ProductsExport($filters), 'products.xlsx');
 })->name('products.export');
+
+
+// Products routes
+Route::resource('products', ProductController::class);
+Route::post('products/{product}/adjust-stock', [ProductController::class, 'adjustStock'])->name('products.adjust-stock');
+
+// Inventory routes
+Route::resource('inventory', InventoryController::class);
+
+// Orders routes
+Route::resource('orders', OrderController::class);
+
+// Shipments routes
+Route::resource('shipments', ShipmentController::class);
+
+// Suppliers routes
+Route::resource('suppliers', SupplierController::class);
+
+// Inventory routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
+    Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+    Route::get('/inventory/{inventory}', [InventoryController::class, 'show'])->name('inventory.show');
+    Route::get('/inventory/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
+    Route::put('/inventory/{inventory}', [InventoryController::class, 'update'])->name('inventory.update');
+    Route::delete('/inventory/{inventory}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
+    Route::get('/inventory/export', [InventoryController::class, 'export'])->name('inventory.export');
+    Route::get('/inventory/expiring-soon', [InventoryController::class, 'expiringSoon'])->name('inventory.expiring');
+    Route::post('/inventory/quick-adjust', [InventoryController::class, 'quickAdjust'])->name('inventory.quickAdjust');
+});

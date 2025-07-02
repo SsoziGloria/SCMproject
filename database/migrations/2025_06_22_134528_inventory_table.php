@@ -15,12 +15,17 @@ return new class extends Migration {
             $table->integer('quantity')->default(0);
             $table->string('unit')->default('pcs');
             $table->string('batch_number')->nullable();
+            $table->date('manufactured_date')->nullable();
             $table->string('status')->default('available');
             $table->date('received_date')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->string('location')->nullable();
             $table->date('expiration_date')->nullable();
+            $table->date('expiry_date')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 

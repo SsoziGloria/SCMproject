@@ -10,25 +10,49 @@ class Shipment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'shipment_number',
-        'supplier_id',
-        'product_id',
-        'quantity',
+        'order_id',
+        'tracking_number',
+        'carrier',
         'status',
-        'expected_delivery',
-        'shipped_at',
-        'delivered_at',
+        'shipped_date',
+        'estimated_delivery',
+        'delivered_date',
         'notes',
     ];
 
-    // Example relationships:
-    public function supplier()
+    protected $casts = [
+        'shipped_date' => 'date',
+        'estimated_delivery' => 'date',
+        'delivered_date' => 'date',
+    ];
+
+    // Shipment belongs to an order
+    public function order()
     {
-        return $this->belongsTo(User::class, 'supplier_id');
+        return $this->belongsTo(Order::class);
     }
 
-    public function product()
+    // Status options
+    public static function statusOptions()
     {
-        return $this->belongsTo(Product::class);
+        return [
+            'pending' => 'Pending',
+            'in_transit' => 'In Transit',
+            'delivered' => 'Delivered',
+            'returned' => 'Returned',
+            'failed' => 'Failed Delivery'
+        ];
+    }
+
+    // Carrier options
+    public static function carrierOptions()
+    {
+        return [
+            'fedex' => 'FedEx',
+            'ups' => 'UPS',
+            'usps' => 'USPS',
+            'dhl' => 'DHL',
+            'other' => 'Other'
+        ];
     }
 }
