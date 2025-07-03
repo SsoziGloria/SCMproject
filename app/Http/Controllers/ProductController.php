@@ -100,5 +100,24 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted!');
     }
+    public function bulkAction(Request $request)
+    {
+        $action = $request->input('action');
+        $productIds = $request->input('product_ids', []);
+
+        if ($action === 'featured') {
+            // Toggle featured for each selected product
+            $products = Product::whereIn('id', $productIds)->get();
+            foreach ($products as $product) {
+                $product->featured = !$product->featured;
+                $product->save();
+            }
+            return response()->json(['success' => true]);
+        }
+
+        // ... handle other actions ...
+
+        return response()->json(['success' => false, 'message' => 'Invalid action.']);
+    }
 
 }

@@ -90,7 +90,7 @@
                             <div class="alert alert-info mt-3">
                                 <h6>Bank Transfer Instructions</h6>
                                 <p class="mb-1">Please transfer the total amount of
-                                    ${{ number_format($order->total_amount, 2) }} to:</p>
+                                    UGX {{ number_format($order->total_amount, 0) }} to:</p>
                                 <p class="mb-1"><strong>Bank:</strong> Equity Bank</p>
                                 <p class="mb-1"><strong>Account Name:</strong> Chocolate SCM Ltd</p>
                                 <p class="mb-1"><strong>Account Number:</strong> XXXX-XXXX-XXXX-XXXX</p>

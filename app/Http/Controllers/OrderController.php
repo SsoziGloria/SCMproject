@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Services\OrderService;
 use App\Models\Inventory;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\OrderExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class OrderController extends Controller
@@ -18,11 +19,32 @@ class OrderController extends Controller
     }
 
     //list all orders for the authorized retailer
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::where('user_id', Auth::id())->with('product')
-            ->orderBy('order_date', 'desc')->get();
-        return view('orders.index', compact('orders'));
+        if (Auth::user()->role == 'user') {
+            $orders = Order::where('user_id', Auth::id())->latest()->paginate(15);
+        } else {
+            $orders = Order::paginate(15);
+        }
+
+        $query = Order::query();
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        // Optionally calculate total_orders (could be a custom query or just $orders->total())
+        $stats = [
+            'total_orders' => Order::count(),
+            'total_revenue' => Order::where('payment_status', 'paid')->sum('total_amount'),
+            'pending_orders' => Order::where('status', 'pending')->count(),
+            'shipped_orders' => Order::where('status', 'shipped')->count(),
+        ];
+
+        return view('orders.index', [
+            'orders' => $orders,
+            'stats' => $stats,
+        ]);
     }
 
     //show the form for creating a new order
@@ -97,10 +119,11 @@ class OrderController extends Controller
         if ($order->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
 
+        $validated = $request->validate([
+            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'payment_status' => 'required|in:pending,paid,failed',
+            'notes' => 'nullable|string',
         ]);
 
         $order->update($validated);
@@ -160,5 +183,10 @@ class OrderController extends Controller
 
 
         return view('dashboard.retailer', compact('deliveredOrders'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new OrderExport, 'orders.xlsx');
     }
 }

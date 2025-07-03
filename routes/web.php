@@ -193,6 +193,7 @@ Route::get('/product-reviews/create', [ProductReviewController::class, 'create']
 Route::post('/product-reviews', [ProductReviewController::class, 'store'])->name('productReviews.store');
 Route::get('/stock-levels', [InventoryController::class, 'index'])->name('stockLevels.index');
 Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+Route::post('/products/bulk-action', [ProductController::class, 'bulkAction'])->name('products.bulk-action');
 
 // Product CRUD routes
 
@@ -203,6 +204,7 @@ Route::get('/categories/create', [CategoryController::class, 'create'])->name('c
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
 Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::resource('categories', CategoryController::class);
 
 //for stock levels
 Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index');
@@ -215,6 +217,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
     Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
     Route::resource('orders', OrderController::class)->middleware('auth');
+    Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
+    Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+    Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
 });
 
 // Shop routes

@@ -7,7 +7,7 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-     public function index()
+    public function index()
     {
         $categories = Category::all();
         return view('categories.index', compact('categories'));
@@ -17,7 +17,8 @@ class CategoryController extends Controller
         return view('categories.create');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $category = Category::findOrFail($id);
         return view('categories.edit', compact('category'));
     }
@@ -26,6 +27,18 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
-    
-}
+
+    }
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        Category::create($validated);
+
+        return redirect()->route('categories.index')->with('success', 'Category created successfully!');
+    }
 }

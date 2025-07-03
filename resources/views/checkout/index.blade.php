@@ -367,7 +367,7 @@
             const orderTotalEl = document.getElementById('order-total');
             const totalAmountInput = document.getElementById('total-amount');
             const subtotal = {{ $total }};
-            const tax = subtotal * 0.08;
+            const tax = subtotal * 0.1;
 
             document.querySelectorAll('input[name="shipping_method"]').forEach(function (radio) {
                 radio.addEventListener('change', function () {

@@ -1,5 +1,8 @@
 @extends(auth()->user()->role . '.app')
 
+<head>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
 @section('content')
 
   <div class="pagetitle">

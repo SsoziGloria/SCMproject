@@ -6,7 +6,7 @@
     } elseif (Auth::check() && Auth::user()->role === 'supplier') {
         $layout = 'supplier.app';
     } else {
-        $layout = 'layouts.app';
+        $layout = 'user.app';
     }
 @endphp
 
@@ -50,13 +50,13 @@
                                         <td>
                                             <span
                                                 class="badge 
-                                                                                                                                                                                                @if($order->status === 'pending') bg-warning
-                                                                                                                                                                                                @elseif($order->status === 'processing') bg-info
-                                                                                                                                                                                                @elseif($order->status === 'shipped') bg-primary
-                                                                                                                                                                                                @elseif($order->status === 'delivered') bg-success
-                                                                                                                                                                                                @elseif($order->status === 'cancelled') bg-danger
-                                                                                                                                                                                                    @else bg-secondary
-                                                                                                                                                                                                @endif">
+                                                                                                                                                                                                                        @if($order->status === 'pending') bg-warning
+                                                                                                                                                                                                                        @elseif($order->status === 'processing') bg-info
+                                                                                                                                                                                                                        @elseif($order->status === 'shipped') bg-primary
+                                                                                                                                                                                                                        @elseif($order->status === 'delivered') bg-success
+                                                                                                                                                                                                                        @elseif($order->status === 'cancelled') bg-danger
+                                                                                                                                                                                                                            @else bg-secondary
+                                                                                                                                                                                                                        @endif">
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>
