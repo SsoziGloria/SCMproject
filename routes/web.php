@@ -11,6 +11,11 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductReviewController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+
 
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
@@ -132,7 +137,7 @@ Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name
 
 Route::get('/orders/incoming', [OrderController::class, 'index'])->name('orders');
 Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'index'])->name('orders.incoming');
-Route::middleware('auth')->get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+//Route::middleware('auth')->get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 // Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'incoming'])->name('orders.incoming');
 
 Route::middleware('auth')->group(function () {
@@ -203,10 +208,29 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name(
 Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index');
 
 // Order routes
-Route::resource('orders', OrderController::class)->middleware('auth');
 Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
-    Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.in_progress');
+    Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.inProgress');
     Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
     Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
+    Route::resource('orders', OrderController::class)->middleware('auth');
 });
+
+// Shop routes
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/shop/product/{id}', [ShopController::class, 'show'])->name('shop.product');
+Route::post('/shop/product/{id}/review', [ShopController::class, 'storeReview'])->name('shop.product.review');
+
+// Cart routes
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+// Checkout routes
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');

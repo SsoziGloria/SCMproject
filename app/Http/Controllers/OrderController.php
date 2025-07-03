@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Services\OrderService;
 use App\Models\Inventory;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,9 +29,10 @@ class OrderController extends Controller
     public function create()
     {
         // Fetch all users with role 'supplier' for selection
-        $suppliers = \App\Models\User::where('role', 'supplier')->get();
-        $retailers = \App\Models\User::where('role', 'retailer')->get();
-        return view('orders.create', compact('suppliers', 'retailers'));
+        //$suppliers = \App\Models\User::where('role', 'supplier')->get();
+        //$retailers = \App\Models\User::where('role', 'retailer')->get();
+        $products = \App\Models\Product::all();
+        return view('orders.create', compact('products'));
     }
 
     //store a new order
@@ -51,20 +53,28 @@ class OrderController extends Controller
             return back()->withErrors(['quantity' => 'Not enough inventory or product not available.']);
         }
 
-        Order::create([
+        $orderNumber = 'ORD-' . strtoupper(uniqid());
+
+        // Create order directly
+        $order = Order::create([
+            'order_number' => $orderNumber,
             'user_id' => Auth::id(),
             'product_id' => $validated['product_id'],
             'quantity' => $validated['quantity'],
             'status' => 'pending',
             'order_date' => now(),
         ]);
+
         return redirect()->route('orders.index')->with('success', 'Order submitted and pending approval.');
     }
 
     //shows a  single order
     public function show(Order $order)
     {
+        //$product = Inventory::all();
+        //return view('orders.create', compact('order'));
         return view('orders.show', compact('order'));
+
     }
 
 

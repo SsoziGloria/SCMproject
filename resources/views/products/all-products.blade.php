@@ -77,8 +77,8 @@
           <i class="bi bi-currency-dollar"></i>
         </div>
         <div class="ps-3">
-          <h6>${{ number_format($totalInventoryValue, 2) }}</h6>
-          <span class="text-muted small pt-2 ps-1">inventory value</span>
+          <h6>UGX {{ number_format($totalInventoryValue, 0) }}</h6>
+          <span class="text-muted small pt-2 ps-1">Inventory value</span>
         </div>
         </div>
       </div>
@@ -204,7 +204,7 @@
         @endif
           </td>
           <td>
-          <strong>${{ number_format($product->price, 2) }}</strong>
+          <strong>UGX {{ number_format($product->price, 0) }}</strong>
           </td>
           <td>
           @php

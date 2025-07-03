@@ -40,9 +40,11 @@ class ProductController extends Controller
     //    $products = Product::with('category')->get();; 
     //    return view('products.index', compact('products'));
     //}
+
     public function create()
     {
-        return view('products.create');
+        $products = Product::all();
+        return view('products.create', compact('products'));
     }
 
     // Store a new product
