@@ -22,6 +22,10 @@ return new class extends Migration {
             $table->timestamps(); // created_at and updated_at
 
             // Indexes and foreign keys
+            $table->foreign('supplier_id')
+                ->references('id')
+                ->on('suppliers')
+                ->nullOnDelete();
 
         });
     }

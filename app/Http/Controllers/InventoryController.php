@@ -19,7 +19,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::with(['product', 'supplier'])->paginate(25); // Eager load relations
+        $inventories = Inventory::all();
         return view('inventories.index', compact('inventories'));
 
 

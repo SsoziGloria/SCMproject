@@ -21,6 +21,11 @@ return new class extends Migration {
             $table->string('location')->nullable();
             $table->date('expiration_date')->nullable();
             $table->timestamps();
+
+            $table->foreign('supplier_id')
+                ->references('id')
+                ->on('suppliers')
+                ->nullOnDelete();
         });
     }
 

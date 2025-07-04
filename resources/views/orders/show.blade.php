@@ -1,5 +1,16 @@
-{{-- filepath: resources/views/orders/show.blade.php --}}
-@extends('user.app')
+@php
+    if (Auth::check() && Auth::user()->role === 'admin') {
+        $layout = 'admin.app';
+    } elseif (Auth::check() && Auth::user()->role === 'retailer') {
+        $layout = 'retailer.app';
+    } elseif (Auth::check() && Auth::user()->role === 'supplier') {
+        $layout = 'supplier.app';
+    } else {
+        $layout = 'layouts.app';
+    }
+@endphp
+
+@extends($layout)
 
 @section('content')
     <div class="container py-4">
@@ -26,13 +37,13 @@
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Order #{{ $order->order_number }}</h5>
                             <span class="badge 
-                                        @if($order->status === 'pending') bg-warning
-                                        @elseif($order->status === 'processing') bg-info
-                                        @elseif($order->status === 'shipped') bg-primary
-                                        @elseif($order->status === 'delivered') bg-success
-                                        @elseif($order->status === 'cancelled') bg-danger
-                                            @else bg-secondary
-                                        @endif">
+                                                @if($order->status === 'pending') bg-warning
+                                                @elseif($order->status === 'processing') bg-info
+                                                @elseif($order->status === 'shipped') bg-primary
+                                                @elseif($order->status === 'delivered') bg-success
+                                                @elseif($order->status === 'cancelled') bg-danger
+                                                    @else bg-secondary
+                                                @endif">
                                 {{ ucfirst($order->status) }}
                             </span>
                         </div>
@@ -45,7 +56,8 @@
                                 <div class="col-md-6">
                                     <p class="text-muted mb-1">Payment Method</p>
                                     <p class="fw-bold">
-                                        {{ ucfirst(str_replace('_', ' ', $order->payment ?? 'Not specified')) }}</p>
+                                        {{ ucfirst(str_replace('_', ' ', $order->payment ?? 'Not specified')) }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -129,12 +141,12 @@
                                         <tr>
                                             <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
                                             <td class="text-end">UGX {{ number_format($order->items->sum(function ($item) {
-        return $item->price * $item->quantity; }), 0) }}</td>
+                return $item->price * $item->quantity; }), 0) }}</td>
                                         </tr>
                                         <tr>
                                             <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
                                             <td class="text-end">UGX {{ number_format($order->total_amount - $order->items->sum(function ($item) {
-        return $item->price * $item->quantity; }), 0) }}</td>
+                return $item->price * $item->quantity; }), 0) }}</td>
                                         </tr>
                                         <tr>
                                             <td colspan="3" class="text-end"><strong>Total:</strong></td>
@@ -189,7 +201,8 @@
                                         <div class="timeline-content">
                                             <h6>Delivered</h6>
                                             <p class="text-muted">
-                                                {{ \Carbon\Carbon::parse($order->delivered_at)->format('M d, Y') }}</p>
+                                                {{ \Carbon\Carbon::parse($order->delivered_at)->format('M d, Y') }}
+                                            </p>
                                         </div>
                                     </div>
                                 @endif

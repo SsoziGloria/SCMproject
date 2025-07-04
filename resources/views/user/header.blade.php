@@ -24,7 +24,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link nav-icon" href="#" style="display: flex; flex-direction: row; align-items: center;">
+                <a class="nav-link nav-icon" href="{{ route('orders.index') }}"
+                    style="display: flex; flex-direction: row; align-items: center;">
                     <i class="ri-funds-box-line"></i>
                     <h4 style="margin-bottom: 0;">Orders</h4>
                 </a>
