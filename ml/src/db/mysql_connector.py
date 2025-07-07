@@ -1,3 +1,4 @@
+import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -11,26 +12,24 @@ class MySQLConnector:
         self.Session = None
 
     def connect(self):
-        try:
-            self.engine = create_engine(f'mysql+pymysql://{self.user}:{self.password}@{self.host}/{self.database}')
-            self.Session = sessionmaker(bind=self.engine)
-            print("Database connection established.")
-        except Exception as e:
-            print(f"Error connecting to the database: {e}")
+        """Create the SQLAlchemy engine and session factory."""
+        self.engine = create_engine(
+            f'mysql+pymysql://{self.user}:{self.password}@{self.host}/{self.database}'
+        )
+        self.Session = sessionmaker(bind=self.engine)
 
     def execute_query(self, query, params=None):
-        session = self.Session()
-        try:
-            result = session.execute(query, params)
-            session.commit()
+        """Execute a given SQL query with optional parameters."""
+        if self.engine is None:
+            raise Exception("Database engine is not connected. Call connect() first.")
+        with self.engine.connect() as connection:
+            if params:
+                result = connection.execute(sqlalchemy.text(query), params)
+            else:
+                result = connection.execute(sqlalchemy.text(query))
             return result
-        except Exception as e:
-            print(f"Error executing query: {e}")
-            session.rollback()
-        finally:
-            session.close()
 
-    def close(self):
+    def dispose(self):
+        """Dispose the engine connection pool."""
         if self.engine:
             self.engine.dispose()
-            print("Database connection closed.")

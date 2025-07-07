@@ -5,5 +5,5 @@ data = load_customer_data('Cleaned_Chocolate_Sales.csv')
 data = preprocess_data(data)
 features = extract_features(data)
 
-# Show the resulting customer features
+# Show the resulting first(5) customer features
 print(features.head())

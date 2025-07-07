@@ -103,3 +103,6 @@ Route::get('/orders/incoming', [OrderController::class, 'index'])->name('orders'
 Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'index'])->name('orders.incoming');
 Route::middleware('auth')->get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 // Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'incoming'])->name('orders.incoming');
+
+//for customer segments under ml
+Route::get('/customer-segments', [App\Http\Controllers\CustomerSegmentController::class, 'index'])->name('customer-segments.index');

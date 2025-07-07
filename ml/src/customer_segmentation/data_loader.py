@@ -28,10 +28,10 @@ def preprocess_data(data):
 
     return data
 
-
+# Groups data by customer_id 
 def extract_features(data):
     """
-    Extract per-customer features: total quantity bought, number of orders, recency.
+    Extract per-customer features: total quantity bought, number of orders, recency(lowest indicates most active customer).
     """
     # Get the latest date in the dataset to calculate recency/ recent purchases
     latest_date = data['purchase_date'].max()
@@ -50,9 +50,11 @@ def extract_features(data):
         'purchase_date': 'last_purchase_date'
     }, inplace=True)
 
-    # Calculate 'recency' in days
+    # Calculate the number of days since last purchase
     customer_data['recency_days'] = (
         latest_date - customer_data['last_purchase_date']).dt.days
+    # Uses latest date in the dataset
+    # A lower recency_days value means the customer purchased more recently/mostly active
 
     # Drop last_purchase_date ( not used in clustering)
     customer_data.drop(columns=['last_purchase_date'], inplace=True)

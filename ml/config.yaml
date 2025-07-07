@@ -1,0 +1,17 @@
+database:
+  host: 127.0.0.1
+  user: root
+  password: 
+  database: chocolate_scm
+
+demand_prediction:
+  model:
+    epochs: 50
+    batch_size: 32
+    learning_rate: 0.001
+    sequence_length: 30
+
+customer_segmentation:
+  kmeans:
+    n_clusters: 5
+    random_state: 42
