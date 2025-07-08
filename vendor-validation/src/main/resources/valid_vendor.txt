@@ -1,0 +1,43 @@
+Vendor Application Form
+Chocolate Supply Chain Management System
+
+Section 1: Vendor Information
+
+Field	Value
+Vendor Name	Cocoa Delight Ltd.
+Contact Person	John Smith
+Email	john.smith@cocoadelight.com
+Phone	+256 712 345 678
+Country	Uganda
+Address	Plot 123, Kampala Road
+Section 2: Financial Details
+
+Field	Value
+Monthly Revenue (UGX)	3,500,000
+Bank Name	Uganda Commercial Bank
+Account Number	1234567890
+Section 3: Compliance & Certification
+
+Regulatory Compliance: Certified by Uganda National Bureau of Standards (UNBS).
+
+Certification: ISO 22000 (Food Safety Management).
+
+Attached Documents:
+
+UNBS Certificate (PDF)
+
+Financial Statement (PDF)
+
+Section 4: Declaration
+I, John Smith, confirm that the information provided is accurate and authorize the Chocolate SCM system to validate my application.
+
+Signature: [Digital Signature]
+Date: 06/26/2025
+
+
+
+
+
+
+
+
