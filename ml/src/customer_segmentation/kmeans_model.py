@@ -1,45 +1,72 @@
+import pickle
+import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import RobustScaler
+from sklearn.decomposition import PCA
+from sklearn.metrics import silhouette_score, davies_bouldin_score
 
-# defines a reusable class called CustomerSegmentation
-class CustomerSegmentation: 
-    def __init__(self, n_clusters=3):# by default 3customer groups are stored(0-high spenders, 1-medium spenders, 2-budget-conscious)
+class CustomerSegmentation:
+    def __init__(self, n_clusters=4, use_pca=False, random_state=42):
         self.n_clusters = n_clusters
-        self.model = KMeans(n_clusters=self.n_clusters, random_state=42)# creates the kmeans model.
-        self.scaler = StandardScaler()# a scaler which scales my features
-        self.fitted = False # tracks whether the model has been fitted yet
+        self.use_pca = use_pca
+        self.random_state = random_state
+        self.model = None
+        self.scaler = RobustScaler()
+        self.pca = PCA(n_components=2) if use_pca else None
+        self.fitted = False
 
     def fit(self, data):
-        """
-        Fit the K-Means model on scaled data.
-        """
-        self.scaled_data = self.scaler.fit_transform(data) # scales the data so that features are on same scale
-        self.model.fit(self.scaled_data) # fits the kmeans model to the scaled data
-        self.fitted = True # marks the model as fitted
+        """Fit the model to the data."""
+        self.scaled_data = self.scaler.fit_transform(data)
+        
+        if self.use_pca:
+            self.scaled_data = self.pca.fit_transform(self.scaled_data)
+            
+        self.model = KMeans(
+            n_clusters=self.n_clusters,
+            random_state=self.random_state
+        )
+        self.model.fit(self.scaled_data)
+        self.fitted = True
+        
+        # Calculate metrics
+        labels = self.model.labels_
+        print(f"\nClustering Metrics:")
+        print(f"Silhouette Score: {silhouette_score(self.scaled_data, labels):.3f}")
+        print(f"Davies-Bouldin Index: {davies_bouldin_score(self.scaled_data, labels):.3f}")
 
     def predict(self, data):
-        """
-        Predict cluster labels for new data.
-        """
-        # checks whether the model is already trained, if yes, scales new data and uses the trained model to predict which cluster each row belongs to
+        """Predict clusters for new data."""
         if not self.fitted:
-            raise ValueError("Model not fitted yet.")
+            raise RuntimeError("Model not fitted yet.")
         scaled = self.scaler.transform(data)
+        if self.use_pca:
+            scaled = self.pca.transform(scaled)
         return self.model.predict(scaled)
 
     def get_cluster_centers(self):
-        """
-        Get the cluster centroids (in scaled feature space).
-        """
+        """Get the cluster centers."""
         if not self.fitted:
-            raise ValueError("Model not fitted yet.")
+            raise RuntimeError("Model not fitted yet.")
         return self.model.cluster_centers_
 
     def get_labels(self):
-        """
-        Get the cluster label assigned to each training example.
-        """
+        """Get cluster labels for training data."""
         if not self.fitted:
-            raise ValueError("Model not fitted yet.")
+            raise RuntimeError("Model not fitted yet.")
         return self.model.labels_
+
+    def get_visualization_data(self, original_features):
+        """Prepare data for frontend visualization."""
+        if not self.fitted:
+            raise RuntimeError("Model not fitted yet.")
+            
+        return {
+            'cluster_centers': self.get_cluster_centers().tolist(),
+            'features': original_features.columns.tolist(),
+            'metrics': {
+                'silhouette': silhouette_score(self.scaled_data, self.get_labels()),
+                'davies_bouldin': davies_bouldin_score(self.scaled_data, self.get_labels())
+            }
+        }

@@ -1,62 +1,56 @@
 import pandas as pd
+import numpy as np
+from datetime import datetime
 
+class CustomerDataLoader:
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.data = None
+        self.features = None
 
-def load_customer_data(file_path='Cleaned_Chocolate_Sales.csv'):
-    """
-    Load customer transaction data from CSV and convert date columns.
-    """
-    data = pd.read_csv('Cleaned_Chocolate_Sales.csv')
+    def load_data(self):
+        """Load and preprocess the data with robust fallbacks"""
+        self.data = pd.read_csv(self.filepath)
+        
+        # Verify minimum required columns
+        mandatory_cols = ['Customer_ID', 'quantity']
+        missing = [col for col in mandatory_cols if col not in self.data.columns]
+        if missing:
+            raise ValueError(f"Missing mandatory columns: {missing}")
 
-    # Convert purchase_date to datetime format
-    data['purchase_date'] = pd.to_datetime(data['purchase_date'])
+        # Create basic features
+        self.features = self.data.groupby('Customer_ID').agg({
+            'quantity': ['sum', 'count']  # total_quantity and purchase_count
+        })
+        
+        # Flatten multi-index columns
+        self.features.columns = ['total_quantity', 'purchase_count']
+        
+        # Add raw quantity sample
+        self.features['quantity'] = self.data.groupby('Customer_ID')['quantity'].first()
+        
+        return self.features.reset_index()
 
-    return data
+    def get_features(self):
+        """Get features with guaranteed columns"""
+        if self.data is None:
+            self.load_data()
+            
+        return self.features[['quantity', 'total_quantity', 'purchase_count']].copy()
 
+    def merge_clusters(self, cluster_labels):
+        """Merge cluster labels back with full features and original data"""
+        if len(cluster_labels) != len(self.features):
+            raise ValueError("Cluster labels length mismatch")
 
-def preprocess_data(data):
-    """
-    Clean data by removing missing values.
-    """
-    # Drop rows with any missing values
-    data = data.dropna()
+    # Reset index to get Customer_ID into a column
+        clustered = self.features.reset_index()
+        clustered['cluster'] = cluster_labels
 
-    # Rename columns to keep consistent naming
-    data.rename(columns={
-        'Customer_ID': 'customer_id',
-        'product': 'product_name'
-    }, inplace=True)
-
-    return data
-
-# Groups data by customer_id 
-def extract_features(data):
-    """
-    Extract per-customer features: total quantity bought, number of orders, recency(lowest indicates most active customer).
-    """
-    # Get the latest date in the dataset to calculate recency/ recent purchases
-    latest_date = data['purchase_date'].max()
-
-    # Group data per customer to generate features
-    customer_data = data.groupby('customer_id').agg({
-        'quantity': 'sum',           # total quantity bought
-        'product_name': 'count',     # number of orders (frequency)
-        'purchase_date': 'max'       # most recent purchase
-    }).reset_index()
-
-    # Rename columns for clarity
-    customer_data.rename(columns={
-        'quantity': 'total_items_bought',
-        'product_name': 'num_orders',
-        'purchase_date': 'last_purchase_date'
-    }, inplace=True)
-
-    # Calculate the number of days since last purchase
-    customer_data['recency_days'] = (
-        latest_date - customer_data['last_purchase_date']).dt.days
-    # Uses latest date in the dataset
-    # A lower recency_days value means the customer purchased more recently/mostly active
-
-    # Drop last_purchase_date ( not used in clustering)
-    customer_data.drop(columns=['last_purchase_date'], inplace=True)
-
-    return customer_data
+    # Merge all feature columns + cluster back into the full dataset
+        return pd.merge(
+        self.data,
+        clustered,  # include full features + cluster
+        on='Customer_ID',
+        how='left'
+    )

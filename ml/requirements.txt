@@ -5,3 +5,4 @@ pandas==1.5.3
 numpy==1.23.5
 matplotlib==3.6.2
 seaborn==0.12.1
+kneed==0.8.5

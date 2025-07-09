@@ -1,0 +1,1095 @@
+Customer_ID,product,purchase_date,quantity,cluster
+1,Dark Chocos,2022-01-04,180,2
+2,50% Dark Bites,2022-08-01,94,2
+3,Drinking Coco,2022-07-07,91,2
+4,Drinking Coco,2022-04-27,342,0
+5,Drinking Coco,2022-02-24,184,2
+6,White Choco,2022-06-06,38,1
+7,White Choco,2022-01-25,176,2
+8,Milk Chips,2022-03-24,73,1
+9,Dark Chocos,2022-04-20,59,1
+10,White Choco,2022-07-04,102,2
+11,White Choco,2022-01-13,62,1
+12,Dark Chocos,2022-03-10,11,3
+13,Eclairs,2022-01-13,286,0
+14,50% Dark Bites,2022-07-28,156,2
+15,Drinking Coco,2022-08-03,173,2
+16,50% Dark Bites,2022-01-26,356,0
+17,50% Dark Bites,2022-02-14,42,1
+18,White Choco,2022-04-05,140,2
+19,Dark Chocos,2022-02-16,250,0
+20,50% Dark Bites,2022-06-08,172,2
+21,Eclairs,2022-06-27,88,2
+22,White Choco,2022-02-17,157,2
+23,Milk Chips,2022-05-30,163,2
+24,50% Dark Bites,2022-03-14,113,2
+25,Eclairs,2022-02-28,115,2
+26,White Choco,2022-01-26,321,0
+27,White Choco,2022-02-09,186,2
+28,Eclairs,2022-07-07,112,2
+29,50% Dark Bites,2022-07-05,151,2
+30,White Choco,2022-06-15,301,0
+31,50% Dark Bites,2022-05-24,121,2
+32,White Choco,2022-06-29,150,2
+33,White Choco,2022-05-11,94,2
+34,Eclairs,2022-06-30,133,2
+35,Milk Chips,2022-05-11,70,1
+36,White Choco,2022-07-22,315,0
+37,Dark Chocos,2022-08-24,314,0
+38,Milk Chips,2022-07-07,72,1
+39,50% Dark Bites,2022-05-19,14,3
+40,White Choco,2022-07-04,581,0
+41,Milk Chips,2022-06-02,16,3
+42,White Choco,2022-04-15,354,0
+43,Organic Choco Syrup,2022-07-11,241,0
+44,White Choco,2022-02-23,142,2
+45,Eclairs,2022-08-22,102,2
+46,Drinking Coco,2022-02-16,188,2
+47,Dark Chocos,2022-01-13,160,2
+48,Dark Chocos,2022-02-14,18,3
+49,Eclairs,2022-06-10,303,0
+50,White Choco,2022-07-07,176,2
+51,Eclairs,2022-03-24,70,1
+52,White Choco,2022-06-06,23,3
+53,50% Dark Bites,2022-07-19,135,2
+54,White Choco,2022-04-19,83,2
+55,50% Dark Bites,2022-07-19,179,2
+56,50% Dark Bites,2022-07-15,24,1
+57,White Choco,2022-02-14,18,3
+58,White Choco,2022-05-18,416,0
+59,White Choco,2022-06-30,55,1
+60,Dark Chocos,2022-06-02,227,0
+61,50% Dark Bites,2022-06-28,48,1
+62,50% Dark Bites,2022-05-16,174,2
+63,Drinking Coco,2022-05-26,302,0
+64,Eclairs,2022-07-06,149,2
+65,White Choco,2022-05-27,11,3
+66,50% Dark Bites,2022-04-14,11,3
+67,50% Dark Bites,2022-08-10,14,3
+68,Dark Chocos,2022-07-04,411,0
+69,50% Dark Bites,2022-07-08,56,1
+70,Drinking Coco,2022-07-22,102,2
+71,Organic Choco Syrup,2022-03-02,103,2
+72,Eclairs,2022-01-10,9,3
+73,50% Dark Bites,2022-03-11,241,0
+74,Drinking Coco,2022-06-20,265,0
+75,50% Dark Bites,2022-08-26,214,0
+76,Dark Chocos,2022-07-13,32,1
+77,White Choco,2022-02-11,244,0
+78,Dark Chocos,2022-01-27,181,2
+79,White Choco,2022-01-31,137,2
+80,50% Dark Bites,2022-08-18,24,1
+81,White Choco,2022-06-30,21,3
+82,White Choco,2022-08-23,311,0
+83,Dark Chocos,2022-08-01,181,2
+84,Milk Chips,2022-05-25,10,3
+85,50% Dark Bites,2022-01-10,82,2
+86,Milk Chips,2022-02-07,108,2
+87,Dark Chocos,2022-05-12,401,0
+88,White Choco,2022-03-07,408,0
+89,50% Dark Bites,2022-04-05,420,0
+90,50% Dark Bites,2022-01-03,348,0
+91,Eclairs,2022-03-24,270,0
+92,White Choco,2022-07-07,9,3
+93,Milk Chips,2022-07-26,264,0
+94,50% Dark Bites,2022-07-07,111,2
+95,Dark Chocos,2022-07-15,65,1
+96,Dark Chocos,2022-04-01,97,2
+97,Eclairs,2022-06-20,6,3
+98,White Choco,2022-06-29,482,0
+99,Dark Chocos,2022-06-15,106,2
+100,Milk Chips,2022-04-08,180,2
+101,White Choco,2022-03-14,31,1
+102,White Choco,2022-07-15,359,0
+103,Eclairs,2022-04-19,80,1
+104,White Choco,2022-03-28,296,0
+105,White Choco,2022-03-04,101,2
+106,Milk Chips,2022-08-02,40,1
+107,White Choco,2022-08-25,42,1
+108,Eclairs,2022-02-25,167,2
+109,Dark Chocos,2022-06-07,138,2
+110,White Choco,2022-04-12,520,0
+111,White Choco,2022-07-06,94,2
+112,White Choco,2022-01-19,175,2
+113,White Choco,2022-01-05,92,2
+114,Milk Chips,2022-01-24,141,2
+115,50% Dark Bites,2022-04-06,283,0
+116,White Choco,2022-06-15,21,3
+117,Drinking Coco,2022-01-28,47,1
+118,50% Dark Bites,2022-03-16,125,2
+119,50% Dark Bites,2022-02-21,396,0
+120,White Choco,2022-02-16,87,2
+121,White Choco,2022-01-13,27,1
+122,Eclairs,2022-03-23,547,0
+123,White Choco,2022-06-16,118,2
+124,White Choco,2022-04-14,46,1
+125,Eclairs,2022-01-25,57,1
+126,Eclairs,2022-03-11,22,3
+127,Eclairs,2022-07-28,96,2
+128,Milk Chips,2022-03-09,44,1
+129,Dark Chocos,2022-06-28,188,2
+130,Dark Chocos,2022-07-28,387,0
+131,White Choco,2022-08-15,50,1
+132,White Choco,2022-01-12,264,0
+133,50% Dark Bites,2022-03-24,7,3
+134,Dark Chocos,2022-07-25,90,2
+135,White Choco,2022-08-01,403,0
+136,50% Dark Bites,2022-05-16,174,2
+137,White Choco,2022-08-10,140,2
+138,Eclairs,2022-01-05,27,1
+139,White Choco,2022-07-11,110,2
+140,Milk Chips,2022-04-25,30,1
+141,White Choco,2022-04-04,121,2
+142,White Choco,2022-04-12,101,2
+143,50% Dark Bites,2022-08-02,117,2
+144,White Choco,2022-06-28,272,0
+145,Eclairs,2022-07-05,128,2
+146,Organic Choco Syrup,2022-06-07,45,1
+147,White Choco,2022-01-18,27,1
+148,Drinking Coco,2022-01-04,212,0
+149,White Choco,2022-01-31,18,3
+150,Eclairs,2022-03-14,149,2
+151,Milk Chips,2022-04-29,477,0
+152,White Choco,2022-02-07,108,2
+153,50% Dark Bites,2022-03-31,178,2
+154,50% Dark Bites,2022-03-16,81,2
+155,Eclairs,2022-01-25,196,0
+156,Drinking Coco,2022-06-20,447,0
+157,Milk Chips,2022-03-29,175,2
+158,Dark Chocos,2022-07-12,136,2
+159,White Choco,2022-07-11,138,2
+160,White Choco,2022-01-19,184,2
+161,50% Dark Bites,2022-04-05,82,2
+162,Dark Chocos,2022-02-21,12,3
+163,50% Dark Bites,2022-05-20,14,3
+164,Dark Chocos,2022-07-29,104,2
+165,White Choco,2022-01-28,46,1
+166,50% Dark Bites,2022-07-19,112,2
+167,White Choco,2022-04-13,11,3
+168,Drinking Coco,2022-02-11,21,3
+169,Dark Chocos,2022-03-02,116,2
+170,50% Dark Bites,2022-03-02,202,0
+171,White Choco,2022-07-28,6,3
+172,Milk Chips,2022-01-07,520,0
+173,50% Dark Bites,2022-04-12,167,2
+174,Eclairs,2022-06-27,72,1
+175,Dark Chocos,2022-01-14,418,0
+176,Drinking Coco,2022-02-07,389,0
+177,Dark Chocos,2022-03-23,26,1
+178,Drinking Coco,2022-01-10,146,2
+179,Organic Choco Syrup,2022-03-17,41,1
+180,White Choco,2022-01-21,54,1
+181,50% Dark Bites,2022-07-04,370,0
+182,Drinking Coco,2022-07-04,176,2
+183,White Choco,2022-08-10,210,0
+184,Dark Chocos,2022-04-01,12,3
+185,White Choco,2022-02-22,159,2
+186,50% Dark Bites,2022-01-03,187,2
+187,50% Dark Bites,2022-05-31,233,0
+188,White Choco,2022-01-03,282,0
+189,50% Dark Bites,2022-01-27,475,0
+190,Dark Chocos,2022-01-28,65,1
+191,50% Dark Bites,2022-06-28,311,0
+192,Organic Choco Syrup,2022-03-02,43,1
+193,Milk Chips,2022-05-27,26,1
+194,Eclairs,2022-06-30,84,2
+195,Drinking Coco,2022-06-07,78,1
+196,Milk Chips,2022-05-12,100,2
+197,White Choco,2022-07-29,66,1
+198,50% Dark Bites,2022-08-03,265,0
+199,Drinking Coco,2022-08-18,141,2
+200,White Choco,2022-06-14,42,1
+201,50% Dark Bites,2022-06-30,76,1
+202,Dark Chocos,2022-06-13,190,2
+203,Dark Chocos,2022-04-27,54,1
+204,50% Dark Bites,2022-07-27,32,1
+205,50% Dark Bites,2022-04-20,424,0
+206,White Choco,2022-01-04,134,2
+207,Dark Chocos,2022-02-21,92,2
+208,50% Dark Bites,2022-01-05,48,1
+209,50% Dark Bites,2022-07-15,46,1
+210,Organic Choco Syrup,2022-05-25,62,1
+211,Eclairs,2022-04-20,358,0
+212,White Choco,2022-06-02,249,0
+213,White Choco,2022-05-13,88,2
+214,Drinking Coco,2022-08-03,144,2
+215,Dark Chocos,2022-05-25,390,0
+216,White Choco,2022-03-16,79,1
+217,Dark Chocos,2022-07-04,122,2
+218,Dark Chocos,2022-07-05,135,2
+219,Milk Chips,2022-03-15,430,0
+220,White Choco,2022-08-22,69,1
+221,Milk Chips,2022-01-12,125,2
+222,Drinking Coco,2022-06-10,154,2
+223,Drinking Coco,2022-03-25,286,0
+224,Eclairs,2022-07-27,99,2
+225,50% Dark Bites,2022-04-15,433,0
+226,Dark Chocos,2022-06-27,19,3
+227,Milk Chips,2022-04-14,258,0
+228,White Choco,2022-03-15,92,2
+229,Eclairs,2022-03-18,200,0
+230,Eclairs,2022-04-29,61,1
+231,50% Dark Bites,2022-02-25,246,0
+232,Dark Chocos,2022-03-02,56,1
+233,Dark Chocos,2022-06-20,87,2
+234,50% Dark Bites,2022-07-15,173,2
+235,Dark Chocos,2022-05-12,252,0
+236,50% Dark Bites,2022-07-01,256,0
+237,50% Dark Bites,2022-08-08,54,1
+238,Dark Chocos,2022-07-25,6,3
+239,50% Dark Bites,2022-05-18,55,1
+240,Drinking Coco,2022-07-15,277,0
+241,Milk Chips,2022-07-05,44,1
+242,White Choco,2022-07-04,96,2
+243,Milk Chips,2022-06-20,216,0
+244,Eclairs,2022-01-25,424,0
+245,White Choco,2022-07-01,37,1
+246,Dark Chocos,2022-04-13,59,1
+247,White Choco,2022-05-04,76,1
+248,Drinking Coco,2022-08-04,109,2
+249,Milk Chips,2022-06-01,146,2
+250,Organic Choco Syrup,2022-04-22,185,2
+251,Dark Chocos,2022-08-03,27,1
+252,Dark Chocos,2022-06-10,69,1
+253,White Choco,2022-06-27,46,1
+254,White Choco,2022-01-03,170,2
+255,Milk Chips,2022-07-11,179,2
+256,Dark Chocos,2022-08-17,126,2
+257,White Choco,2022-01-18,65,1
+258,50% Dark Bites,2022-03-08,99,2
+259,Dark Chocos,2022-03-07,275,0
+260,Milk Chips,2022-05-09,157,2
+261,50% Dark Bites,2022-05-23,157,2
+262,50% Dark Bites,2022-04-15,145,2
+263,50% Dark Bites,2022-07-27,139,2
+264,Organic Choco Syrup,2022-08-22,406,0
+265,Milk Chips,2022-05-11,122,2
+266,50% Dark Bites,2022-01-26,38,1
+267,Dark Chocos,2022-04-14,117,2
+268,Dark Chocos,2022-04-05,417,0
+269,White Choco,2022-06-14,57,1
+270,Eclairs,2022-04-13,125,2
+271,50% Dark Bites,2022-06-27,166,2
+272,Eclairs,2022-01-26,3,3
+273,50% Dark Bites,2022-07-05,72,1
+274,Drinking Coco,2022-01-11,95,2
+275,50% Dark Bites,2022-03-07,22,3
+276,Dark Chocos,2022-03-04,100,2
+277,50% Dark Bites,2022-07-15,312,0
+278,Drinking Coco,2022-05-11,86,2
+279,Dark Chocos,2022-01-27,7,3
+280,Dark Chocos,2022-06-27,149,2
+281,White Choco,2022-08-03,18,3
+282,Dark Chocos,2022-08-19,242,0
+283,White Choco,2022-06-15,102,2
+284,Drinking Coco,2022-02-07,158,2
+285,Eclairs,2022-07-08,128,2
+286,Dark Chocos,2022-04-21,96,2
+287,Dark Chocos,2022-04-08,209,0
+288,Dark Chocos,2022-08-19,52,1
+289,White Choco,2022-05-04,55,1
+290,50% Dark Bites,2022-05-11,108,2
+291,Eclairs,2022-03-22,51,1
+292,White Choco,2022-08-10,216,0
+293,White Choco,2022-05-04,318,0
+294,White Choco,2022-08-18,238,0
+295,White Choco,2022-08-03,238,0
+296,Dark Chocos,2022-01-14,315,0
+297,Organic Choco Syrup,2022-04-08,72,1
+298,Dark Chocos,2022-08-01,3,3
+299,Eclairs,2022-03-15,45,1
+300,Dark Chocos,2022-07-15,184,2
+301,Eclairs,2022-01-13,127,2
+302,50% Dark Bites,2022-08-26,53,1
+303,Eclairs,2022-01-10,172,2
+304,50% Dark Bites,2022-05-11,87,2
+305,50% Dark Bites,2022-08-30,22,3
+306,50% Dark Bites,2022-07-21,122,2
+307,Eclairs,2022-08-01,125,2
+308,50% Dark Bites,2022-02-17,259,0
+309,50% Dark Bites,2022-07-27,156,2
+310,Dark Chocos,2022-02-23,107,2
+311,Dark Chocos,2022-03-22,40,1
+312,White Choco,2022-06-23,311,0
+313,50% Dark Bites,2022-02-01,73,1
+314,Milk Chips,2022-03-02,288,0
+315,White Choco,2022-04-06,86,2
+316,White Choco,2022-03-17,72,1
+317,White Choco,2022-06-24,136,2
+318,Dark Chocos,2022-07-19,303,0
+319,White Choco,2022-07-11,264,0
+320,Eclairs,2022-01-13,218,0
+321,White Choco,2022-07-07,60,1
+322,50% Dark Bites,2022-05-25,418,0
+323,White Choco,2022-04-13,151,2
+324,Dark Chocos,2022-03-02,202,0
+325,White Choco,2022-06-23,126,2
+326,50% Dark Bites,2022-07-26,160,2
+327,50% Dark Bites,2022-03-22,3,3
+328,Drinking Coco,2022-06-09,58,1
+329,50% Dark Bites,2022-05-17,59,1
+330,Drinking Coco,2022-03-04,273,0
+331,Dark Chocos,2022-07-07,28,1
+332,Organic Choco Syrup,2022-01-13,118,2
+333,Eclairs,2022-07-13,75,1
+334,50% Dark Bites,2022-06-16,329,0
+335,Dark Chocos,2022-07-18,69,1
+336,White Choco,2022-05-30,395,0
+337,Milk Chips,2022-06-21,81,2
+338,Drinking Coco,2022-06-24,38,1
+339,Eclairs,2022-01-13,96,2
+340,White Choco,2022-04-04,195,2
+341,White Choco,2022-06-08,554,0
+342,White Choco,2022-08-02,47,1
+343,50% Dark Bites,2022-07-21,152,2
+344,White Choco,2022-06-20,134,2
+345,Milk Chips,2022-06-22,112,2
+346,50% Dark Bites,2022-05-02,16,3
+347,White Choco,2022-01-07,84,2
+348,Dark Chocos,2022-02-21,99,2
+349,Drinking Coco,2022-03-21,371,0
+350,50% Dark Bites,2022-04-04,136,2
+351,White Choco,2022-03-24,203,0
+352,White Choco,2022-06-28,183,2
+353,50% Dark Bites,2022-01-14,195,2
+354,White Choco,2022-02-07,135,2
+355,50% Dark Bites,2022-01-11,197,0
+356,White Choco,2022-02-25,242,0
+357,Dark Chocos,2022-08-01,25,1
+358,Dark Chocos,2022-05-05,252,0
+359,White Choco,2022-05-18,415,0
+360,Organic Choco Syrup,2022-01-04,348,0
+361,Dark Chocos,2022-05-09,211,0
+362,White Choco,2022-05-06,81,2
+363,50% Dark Bites,2022-01-13,145,2
+364,Eclairs,2022-06-24,74,1
+365,50% Dark Bites,2022-02-14,21,3
+366,White Choco,2022-01-18,101,2
+367,Dark Chocos,2022-05-02,91,2
+368,White Choco,2022-05-16,54,1
+369,Eclairs,2022-01-28,368,0
+370,White Choco,2022-06-24,409,0
+371,Milk Chips,2022-07-18,104,2
+372,Eclairs,2022-04-13,164,2
+373,50% Dark Bites,2022-04-15,76,1
+374,Drinking Coco,2022-01-04,178,2
+375,Eclairs,2022-07-04,31,1
+376,White Choco,2022-03-24,352,0
+377,White Choco,2022-03-17,169,2
+378,Eclairs,2022-02-15,223,0
+379,Dark Chocos,2022-06-29,146,2
+380,White Choco,2022-05-24,112,2
+381,Dark Chocos,2022-01-10,284,0
+382,White Choco,2022-03-15,139,2
+383,Dark Chocos,2022-02-08,309,0
+384,50% Dark Bites,2022-02-25,100,2
+385,Eclairs,2022-05-03,42,1
+386,White Choco,2022-06-14,24,1
+387,Dark Chocos,2022-08-09,83,2
+388,White Choco,2022-07-11,234,0
+389,White Choco,2022-01-14,118,2
+390,White Choco,2022-02-24,46,1
+391,Eclairs,2022-03-15,144,2
+392,Drinking Coco,2022-04-25,47,1
+393,50% Dark Bites,2022-05-10,41,1
+394,White Choco,2022-06-23,275,0
+395,White Choco,2022-02-28,370,0
+396,50% Dark Bites,2022-05-25,138,2
+397,Drinking Coco,2022-02-22,215,0
+398,50% Dark Bites,2022-07-11,134,2
+399,White Choco,2022-01-03,336,0
+400,Milk Chips,2022-08-24,280,0
+401,Dark Chocos,2022-07-28,352,0
+402,Dark Chocos,2022-05-25,150,2
+403,Eclairs,2022-05-06,177,2
+404,50% Dark Bites,2022-01-28,142,2
+405,Dark Chocos,2022-06-06,12,3
+406,Drinking Coco,2022-07-12,24,1
+407,White Choco,2022-08-05,183,2
+408,Dark Chocos,2022-01-28,147,2
+409,White Choco,2022-08-31,137,2
+410,Dark Chocos,2022-04-19,13,3
+411,Dark Chocos,2022-06-29,2,3
+412,Organic Choco Syrup,2022-02-24,261,0
+413,White Choco,2022-03-04,84,2
+414,Eclairs,2022-06-21,68,1
+415,50% Dark Bites,2022-01-26,105,2
+416,50% Dark Bites,2022-06-10,40,1
+417,50% Dark Bites,2022-05-23,65,1
+418,Dark Chocos,2022-04-15,107,2
+419,50% Dark Bites,2022-01-31,227,0
+420,50% Dark Bites,2022-03-04,39,1
+421,Milk Chips,2022-04-19,84,2
+422,Eclairs,2022-05-16,100,2
+423,White Choco,2022-02-17,120,2
+424,White Choco,2022-01-18,257,0
+425,Dark Chocos,2022-02-09,85,2
+426,Dark Chocos,2022-03-23,178,2
+427,50% Dark Bites,2022-02-01,151,2
+428,50% Dark Bites,2022-03-07,142,2
+429,50% Dark Bites,2022-01-03,226,0
+430,50% Dark Bites,2022-02-11,341,0
+431,Dark Chocos,2022-03-16,140,2
+432,50% Dark Bites,2022-08-15,330,0
+433,White Choco,2022-05-12,73,1
+434,White Choco,2022-04-11,4,3
+435,Dark Chocos,2022-06-30,285,0
+436,50% Dark Bites,2022-06-15,60,1
+437,50% Dark Bites,2022-08-01,101,2
+438,Dark Chocos,2022-06-15,58,1
+439,Milk Chips,2022-06-16,45,1
+440,White Choco,2022-05-13,281,0
+441,50% Dark Bites,2022-05-10,138,2
+442,Eclairs,2022-08-25,322,0
+443,50% Dark Bites,2022-07-15,85,2
+444,Drinking Coco,2022-05-16,409,0
+445,Dark Chocos,2022-06-14,182,2
+446,White Choco,2022-01-25,467,0
+447,50% Dark Bites,2022-07-28,14,3
+448,Dark Chocos,2022-01-28,178,2
+449,Dark Chocos,2022-06-29,191,2
+450,Milk Chips,2022-06-24,317,0
+451,Dark Chocos,2022-07-01,410,0
+452,Drinking Coco,2022-02-25,137,2
+453,White Choco,2022-08-01,12,3
+454,Dark Chocos,2022-06-21,254,0
+455,White Choco,2022-01-25,24,1
+456,Dark Chocos,2022-05-17,232,0
+457,50% Dark Bites,2022-08-23,233,0
+458,White Choco,2022-03-03,118,2
+459,50% Dark Bites,2022-05-30,543,0
+460,50% Dark Bites,2022-06-29,223,0
+461,50% Dark Bites,2022-01-04,204,0
+462,50% Dark Bites,2022-01-14,65,1
+463,Dark Chocos,2022-02-15,53,1
+464,White Choco,2022-01-10,469,0
+465,50% Dark Bites,2022-05-04,213,0
+466,White Choco,2022-05-23,5,3
+467,White Choco,2022-04-26,147,2
+468,50% Dark Bites,2022-07-05,74,1
+469,50% Dark Bites,2022-07-21,163,2
+470,Dark Chocos,2022-02-21,248,0
+471,Dark Chocos,2022-02-03,138,2
+472,50% Dark Bites,2022-07-08,151,2
+473,Dark Chocos,2022-05-31,139,2
+474,Dark Chocos,2022-06-27,103,2
+475,Dark Chocos,2022-05-13,129,2
+476,White Choco,2022-05-31,102,2
+477,Dark Chocos,2022-02-28,37,1
+478,Eclairs,2022-03-28,31,1
+479,Milk Chips,2022-01-14,227,0
+480,Dark Chocos,2022-02-21,145,2
+481,50% Dark Bites,2022-08-01,90,2
+482,White Choco,2022-05-19,59,1
+483,50% Dark Bites,2022-07-13,60,1
+484,Drinking Coco,2022-04-20,148,2
+485,50% Dark Bites,2022-06-30,22,3
+486,Dark Chocos,2022-03-08,142,2
+487,White Choco,2022-03-09,93,2
+488,White Choco,2022-06-16,208,0
+489,50% Dark Bites,2022-06-30,42,1
+490,Dark Chocos,2022-07-28,120,2
+491,Drinking Coco,2022-08-12,159,2
+492,Dark Chocos,2022-07-07,316,0
+493,50% Dark Bites,2022-08-25,47,1
+494,Eclairs,2022-01-17,233,0
+495,Milk Chips,2022-03-04,384,0
+496,White Choco,2022-08-25,4,3
+497,Drinking Coco,2022-04-15,260,0
+498,50% Dark Bites,2022-03-11,22,3
+499,White Choco,2022-05-20,18,3
+500,White Choco,2022-06-14,42,1
+501,Milk Chips,2022-04-14,73,1
+502,White Choco,2022-07-07,154,2
+503,Dark Chocos,2022-08-24,71,1
+504,Eclairs,2022-02-24,127,2
+505,White Choco,2022-05-09,224,0
+506,Milk Chips,2022-02-08,223,0
+507,Milk Chips,2022-03-24,284,0
+508,50% Dark Bites,2022-06-20,73,1
+509,White Choco,2022-03-07,112,2
+510,White Choco,2022-06-20,85,2
+511,50% Dark Bites,2022-02-17,270,0
+512,White Choco,2022-01-26,45,1
+513,Dark Chocos,2022-05-02,153,2
+514,White Choco,2022-07-07,7,3
+515,Drinking Coco,2022-08-22,51,1
+516,Milk Chips,2022-08-11,67,1
+517,White Choco,2022-01-13,194,2
+518,Dark Chocos,2022-03-02,116,2
+519,Organic Choco Syrup,2022-07-27,41,1
+520,50% Dark Bites,2022-03-10,111,2
+521,50% Dark Bites,2022-08-23,334,0
+522,Eclairs,2022-04-25,155,2
+523,Dark Chocos,2022-03-07,407,0
+524,50% Dark Bites,2022-07-12,52,1
+525,Dark Chocos,2022-05-16,138,2
+526,White Choco,2022-03-02,70,1
+527,50% Dark Bites,2022-05-30,149,2
+528,White Choco,2022-06-10,179,2
+529,White Choco,2022-07-25,353,0
+530,Dark Chocos,2022-06-09,97,2
+531,Dark Chocos,2022-05-12,60,1
+532,50% Dark Bites,2022-05-09,5,3
+533,White Choco,2022-08-09,182,2
+534,Organic Choco Syrup,2022-04-13,114,2
+535,50% Dark Bites,2022-05-02,46,1
+536,White Choco,2022-08-09,320,0
+537,White Choco,2022-08-23,178,2
+538,White Choco,2022-05-13,170,2
+539,White Choco,2022-02-01,67,1
+540,Dark Chocos,2022-06-23,301,0
+541,Organic Choco Syrup,2022-05-24,134,2
+542,Dark Chocos,2022-04-01,211,0
+543,Milk Chips,2022-07-27,151,2
+544,Drinking Coco,2022-01-27,208,0
+545,Organic Choco Syrup,2022-08-12,134,2
+546,Eclairs,2022-02-01,49,1
+547,Milk Chips,2022-03-02,204,0
+548,White Choco,2022-06-30,34,1
+549,White Choco,2022-01-17,91,2
+550,Dark Chocos,2022-07-07,130,2
+551,Dark Chocos,2022-01-31,107,2
+552,White Choco,2022-08-10,121,2
+553,Drinking Coco,2022-08-18,339,0
+554,50% Dark Bites,2022-06-15,321,0
+555,Drinking Coco,2022-01-26,9,3
+556,White Choco,2022-04-29,69,1
+557,50% Dark Bites,2022-03-03,72,1
+558,Eclairs,2022-02-22,392,0
+559,White Choco,2022-03-04,158,2
+560,White Choco,2022-07-07,9,3
+561,50% Dark Bites,2022-06-17,347,0
+562,50% Dark Bites,2022-08-02,114,2
+563,Drinking Coco,2022-08-12,120,2
+564,Drinking Coco,2022-01-28,333,0
+565,Dark Chocos,2022-04-29,432,0
+566,White Choco,2022-04-05,236,0
+567,White Choco,2022-01-18,135,2
+568,Drinking Coco,2022-05-16,97,2
+569,50% Dark Bites,2022-08-24,168,2
+570,50% Dark Bites,2022-01-18,402,0
+571,Eclairs,2022-08-22,10,3
+572,White Choco,2022-03-07,84,2
+573,Organic Choco Syrup,2022-03-04,69,1
+574,White Choco,2022-04-22,111,2
+575,Dark Chocos,2022-06-09,89,2
+576,White Choco,2022-07-25,199,0
+577,White Choco,2022-08-03,89,2
+578,White Choco,2022-08-03,131,2
+579,Dark Chocos,2022-05-03,227,0
+580,Milk Chips,2022-01-19,301,0
+581,Dark Chocos,2022-02-11,316,0
+582,Eclairs,2022-06-14,390,0
+583,Dark Chocos,2022-03-23,223,0
+584,50% Dark Bites,2022-02-17,101,2
+585,White Choco,2022-03-17,479,0
+586,White Choco,2022-06-29,287,0
+587,Organic Choco Syrup,2022-08-24,269,0
+588,White Choco,2022-07-04,277,0
+589,Eclairs,2022-03-28,67,1
+590,White Choco,2022-04-19,135,2
+591,Dark Chocos,2022-01-18,229,0
+592,White Choco,2022-01-17,88,2
+593,Dark Chocos,2022-02-15,211,0
+594,Dark Chocos,2022-02-11,293,0
+595,White Choco,2022-03-21,179,2
+596,Eclairs,2022-01-05,129,2
+597,White Choco,2022-05-30,164,2
+598,White Choco,2022-01-04,219,0
+599,White Choco,2022-04-22,258,0
+600,Dark Chocos,2022-02-10,116,2
+601,White Choco,2022-08-12,204,0
+602,50% Dark Bites,2022-08-10,321,0
+603,White Choco,2022-06-07,56,1
+604,Drinking Coco,2022-06-06,74,1
+605,Drinking Coco,2022-04-05,189,2
+606,Dark Chocos,2022-04-18,131,2
+607,Dark Chocos,2022-01-31,15,3
+608,Drinking Coco,2022-08-22,140,2
+609,White Choco,2022-02-25,198,0
+610,Dark Chocos,2022-02-22,103,2
+611,Dark Chocos,2022-01-12,187,2
+612,Eclairs,2022-05-25,125,2
+613,White Choco,2022-02-01,8,3
+614,Eclairs,2022-04-27,70,1
+615,White Choco,2022-07-22,126,2
+616,Dark Chocos,2022-01-26,265,0
+617,Dark Chocos,2022-08-24,296,0
+618,White Choco,2022-01-18,21,3
+619,50% Dark Bites,2022-03-30,83,2
+620,50% Dark Bites,2022-01-17,162,2
+621,White Choco,2022-02-17,145,2
+622,Drinking Coco,2022-04-08,44,1
+623,50% Dark Bites,2022-07-06,82,2
+624,White Choco,2022-04-04,226,0
+625,50% Dark Bites,2022-03-02,207,0
+626,White Choco,2022-08-09,176,2
+627,Dark Chocos,2022-06-09,286,0
+628,50% Dark Bites,2022-06-02,300,0
+629,White Choco,2022-07-05,235,0
+630,Eclairs,2022-08-11,125,2
+631,Organic Choco Syrup,2022-02-11,145,2
+632,White Choco,2022-08-11,65,1
+633,50% Dark Bites,2022-05-12,102,2
+634,Dark Chocos,2022-07-15,93,2
+635,50% Dark Bites,2022-01-18,134,2
+636,White Choco,2022-01-05,189,2
+637,Dark Chocos,2022-06-29,232,0
+638,White Choco,2022-06-14,45,1
+639,Dark Chocos,2022-08-08,67,1
+640,Dark Chocos,2022-03-23,138,2
+641,50% Dark Bites,2022-01-04,99,2
+642,Dark Chocos,2022-02-22,251,0
+643,White Choco,2022-02-17,252,0
+644,Eclairs,2022-02-03,78,1
+645,White Choco,2022-03-17,130,2
+646,Drinking Coco,2022-01-25,154,2
+647,Dark Chocos,2022-07-27,52,1
+648,White Choco,2022-01-28,53,1
+649,50% Dark Bites,2022-07-05,50,1
+650,50% Dark Bites,2022-03-15,44,1
+651,Milk Chips,2022-08-04,200,0
+652,White Choco,2022-06-27,361,0
+653,Milk Chips,2022-07-13,172,2
+654,White Choco,2022-02-24,239,0
+655,50% Dark Bites,2022-06-28,55,1
+656,50% Dark Bites,2022-06-30,27,1
+657,Organic Choco Syrup,2022-08-18,7,3
+658,Milk Chips,2022-01-24,301,0
+659,50% Dark Bites,2022-03-11,134,2
+660,Milk Chips,2022-06-23,350,0
+661,White Choco,2022-08-22,33,1
+662,Dark Chocos,2022-01-04,23,3
+663,Dark Chocos,2022-04-05,201,0
+664,Dark Chocos,2022-04-15,323,0
+665,50% Dark Bites,2022-05-11,220,0
+666,White Choco,2022-07-21,488,0
+667,Dark Chocos,2022-02-11,84,2
+668,White Choco,2022-07-08,79,1
+669,White Choco,2022-08-11,344,0
+670,Milk Chips,2022-08-04,7,3
+671,Dark Chocos,2022-06-14,88,2
+672,Drinking Coco,2022-01-17,275,0
+673,Dark Chocos,2022-06-23,512,0
+674,White Choco,2022-08-24,113,2
+675,50% Dark Bites,2022-06-07,275,0
+676,50% Dark Bites,2022-06-22,47,1
+677,White Choco,2022-07-13,276,0
+678,Organic Choco Syrup,2022-05-24,212,0
+679,Milk Chips,2022-08-09,145,2
+680,50% Dark Bites,2022-04-06,31,1
+681,White Choco,2022-07-28,271,0
+682,White Choco,2022-08-24,52,1
+683,White Choco,2022-01-17,128,2
+684,50% Dark Bites,2022-02-07,142,2
+685,White Choco,2022-05-09,256,0
+686,50% Dark Bites,2022-06-06,106,2
+687,Organic Choco Syrup,2022-06-06,6,3
+688,50% Dark Bites,2022-05-24,226,0
+689,Dark Chocos,2022-01-13,121,2
+690,White Choco,2022-05-23,151,2
+691,50% Dark Bites,2022-06-29,284,0
+692,50% Dark Bites,2022-03-11,89,2
+693,50% Dark Bites,2022-04-25,508,0
+694,White Choco,2022-05-30,243,0
+695,White Choco,2022-05-23,170,2
+696,Drinking Coco,2022-05-23,18,3
+697,Drinking Coco,2022-06-24,282,0
+698,White Choco,2022-03-11,277,0
+699,White Choco,2022-07-27,212,0
+700,50% Dark Bites,2022-08-16,126,2
+701,White Choco,2022-03-07,11,3
+702,Milk Chips,2022-04-05,30,1
+703,50% Dark Bites,2022-05-04,51,1
+704,Organic Choco Syrup,2022-01-04,92,2
+705,Drinking Coco,2022-01-13,101,2
+706,White Choco,2022-07-11,98,2
+707,Dark Chocos,2022-05-17,159,2
+708,Drinking Coco,2022-07-21,62,1
+709,50% Dark Bites,2022-02-22,22,3
+710,White Choco,2022-05-23,187,2
+711,50% Dark Bites,2022-07-12,200,0
+712,Dark Chocos,2022-06-15,201,0
+713,Dark Chocos,2022-06-23,308,0
+714,Eclairs,2022-03-25,55,1
+715,50% Dark Bites,2022-07-04,153,2
+716,50% Dark Bites,2022-05-12,101,2
+717,White Choco,2022-04-04,137,2
+718,Dark Chocos,2022-04-15,398,0
+719,Eclairs,2022-03-08,88,2
+720,50% Dark Bites,2022-01-17,232,0
+721,Dark Chocos,2022-08-22,51,1
+722,White Choco,2022-07-25,66,1
+723,Dark Chocos,2022-06-14,124,2
+724,Organic Choco Syrup,2022-04-05,78,1
+725,White Choco,2022-08-26,341,0
+726,Dark Chocos,2022-08-03,114,2
+727,50% Dark Bites,2022-07-11,4,3
+728,Eclairs,2022-03-11,22,3
+729,Drinking Coco,2022-01-10,30,1
+730,Drinking Coco,2022-04-04,351,0
+731,Dark Chocos,2022-01-17,708,0
+732,50% Dark Bites,2022-07-08,50,1
+733,50% Dark Bites,2022-04-12,356,0
+734,White Choco,2022-08-24,185,2
+735,Organic Choco Syrup,2022-06-07,236,0
+736,Eclairs,2022-07-28,30,1
+737,White Choco,2022-02-21,111,2
+738,Dark Chocos,2022-04-08,289,0
+739,White Choco,2022-06-28,103,2
+740,Drinking Coco,2022-03-24,20,3
+741,50% Dark Bites,2022-07-29,55,1
+742,Eclairs,2022-05-25,90,2
+743,White Choco,2022-03-30,303,0
+744,50% Dark Bites,2022-07-18,126,2
+745,Dark Chocos,2022-05-10,109,2
+746,Organic Choco Syrup,2022-03-18,92,2
+747,50% Dark Bites,2022-06-15,56,1
+748,Dark Chocos,2022-05-12,58,1
+749,Drinking Coco,2022-06-23,110,2
+750,White Choco,2022-04-21,171,2
+751,Eclairs,2022-08-17,117,2
+752,Eclairs,2022-02-07,51,1
+753,White Choco,2022-03-17,118,2
+754,Drinking Coco,2022-08-01,79,1
+755,Dark Chocos,2022-03-18,29,1
+756,White Choco,2022-06-14,103,2
+757,Eclairs,2022-04-22,155,2
+758,Eclairs,2022-01-18,31,1
+759,White Choco,2022-08-26,128,2
+760,White Choco,2022-06-10,419,0
+761,Milk Chips,2022-01-31,7,3
+762,White Choco,2022-04-08,106,2
+763,Drinking Coco,2022-06-07,68,1
+764,50% Dark Bites,2022-02-10,44,1
+765,Dark Chocos,2022-05-16,457,0
+766,Drinking Coco,2022-03-18,524,0
+767,Dark Chocos,2022-07-13,137,2
+768,White Choco,2022-07-25,86,2
+769,Organic Choco Syrup,2022-08-19,296,0
+770,Milk Chips,2022-06-24,597,0
+771,White Choco,2022-06-20,149,2
+772,White Choco,2022-08-02,207,0
+773,Milk Chips,2022-02-22,93,2
+774,Dark Chocos,2022-02-01,23,3
+775,Milk Chips,2022-02-14,305,0
+776,Dark Chocos,2022-02-24,125,2
+777,Dark Chocos,2022-03-18,129,2
+778,Eclairs,2022-08-30,252,0
+779,Drinking Coco,2022-05-09,75,1
+780,White Choco,2022-01-18,87,2
+781,50% Dark Bites,2022-07-04,342,0
+782,White Choco,2022-06-03,13,3
+783,Drinking Coco,2022-02-23,30,1
+784,White Choco,2022-05-09,203,0
+785,Milk Chips,2022-06-06,106,2
+786,50% Dark Bites,2022-07-04,234,0
+787,50% Dark Bites,2022-06-06,100,2
+788,Eclairs,2022-05-13,91,2
+789,50% Dark Bites,2022-01-31,277,0
+790,50% Dark Bites,2022-06-30,42,1
+791,White Choco,2022-08-25,249,0
+792,White Choco,2022-01-10,97,2
+793,White Choco,2022-08-22,8,3
+794,50% Dark Bites,2022-04-14,275,0
+795,White Choco,2022-05-31,313,0
+796,White Choco,2022-04-08,323,0
+797,50% Dark Bites,2022-02-21,155,2
+798,White Choco,2022-03-30,377,0
+799,White Choco,2022-03-02,2,3
+800,Dark Chocos,2022-07-28,170,2
+801,Milk Chips,2022-03-24,38,1
+802,Milk Chips,2022-08-11,105,2
+803,Eclairs,2022-05-17,166,2
+804,Organic Choco Syrup,2022-05-18,164,2
+805,Drinking Coco,2022-08-17,171,2
+806,Eclairs,2022-04-04,49,1
+807,50% Dark Bites,2022-08-09,205,0
+808,50% Dark Bites,2022-01-17,313,0
+809,50% Dark Bites,2022-02-14,29,1
+810,Dark Chocos,2022-05-16,307,0
+811,White Choco,2022-03-16,121,2
+812,Milk Chips,2022-01-31,285,0
+813,50% Dark Bites,2022-03-10,205,0
+814,50% Dark Bites,2022-06-30,157,2
+815,Eclairs,2022-03-01,182,2
+816,50% Dark Bites,2022-05-27,100,2
+817,Dark Chocos,2022-07-11,223,0
+818,Dark Chocos,2022-03-02,61,1
+819,White Choco,2022-03-04,133,2
+820,50% Dark Bites,2022-06-23,228,0
+821,Eclairs,2022-01-27,233,0
+822,Dark Chocos,2022-01-14,425,0
+823,White Choco,2022-07-29,24,1
+824,White Choco,2022-05-13,495,0
+825,Drinking Coco,2022-02-03,170,2
+826,White Choco,2022-05-27,26,1
+827,50% Dark Bites,2022-02-18,24,1
+828,White Choco,2022-01-28,33,1
+829,Eclairs,2022-06-29,109,2
+830,50% Dark Bites,2022-01-13,276,0
+831,Milk Chips,2022-06-27,164,2
+832,50% Dark Bites,2022-03-29,1,3
+833,50% Dark Bites,2022-06-03,160,2
+834,White Choco,2022-03-21,98,2
+835,Eclairs,2022-04-12,46,1
+836,White Choco,2022-01-19,259,0
+837,Dark Chocos,2022-04-06,310,0
+838,Dark Chocos,2022-08-02,78,1
+839,Eclairs,2022-04-12,136,2
+840,50% Dark Bites,2022-07-21,130,2
+841,Drinking Coco,2022-03-22,24,1
+842,Drinking Coco,2022-05-09,5,3
+843,Drinking Coco,2022-08-09,109,2
+844,Organic Choco Syrup,2022-07-20,294,0
+845,Milk Chips,2022-04-14,413,0
+846,50% Dark Bites,2022-01-25,136,2
+847,Eclairs,2022-04-25,175,2
+848,Milk Chips,2022-01-17,237,0
+849,Eclairs,2022-08-15,125,2
+850,White Choco,2022-06-02,16,3
+851,50% Dark Bites,2022-06-30,135,2
+852,White Choco,2022-02-10,91,2
+853,50% Dark Bites,2022-02-23,614,0
+854,50% Dark Bites,2022-01-27,216,0
+855,Dark Chocos,2022-05-26,317,0
+856,Milk Chips,2022-04-14,21,3
+857,White Choco,2022-08-01,154,2
+858,Eclairs,2022-08-22,222,0
+859,White Choco,2022-07-22,157,2
+860,White Choco,2022-04-28,27,1
+861,Eclairs,2022-05-30,350,0
+862,Dark Chocos,2022-07-21,157,2
+863,50% Dark Bites,2022-08-02,468,0
+864,Milk Chips,2022-06-15,130,2
+865,50% Dark Bites,2022-07-05,130,2
+866,White Choco,2022-04-12,518,0
+867,Milk Chips,2022-08-18,105,2
+868,Dark Chocos,2022-01-12,293,0
+869,50% Dark Bites,2022-08-11,15,3
+870,White Choco,2022-01-13,384,0
+871,Drinking Coco,2022-04-29,135,2
+872,Milk Chips,2022-07-07,92,2
+873,Dark Chocos,2022-03-11,4,3
+874,Milk Chips,2022-02-16,239,0
+875,50% Dark Bites,2022-01-07,33,1
+876,50% Dark Bites,2022-01-12,518,0
+877,Eclairs,2022-06-09,147,2
+878,Eclairs,2022-05-16,84,2
+879,50% Dark Bites,2022-06-23,94,2
+880,White Choco,2022-01-28,194,2
+881,Dark Chocos,2022-07-14,216,0
+882,50% Dark Bites,2022-04-18,247,0
+883,Dark Chocos,2022-06-14,79,1
+884,Dark Chocos,2022-04-15,237,0
+885,Drinking Coco,2022-05-19,63,1
+886,50% Dark Bites,2022-04-13,172,2
+887,Organic Choco Syrup,2022-08-15,408,0
+888,Organic Choco Syrup,2022-08-22,233,0
+889,Drinking Coco,2022-04-22,59,1
+890,Organic Choco Syrup,2022-08-03,123,2
+891,50% Dark Bites,2022-01-04,229,0
+892,Milk Chips,2022-01-13,198,0
+893,Drinking Coco,2022-05-11,32,1
+894,Drinking Coco,2022-02-16,236,0
+895,50% Dark Bites,2022-05-20,67,1
+896,50% Dark Bites,2022-02-03,438,0
+897,White Choco,2022-05-06,167,2
+898,Organic Choco Syrup,2022-06-30,135,2
+899,White Choco,2022-03-22,148,2
+900,Dark Chocos,2022-02-17,54,1
+901,50% Dark Bites,2022-07-07,64,1
+902,Milk Chips,2022-03-16,181,2
+903,White Choco,2022-08-12,114,2
+904,Milk Chips,2022-01-21,181,2
+905,Dark Chocos,2022-05-06,151,2
+906,Dark Chocos,2022-06-24,137,2
+907,50% Dark Bites,2022-05-05,163,2
+908,White Choco,2022-03-25,84,2
+909,50% Dark Bites,2022-02-14,140,2
+910,50% Dark Bites,2022-05-12,187,2
+911,White Choco,2022-01-25,169,2
+912,50% Dark Bites,2022-06-28,12,3
+913,50% Dark Bites,2022-07-13,194,2
+914,Dark Chocos,2022-05-16,252,0
+915,Milk Chips,2022-03-14,168,2
+916,Milk Chips,2022-08-15,261,0
+917,Dark Chocos,2022-02-16,256,0
+918,White Choco,2022-06-15,43,1
+919,White Choco,2022-05-27,100,2
+920,50% Dark Bites,2022-06-14,98,2
+921,Eclairs,2022-02-25,76,1
+922,Milk Chips,2022-08-04,262,0
+923,White Choco,2022-06-28,244,0
+924,White Choco,2022-04-05,12,3
+925,Drinking Coco,2022-07-05,113,2
+926,Eclairs,2022-01-20,48,1
+927,50% Dark Bites,2022-02-16,131,2
+928,50% Dark Bites,2022-07-12,174,2
+929,White Choco,2022-06-16,254,0
+930,Organic Choco Syrup,2022-04-13,284,0
+931,Dark Chocos,2022-02-21,67,1
+932,Organic Choco Syrup,2022-05-11,249,0
+933,Dark Chocos,2022-04-15,313,0
+934,Drinking Coco,2022-06-07,167,2
+935,50% Dark Bites,2022-06-27,286,0
+936,Milk Chips,2022-07-29,109,2
+937,White Choco,2022-06-02,166,2
+938,Dark Chocos,2022-01-26,85,2
+939,White Choco,2022-03-02,142,2
+940,Milk Chips,2022-01-10,104,2
+941,Milk Chips,2022-06-27,115,2
+942,Dark Chocos,2022-06-30,18,3
+943,50% Dark Bites,2022-07-08,80,1
+944,White Choco,2022-06-08,88,2
+945,White Choco,2022-08-18,212,0
+946,Milk Chips,2022-04-08,306,0
+947,White Choco,2022-08-08,181,2
+948,Dark Chocos,2022-08-26,65,1
+949,White Choco,2022-01-14,158,2
+950,Drinking Coco,2022-08-11,271,0
+951,Eclairs,2022-05-31,24,1
+952,Dark Chocos,2022-07-11,10,3
+953,50% Dark Bites,2022-03-02,304,0
+954,White Choco,2022-07-13,88,2
+955,White Choco,2022-08-03,133,2
+956,Drinking Coco,2022-03-01,165,2
+957,50% Dark Bites,2022-04-13,150,2
+958,White Choco,2022-02-14,180,2
+959,50% Dark Bites,2022-07-26,213,0
+960,50% Dark Bites,2022-01-27,133,2
+961,Drinking Coco,2022-04-14,446,0
+962,Eclairs,2022-05-19,141,2
+963,Eclairs,2022-02-09,58,1
+964,White Choco,2022-05-25,58,1
+965,White Choco,2022-01-26,76,1
+966,50% Dark Bites,2022-07-04,296,0
+967,Eclairs,2022-04-13,73,1
+968,White Choco,2022-01-25,119,2
+969,50% Dark Bites,2022-04-25,78,1
+970,Eclairs,2022-06-10,392,0
+971,50% Dark Bites,2022-08-22,51,1
+972,Milk Chips,2022-06-27,207,0
+973,Dark Chocos,2022-06-30,40,1
+974,Eclairs,2022-08-30,100,2
+975,White Choco,2022-08-23,57,1
+976,White Choco,2022-08-26,42,1
+977,Dark Chocos,2022-03-09,156,2
+978,50% Dark Bites,2022-04-20,23,3
+979,50% Dark Bites,2022-06-10,539,0
+980,50% Dark Bites,2022-02-08,158,2
+981,50% Dark Bites,2022-08-25,22,3
+982,Drinking Coco,2022-02-16,73,1
+983,White Choco,2022-05-30,27,1
+984,Dark Chocos,2022-06-29,64,1
+985,Dark Chocos,2022-06-16,133,2
+986,50% Dark Bites,2022-03-04,149,2
+987,Drinking Coco,2022-03-15,434,0
+988,Dark Chocos,2022-01-27,85,2
+989,50% Dark Bites,2022-07-05,118,2
+990,50% Dark Bites,2022-03-29,299,0
+991,Eclairs,2022-05-12,35,1
+992,50% Dark Bites,2022-03-11,44,1
+993,Eclairs,2022-07-11,299,0
+994,Organic Choco Syrup,2022-08-01,62,1
+995,White Choco,2022-02-16,200,0
+996,Milk Chips,2022-04-13,235,0
+997,Organic Choco Syrup,2022-02-14,363,0
+998,Drinking Coco,2022-03-14,68,1
+999,White Choco,2022-04-26,26,1
+1000,White Choco,2022-04-05,200,0
+1001,50% Dark Bites,2022-03-03,264,0
+1002,White Choco,2022-06-13,175,2
+1003,Milk Chips,2022-02-14,352,0
+1004,White Choco,2022-04-18,183,2
+1005,50% Dark Bites,2022-02-01,417,0
+1006,Dark Chocos,2022-08-04,146,2
+1007,Eclairs,2022-04-05,158,2
+1008,White Choco,2022-01-26,168,2
+1009,Milk Chips,2022-01-21,176,2
+1010,Milk Chips,2022-08-22,172,2
+1011,50% Dark Bites,2022-01-27,224,0
+1012,Dark Chocos,2022-02-16,68,1
+1013,White Choco,2022-01-03,46,1
+1014,50% Dark Bites,2022-08-24,2,3
+1015,White Choco,2022-02-07,417,0
+1016,White Choco,2022-02-11,109,2
+1017,50% Dark Bites,2022-03-29,81,2
+1018,Drinking Coco,2022-06-15,350,0
+1019,White Choco,2022-04-26,142,2
+1020,50% Dark Bites,2022-07-15,264,0
+1021,50% Dark Bites,2022-06-23,20,3
+1022,Drinking Coco,2022-01-11,421,0
+1023,Dark Chocos,2022-02-09,271,0
+1024,Eclairs,2022-06-06,204,0
+1025,50% Dark Bites,2022-08-10,235,0
+1026,White Choco,2022-01-04,46,1
+1027,Milk Chips,2022-04-08,15,3
+1028,Dark Chocos,2022-03-02,430,0
+1029,50% Dark Bites,2022-06-15,709,0
+1030,Milk Chips,2022-02-14,47,1
+1031,Milk Chips,2022-07-05,380,0
+1032,Dark Chocos,2022-01-12,465,0
+1033,Dark Chocos,2022-03-03,96,2
+1034,Dark Chocos,2022-05-18,188,2
+1035,50% Dark Bites,2022-07-28,202,0
+1036,White Choco,2022-02-07,106,2
+1037,Dark Chocos,2022-05-30,421,0
+1038,White Choco,2022-04-25,27,1
+1039,50% Dark Bites,2022-02-16,45,1
+1040,50% Dark Bites,2022-05-04,60,1
+1041,Milk Chips,2022-06-02,77,1
+1042,50% Dark Bites,2022-07-11,464,0
+1043,White Choco,2022-06-07,60,1
+1044,Eclairs,2022-07-06,157,2
+1045,White Choco,2022-06-15,154,2
+1046,Dark Chocos,2022-04-14,239,0
+1047,50% Dark Bites,2022-08-08,163,2
+1048,50% Dark Bites,2022-03-29,28,1
+1049,50% Dark Bites,2022-07-04,76,1
+1050,White Choco,2022-02-16,96,2
+1051,White Choco,2022-05-02,156,2
+1052,Eclairs,2022-07-21,106,2
+1053,White Choco,2022-08-18,235,0
+1054,50% Dark Bites,2022-06-22,259,0
+1055,Drinking Coco,2022-07-19,126,2
+1056,Drinking Coco,2022-08-12,85,2
+1057,Organic Choco Syrup,2022-06-07,132,2
+1058,Drinking Coco,2022-03-08,91,2
+1059,Organic Choco Syrup,2022-04-08,167,2
+1060,Eclairs,2022-05-06,203,0
+1061,50% Dark Bites,2022-05-31,11,3
+1062,Dark Chocos,2022-01-13,295,0
+1063,Milk Chips,2022-03-15,77,1
+1064,Drinking Coco,2022-02-16,319,0
+1065,Milk Chips,2022-01-14,196,0
+1066,50% Dark Bites,2022-03-21,102,2
+1067,50% Dark Bites,2022-05-17,312,0
+1068,50% Dark Bites,2022-08-08,55,1
+1069,Dark Chocos,2022-04-26,82,2
+1070,Milk Chips,2022-04-15,260,0
+1071,Eclairs,2022-05-19,591,0
+1072,50% Dark Bites,2022-01-10,24,1
+1073,Milk Chips,2022-05-04,228,0
+1074,50% Dark Bites,2022-04-05,268,0
+1075,Milk Chips,2022-01-17,68,1
+1076,White Choco,2022-03-22,173,2
+1077,50% Dark Bites,2022-07-05,93,2
+1078,Dark Chocos,2022-04-27,338,0
+1079,Eclairs,2022-08-12,73,1
+1080,Drinking Coco,2022-03-11,251,0
+1081,White Choco,2022-05-13,229,0
+1082,White Choco,2022-05-12,91,2
+1083,White Choco,2022-01-12,194,2
+1084,Dark Chocos,2022-03-29,403,0
+1085,Dark Chocos,2022-03-14,12,3
+1086,White Choco,2022-05-24,195,2
+1087,50% Dark Bites,2022-01-28,75,1
+1088,Eclairs,2022-05-24,96,2
+1089,Drinking Coco,2022-08-19,205,0
+1090,White Choco,2022-05-17,323,0
+1091,50% Dark Bites,2022-06-07,119,2
+1092,50% Dark Bites,2022-07-26,217,0
+1093,Eclairs,2022-07-28,384,0
+1094,Milk Chips,2022-05-23,344,0

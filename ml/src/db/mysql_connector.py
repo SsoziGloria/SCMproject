@@ -33,3 +33,7 @@ class MySQLConnector:
         """Dispose the engine connection pool."""
         if self.engine:
             self.engine.dispose()
+
+    def get_engine(self):
+        url = f"mysql+mysqlconnector://{self.user}:{self.password}@{self.host}/{self.database}"
+        return create_engine(url)        
