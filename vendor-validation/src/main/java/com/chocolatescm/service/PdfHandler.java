@@ -11,33 +11,34 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.chocolatescm.model.Vendor;
 
 @Service
 
-public class PdfHandler<MultipartFile> {
+public class PdfHandler {
 
     public static String getVALID_VENDOR_TXT() {
         return VALID_VENDOR_TXT;
     }
 
     public Vendor extractVendorData(MultipartFile file) throws IOException {
-        String text = new String(((String) file).getBytes(), StandardCharsets.UTF_8);
+        String text = new String(file.getBytes(), StandardCharsets.UTF_8);
         Map<String, String> data = parseTextData(text);
-        
+
         Vendor vendor = new Vendor();
-    vendor.setName(data.get("Vendor Name"));
-    return vendor;
-}
+        vendor.setName(data.get("Vendor Name"));
+        return vendor;
+    }
 
-private static final String VALID_VENDOR_TXT = "valid_vendor.txt";
+    private static final String VALID_VENDOR_TXT = "valid_vendor.txt";
 
-public Vendor extractVendorData() throws IOException {
+    public Vendor extractVendorData() throws IOException {
         String text = readTextFromResources();
         Map<String, String> data = parseTextData(text);
-        
-          Vendor vendor = new Vendor(); 
+
+        Vendor vendor = new Vendor();
         vendor.setName(data.get("Vendor Name"));
         vendor.setContactPerson(data.get("Contact Person"));
         vendor.setEmail(data.get("Email"));
@@ -49,7 +50,7 @@ public Vendor extractVendorData() throws IOException {
         vendor.setAccountNumber(data.get("Account Number"));
         vendor.setComplianceStatus(extractComplianceStatus(text));
         vendor.setCertification(extractCertification(text));
-        
+
         return vendor;
     }
 
@@ -84,7 +85,9 @@ public Vendor extractVendorData() throws IOException {
     }
 
     private double parseRevenue(String revenueStr) {
-        if (revenueStr == null) return 0.0;
+        if (revenueStr == null) {
+            return 0.0;
+        }
         try {
             return Double.parseDouble(revenueStr.replaceAll("[^0-9]", ""));
         } catch (NumberFormatException e) {
