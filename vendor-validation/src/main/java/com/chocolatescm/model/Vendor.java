@@ -1,23 +1,23 @@
-
 package com.chocolatescm.model;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-
 @Entity
 @Table(name = "vendors")
 
 public class Vendor {
 
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "vendor_id")
+    private Long vendorId;
 
     private String name;
     private String email;
@@ -33,26 +33,48 @@ public class Vendor {
     private String accountNumber;
     private String complianceStatus;
     private String certification;
-    
+
     // Add all getters and setters here
-
-   
-
     // Getters and Setters
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public double getRevenue() { return revenue; }
-    public void setRevenue(double revenue) { this.revenue = revenue; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getCertificationStatus() { return certificationStatus; }
-    public void setCertificationStatus(String status) { this.certificationStatus = status; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public LocalDate getVisitDate() { return visitDate; }
-    public void setVisitDate(LocalDate date) { this.visitDate = date; }
+    public double getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(double revenue) {
+        this.revenue = revenue;
+    }
+
+    public String getCertificationStatus() {
+        return certificationStatus;
+    }
+
+    public void setCertificationStatus(String status) {
+        this.certificationStatus = status;
+    }
+
+    public LocalDate getVisitDate() {
+        return visitDate;
+    }
+
+    public void setVisitDate(LocalDate date) {
+        this.visitDate = date;
+    }
 
     public String getPhone() {
         return phone;
@@ -126,16 +148,12 @@ public class Vendor {
         this.contactPerson = contactPerson;
     }
 
-    public Long getId() {
-        return id;
+    public Long getVendorId() {
+        return vendorId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setVendorId(Long vendorId) {
+        this.vendorId = vendorId;
     }
-
-    
-
-   
 
 }

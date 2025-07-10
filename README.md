@@ -349,8 +349,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 ### 3. Start Java Vendor Validation API
 ```bash
 # In a new terminal
-cd vendor-validation
-mvn spring-boot:run
+cd vendor-validationmvn spring-boot:run
 ```
 
 ### 4. Verify All Services
@@ -419,6 +418,7 @@ A sample vendor file is included at `vendor-validation/src/main/resources/valid_
 
 For issues related to:
 - **Laravel Application**: Check Laravel logs at `storage/logs/laravel.log`
-- **Java API**: Check terminal output when running the Java application
+- **Java API
+**: Check terminal output when running the Java application
 - **Database**: Verify MySQL connection and database existence
 - **Integration**: Test API endpoints individually first

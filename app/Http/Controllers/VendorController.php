@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class VendorController extends Controller
 {
@@ -32,7 +33,6 @@ class VendorController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:vendors,email',
             'company_name' => 'required',
-            // Add more validation as needed
         ]);
 
         Vendor::create($request->all());
@@ -68,7 +68,6 @@ class VendorController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:vendors,email,' . $vendor->id,
             'company_name' => 'required',
-            // Add more validation as needed
         ]);
 
         $vendor->update($request->all());
@@ -85,5 +84,50 @@ class VendorController extends Controller
         $vendor->delete();
 
         return redirect()->route('vendors.index')->with('success', 'Vendor deleted successfully!');
+    }
+
+    /**
+     * Show the form to upload vendor PDF.
+     */
+    public function showValidationForm()
+    {
+        return view('vendors.validate');
+    }
+
+    /**
+     * Handle PDF upload and validate via Java API.
+     */
+    public function validateViaJava(Request $request)
+    {
+        $request->validate([
+            'vendor_pdf' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        try {
+            $response = Http::attach(
+                'file',
+                $request->file('vendor_pdf')->get(),
+                $request->file('vendor_pdf')->getClientOriginalName()
+            )->post(env('JAVA_API_URL') . '/vendors/validate');
+
+            $result = $response->body();
+        } catch (\Exception $e) {
+            $result = "Error connecting to Java API: " . $e->getMessage();
+        }
+
+        return view('vendors.result', ['result' => $result]);
+    }
+
+    /**
+     * Test if the Java API is online.
+     */
+    public function testJavaApi()
+    {
+        try {
+            $response = Http::get(env('JAVA_API_URL') . '/vendors/ping');
+            return response()->json(['status' => $response->body()]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'Java API unreachable', 'error' => $e->getMessage()], 500);
+        }
     }
 }
