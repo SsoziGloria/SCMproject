@@ -12,28 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vendors', function (Blueprint $table) {
-            $table->id();
+            $table->id('vendor_id');
+            $table->string('name', 100);
+            $table->string('email', 100)->unique();
+            $table->string('company_name', 150);
+            $table->string('contact_person', 100)->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('address', 255)->nullable();
+            $table->string('bank_name', 100)->nullable();
+            $table->string('account_number', 50)->nullable();
+            $table->string('certification', 100)->nullable();
+            $table->string('country', 50);
+            $table->decimal('financial_score', 10, 2)->default(0.00);
+            $table->boolean('regulatory_compliance')->default(false);
+            $table->enum('reputation', ['Excellent', 'Good', 'Average', 'Poor'])->default('Average');
+            $table->enum('validation_status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
+            $table->dateTime('visit_scheduled_at')->nullable();
+            $table->string('pdf_path')->nullable(); // optional: to store uploaded PDF file path
             $table->timestamps();
-            Schema::create('vendors', function (Blueprint $table) {
-    $table->id('vendor_id');
-    $table->string('name', 100);
-    $table->string('email', 100);
-    $table->string('company_name', 150);
-    $table->string('contact_person', 100)->nullable();
-    $table->string('phone', 20)->nullable();
-    $table->string('address', 255)->nullable();
-    $table->string('bank_name', 100)->nullable();
-    $table->string('account_number', 50)->nullable();
-    $table->string('certification', 100)->nullable();
-    $table->string('country', 50);
-    $table->decimal('financial_score', 10, 2);
-    $table->boolean('regulatory_compliance');
-    $table->enum('reputation', ['Excellent', 'Good', 'Average', 'Poor']);
-    $table->enum('validation_status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
-    $table->dateTime('visit_scheduled_at')->nullable();
-    $table->timestamps();
-});
-
         });
     }
 
@@ -45,5 +41,3 @@ return new class extends Migration
         Schema::dropIfExists('vendors');
     }
 };
-
-

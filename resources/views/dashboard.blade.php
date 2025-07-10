@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>Dashboard</h1>
+        <h1>VENDOR VALIDATION</h1>
         <p>Total Inventory Items: {{$inventoryCount}}</p>
         
         <nav>

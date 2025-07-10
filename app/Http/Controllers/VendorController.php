@@ -8,25 +8,16 @@ use Illuminate\Support\Facades\Http;
 
 class VendorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return view('vendors.index', ['vendors' => Vendor::all()]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('vendors.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -40,26 +31,17 @@ class VendorController extends Controller
         return redirect()->route('vendors.index')->with('success', 'Vendor submitted successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         return view('vendors.show', ['vendor' => Vendor::findOrFail($id)]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $vendor = Vendor::findOrFail($id);
         return view('vendors.edit', compact('vendor'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $vendor = Vendor::findOrFail($id);
@@ -75,9 +57,6 @@ class VendorController extends Controller
         return redirect()->route('vendors.index')->with('success', 'Vendor updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $vendor = Vendor::findOrFail($id);
@@ -87,7 +66,7 @@ class VendorController extends Controller
     }
 
     /**
-     * Show the form to upload vendor PDF.
+     * Show vendor PDF upload form.
      */
     public function showValidationForm()
     {
@@ -95,7 +74,7 @@ class VendorController extends Controller
     }
 
     /**
-     * Handle PDF upload and validate via Java API.
+     * Send uploaded PDF to Spring Boot for validation.
      */
     public function validateViaJava(Request $request)
     {
@@ -110,16 +89,20 @@ class VendorController extends Controller
                 $request->file('vendor_pdf')->getClientOriginalName()
             )->post(env('JAVA_API_URL') . '/vendors/validate');
 
-            $result = $response->body();
+            if ($response->successful()) {
+                $result = $response->body(); // APPROVED / REJECTED
+            } else {
+                $result = 'Validation failed. Status: ' . $response->status();
+            }
         } catch (\Exception $e) {
-            $result = "Error connecting to Java API: " . $e->getMessage();
+            $result = "Java API error: " . $e->getMessage();
         }
 
         return view('vendors.result', ['result' => $result]);
     }
 
     /**
-     * Test if the Java API is online.
+     * Test Java API connectivity.
      */
     public function testJavaApi()
     {
