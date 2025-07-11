@@ -13,6 +13,40 @@
             break;
         }
     }
+
+    $productManagementRoutes = [
+        'products.index',
+        'products',
+        'categories.index',
+        // add more if needed
+    ];
+    // Check if current route matches any in the group
+    $isproductManagementActive = false;
+    foreach ($productManagementRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isproductManagementActive = true;
+            break;
+        }
+    }
+
+    $orderManagementRoutes = [
+        'orders.incoming',
+        'orders.details',
+        'orders.reject',
+        'orders.index',
+        'orders.pending',
+        'orders',
+        'orders.show',
+        'orders.edit',
+    ];
+
+    $isorderManagementActive = false;
+    foreach ($productManagementRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isproductManagementActive = true;
+            break;
+        }
+    }
 @endphp
 
 <aside id="sidebar" class="sidebar">
@@ -69,13 +103,16 @@
         </li><!-- End User Management Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ request()->routeIs('products.index') ? '' : 'collapsed' }}"
+                data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-shopping-bag-2-line"></i><span>Product Management</span><i
                     class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="forms-nav" class="nav-content collapse {{ $isproductManagementActive ? 'show' : '' }}"
+                data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('products.index') }}">
+                    <a href="{{ route('products.index') }}"
+                        class="nav-link {{ request()->routeIs('products.index') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>
@@ -104,28 +141,28 @@
             </a>
             <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('orders.incoming') }}">
+                    <a href="{{ route('orders.index') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Pending Orders</span>
+                    <a href="{{ route('orders.index', ['status' => 'pending']) }}">
+                        <i class="bi bi-circle"></i><span>Pending</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>In Progress</span>
+                    <a href="{{ route('orders.index', ['status' => 'shipped']) }}">
+                        <i class="bi bi-circle"></i><span>Shipped</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Completed</span>
+                    <a href="{{ route('orders.index', ['status' => 'delivered']) }}">
+                        <i class="bi bi-circle"></i><span>Delivered</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Cancelled</span>
+                    <a href="{{ route('orders.index', ['status' => 'cancelled']) }}">
+                        <i class="bi bi-circle"></i><span>Returns</span>
                     </a>
                 </li>
             </ul>

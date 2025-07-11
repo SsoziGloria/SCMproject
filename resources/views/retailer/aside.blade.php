@@ -14,29 +14,29 @@
             <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-menu-button-wide"></i><span>Orders</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('orders.incoming') }}">
+                    <a href="{{ route('orders.index') }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.index', ['status' => 'pending']) }}">
                         <i class="bi bi-circle"></i><span>Pending</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.index', ['status' => 'shipped']) }}">
                         <i class="bi bi-circle"></i><span>Shipped</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.index', ['status' => 'delivered']) }}">
                         <i class="bi bi-circle"></i><span>Delivered</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('orders.index', ['status' => 'cancelled']) }}">
                         <i class="bi bi-circle"></i><span>Returns</span>
                     </a>
                 </li>

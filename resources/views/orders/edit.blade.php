@@ -22,7 +22,7 @@
         <div class="mb-3">
             <label>Status:</label>
             <select name="status" class="form-control" required>
-                @foreach(['pending', 'processing', 'shipped', 'delivered', 'cancelled'] as $status)
+                @foreach(['pending', 'processing', 'delivered', 'cancelled'] as $status)
                     <option value="{{ $status }}" @if($order->status == $status) selected @endif>
                         {{ ucfirst($status) }}
                     </option>

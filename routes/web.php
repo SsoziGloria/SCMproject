@@ -15,6 +15,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ShipmentController;
 
 
 use App\Http\Controllers\SearchController;
@@ -39,19 +40,26 @@ Route::post('/supplier/register', [SupplierController::class, 'register'])->name
 
 Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
 
+// Inventory routes
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
+    Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+    Route::get('/inventory/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
+    Route::put('/inventory/{inventory}', [InventoryController::class, 'update'])->name('inventory.update');
+    Route::put('/inventory/{inventory}/status', [InventoryController::class, 'updateStatus'])->name('inventory.update-status');
+    Route::get('/inventory/{inventory}/history', [InventoryController::class, 'history'])->name('inventory.history');
+    Route::get('/inventory/export', [InventoryController::class, 'export'])->name('inventory.export');
 
-//for reorders
-Route::get('/inventories/reorders', [InventoryController::class, 'reorders'])->name('inventories.reorders');
-
-
-//for adjustments
-Route::get('/inventories/adjustments', [InventoryController::class, 'adjustments'])->name('inventories.adjustments');
-Route::get('/inventories/adjustments/create', [InventoryController::class, 'createAdjustment'])->name('inventories.adjustments.create');
-Route::post('/inventories/adjustments', [InventoryController::class, 'storeAdjustment'])->name('inventories.adjustments.store');
+    Route::get('/inventories/reorders', [InventoryController::class, 'reorders'])->name('inventories.reorders');
+    Route::get('/inventories/adjustments', [InventoryController::class, 'adjustments'])->name('inventories.adjustments');
+    Route::get('/inventories/adjustments/create', [InventoryController::class, 'createAdjustment'])->name('inventories.adjustments.create');
+    Route::post('/inventories/adjustments', [InventoryController::class, 'storeAdjustment'])->name('inventories.adjustments.store');
+});
 
 Route::resource('inventories', InventoryController::class)->middleware('auth');
 
-//Dashboard and Inventory routes
+//Dashboard routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         $role = auth()->user()->role;
@@ -135,8 +143,8 @@ Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name
 
 
 
-Route::get('/orders/incoming', [OrderController::class, 'index'])->name('orders');
-Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'index'])->name('orders.incoming');
+//Route::get('/orders/incoming', [OrderController::class, 'index'])->name('orders');
+//Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'index'])->name('orders.incoming');
 //Route::middleware('auth')->get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 // Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'incoming'])->name('orders.incoming');
 
@@ -239,3 +247,16 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+
+// Shipment Routes
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/shipments', [ShipmentController::class, 'index'])->name('shipments.index');
+    Route::get('/shipments/create', [ShipmentController::class, 'create'])->name('shipments.create');
+    Route::post('/shipments', [ShipmentController::class, 'store'])->name('shipments.store');
+    Route::get('/shipments/{shipment}', [ShipmentController::class, 'show'])->name('shipments.show');
+    Route::get('/shipments/{shipment}/edit', [ShipmentController::class, 'edit'])->name('shipments.edit');
+    Route::put('/shipments/{shipment}', [ShipmentController::class, 'update'])->name('shipments.update');
+    Route::put('/shipments/{shipment}/status', [ShipmentController::class, 'updateStatus'])->name('shipments.update-status');
+    Route::delete('/shipments/{shipment}', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
+    Route::get('/shipments/export', [ShipmentController::class, 'export'])->name('shipments.export');
+});

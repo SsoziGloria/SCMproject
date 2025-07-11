@@ -21,30 +21,72 @@ class OrderController extends Controller
     //list all orders for the authorized retailer
     public function index(Request $request)
     {
-        if (Auth::user()->role == 'user') {
-            $orders = Order::where('user_id', Auth::id())->latest()->paginate(15);
-        } else {
-            $orders = Order::paginate(15);
-        }
+        $user = Auth::user();
+        $query = Order::with(['items.product', 'user']);
 
-        $query = Order::query();
+        // Role-based filtering
+        if ($user->role === 'supplier') {
+            $query->whereHas('items.product', function ($q) use ($user) {
+                $q->where('supplier_id', $user->id);
+            });
+        } elseif ($user->role === 'retailer' || $user->role === 'admin') {
+            // Show all orders
+        } else {
+            // Customer: only their own orders
+            $query->where('user_id', $user->id);
+        }
 
         // Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-        // Optionally calculate total_orders (could be a custom query or just $orders->total())
+
+        // Date range filter
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Search filter (order number or product name)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                    ->orWhereHas('items.product', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Sorting
+        switch ($request->get('sort', 'newest')) {
+            case 'oldest':
+                $query->oldest();
+                break;
+            case 'total_high':
+                $query->orderBy('total_amount', 'desc');
+                break;
+            case 'total_low':
+                $query->orderBy('total_amount', 'asc');
+                break;
+            default:
+                $query->latest();
+        }
+
+        // Pagination
+        $orders = $query->paginate(15)->withQueryString();
+
+        // Stats (optional, for dashboard cards)
         $stats = [
             'total_orders' => Order::count(),
-            'total_revenue' => Order::where('payment_status', 'paid')->sum('total_amount'),
+            'total_revenue' => Order::sum('total_amount'),
             'pending_orders' => Order::where('status', 'pending')->count(),
             'shipped_orders' => Order::where('status', 'shipped')->count(),
         ];
 
-        return view('orders.index', [
-            'orders' => $orders,
-            'stats' => $stats,
-        ]);
+        return view('orders.index', compact('orders', 'stats'));
     }
 
     //show the form for creating a new order
@@ -77,7 +119,6 @@ class OrderController extends Controller
 
         $orderNumber = 'ORD-' . strtoupper(uniqid());
 
-        // Create order directly
         $order = Order::create([
             'order_number' => $orderNumber,
             'user_id' => Auth::id(),
@@ -105,7 +146,7 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
-        if ($order->user_id !== Auth::id()) {
+        if ($order->user_id === Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
         $products = Inventory::all();
@@ -116,7 +157,7 @@ class OrderController extends Controller
     // Update order
     public function update(Request $request, Order $order)
     {
-        if ($order->user_id !== Auth::id()) {
+        if ($order->user_id === Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -133,7 +174,7 @@ class OrderController extends Controller
     // Delete order
     public function destroy(Order $order)
     {
-        if ($order->user_id !== Auth::id()) {
+        if ($order->user_id === Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
         $order->delete();

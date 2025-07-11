@@ -2,27 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Inventory;
-use App\Models\Product;
 use App\Models\Supplier;
+use App\Models\Product;
 use App\Models\Shipment;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
 use App\Models\Adjustment;
+
 
 class InventoryController extends Controller
 {
     /**
      * Display a paginated listing of the inventory.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $inventories = Inventory::all();
-        return view('inventories.index', compact('inventories'));
+        // Base query
+        $query = Inventory::with(['product', 'supplier']);
 
+        // Apply filters
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('product_name', 'like', "%{$search}%")
+                    ->orWhere('batch_number', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('supplier_id')) {
+            $query->where('supplier_id', $request->supplier_id);
+        }
+
+        if ($request->filled('expiration')) {
+            if ($request->expiration === 'soon') {
+                $query->expiringSoon();
+            } elseif ($request->expiration === 'expired') {
+                $query->expired();
+            }
+        }
+
+        // Sort options
+        $sort = $request->get('sort', 'newest');
+        if ($sort === 'newest') {
+            $query->latest();
+        } elseif ($sort === 'oldest') {
+            $query->oldest();
+        } elseif ($sort === 'quantity_asc') {
+            $query->orderBy('quantity', 'asc');
+        } elseif ($sort === 'quantity_desc') {
+            $query->orderBy('quantity', 'desc');
+        } elseif ($sort === 'expiry') {
+            $query->whereNotNull('expiration_date')
+                ->orderBy('expiration_date', 'asc');
+        }
+
+        // Get inventory with pagination
+        $inventory = $query->paginate(15);
+
+        // Get all suppliers for filter dropdown
+        $suppliers = Supplier::where('status', 'active')->get();
+
+        // Stats for dashboard cards
+        $stats = [
+            'total_items' => Inventory::sum('quantity'),
+            'product_count' => Inventory::distinct('product_id')->count(),
+            'low_stock_count' => Inventory::lowStock()->count(),
+            'expiring_soon_count' => Inventory::expiringSoon()->count(),
+        ];
+
+        return view('inventory.index', compact('inventory', 'suppliers', 'stats'));
     }
 
     /**

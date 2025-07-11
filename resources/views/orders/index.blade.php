@@ -162,24 +162,26 @@
                                         <span class="fw-bold">UGX {{ number_format($order->total_amount, 0) }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge 
-                                                                                                @if($order->status === 'pending') bg-warning
-                                                                                                @elseif($order->status === 'processing') bg-info
-                                                                                                @elseif($order->status === 'shipped') bg-primary
-                                                                                                @elseif($order->status === 'delivered') bg-success
-                                                                                                @elseif($order->status === 'cancelled') bg-danger
-                                                                                                    @else bg-secondary
-                                                                                                @endif">
+                                        <span
+                                            class="badge 
+                                                                                                                                        @if($order->status === 'pending') bg-warning
+                                                                                                                                        @elseif($order->status === 'processing') bg-info
+                                                                                                                                        @elseif($order->status === 'shipped') bg-primary
+                                                                                                                                        @elseif($order->status === 'delivered') bg-success
+                                                                                                                                        @elseif($order->status === 'cancelled') bg-danger
+                                                                                                                                            @else bg-secondary
+                                                                                                                                        @endif">
                                             {{ ucfirst($order->status) }}
                                         </span>
                                     </td>
                                     <td>
                                         <div>{{ ucfirst(str_replace('_', ' ', $order->payment ?? 'N/A')) }}</div>
-                                        <span class="badge 
-                                                                                                @if($order->payment_status === 'paid') bg-success
-                                                                                                @elseif($order->payment_status === 'pending') bg-warning
-                                                                                                    @else bg-danger
-                                                                                                @endif">
+                                        <span
+                                            class="badge 
+                                                                                                                                        @if($order->payment_status === 'paid') bg-success
+                                                                                                                                        @elseif($order->payment_status === 'pending') bg-warning
+                                                                                                                                            @else bg-danger
+                                                                                                                                        @endif">
                                             {{ ucfirst($order->payment_status) }}
                                         </span>
                                     </td>
@@ -194,7 +196,7 @@
                                                 <i class="bi bi-eye"></i>
                                             </a>
 
-                                            @if(Auth::user()->role === 'admin')
+                                            @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'retailer' && $order->user_id !== Auth::id() && $order->status !== 'cancelled') || (Auth::user()->role === 'supplier' && $order->items->first()->product->supplier_id === Auth::id()) && $order->status !== 'cancelled')
                                                 <a href="{{ route('orders.edit', $order->id) }}"
                                                     class="btn btn-sm btn-outline-secondary me-1">
                                                     <i class="bi bi-pencil"></i>
@@ -206,6 +208,7 @@
                                                         @csrf
                                                         @method('PUT')
                                                         <input type="hidden" name="status" value="cancelled">
+                                                        <input type="hidden" name="payment_status" value="failed">
                                                         <button type="submit" class="btn btn-sm btn-outline-danger"
                                                             onclick="return confirm('Are you sure you want to cancel this order?')">
                                                             <i class="bi bi-x-circle"></i>
