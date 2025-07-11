@@ -123,50 +123,49 @@
                 </div><!-- End News & Updates -->
             </div><!-- End Right side columns -->
         </div>
-    </section>
 
-
-    <!-- ML Combined Chart Section -->
+                                <!-- ML Combined Chart Section -->
 <div class="card">
     <div class="card-body">
         <h5 class="card-title">Customer Segments & Demand Forecast</h5>
-        <canvas id="combinedChart" width="800" height="400"></canvas>
-    </div>
-</div>
+        <!-- Responsive container inside card body -->
+        <div style="width: 100%; max-width: 900px; margin: auto;">
+            <canvas id="combinedChart" height="400"></canvas>
+        </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Customer Segment Data
+        // Labels and data from backend
         const segmentLabels = @json($segments->pluck('customer_id'));
         const segmentData = @json($segments->pluck('total_quantity'));
 
-        // Demand Prediction Data
         const predictionLabels = @json($predictions->pluck('prediction_date'));
         const predictionData = @json($predictions->pluck('predicted_quantity'));
 
         const ctx = document.getElementById('combinedChart').getContext('2d');
         const combinedChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'line', 
             data: {
+                // Use union of labels (dates + customer IDs combined as strings)
                 labels: [...new Set([...segmentLabels, ...predictionLabels])],
                 datasets: [
                     {
                         label: 'Total Quantity (Customer Segments)',
                         data: segmentData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
                         borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: false,
+                        tension: 0.3,
                         yAxisID: 'y1',
                     },
                     {
                         label: 'Predicted Quantity (Demand Forecast)',
                         data: predictionData,
-                        type: 'line',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        fill: true,
-                        tension: 0.4,
+                        fill: false,
+                        tension: 0.3,
                         yAxisID: 'y2',
                     }
                 ]
@@ -199,6 +198,9 @@
         });
     });
 </script>
+
+    </div>
+</div>
 <!-- End ML Combined Chart Section -->
 
 <!-- Customer Segments Table -->
@@ -206,8 +208,8 @@
     <div class="card-body">
         <h5 class="card-title">Customer Segments Table</h5>
         <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-primary">
                     <tr>
                         <th>Customer ID</th>
                         <th>Quantity</th>
@@ -231,6 +233,7 @@
         </div>
     </div>
 </div>
+
 <!-- End Customer Segments Table -->
 
 <!-- Demand Predictions Table -->
@@ -238,8 +241,8 @@
     <div class="card-body">
         <h5 class="card-title">Demand Predictions Table</h5>
         <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="table-primary">
                     <tr>
                         <th>Product ID</th>
                         <th>Prediction Date</th>
@@ -259,6 +262,8 @@
         </div>
     </div>
 </div>
+
 <!-- End Demand Predictions Table -->
+    </section>
 
 @endsection

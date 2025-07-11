@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RetailerDashboardController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\CustomerSegmentController;
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');

@@ -8,13 +8,12 @@ use App\Models\DemandPrediction;
 
 class AdminDashboardController extends Controller
 {
-public function index()
-{
-    
-    $segments = CustomerSegment::all();
-    $predictions = DemandPrediction::all();
+    public function index()
+    {
 
-     return view('dashboard.admin', compact('segments', 'predictions'));
+        $segments = CustomerSegment::all();
+        $predictions = DemandPrediction::all();
+
+        return view('dashboard.admin', compact('segments', 'predictions'));
+    }
 }
-}
-        

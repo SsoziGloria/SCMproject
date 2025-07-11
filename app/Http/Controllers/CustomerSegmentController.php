@@ -8,9 +8,9 @@ use App\Models\CustomerSegment;
 
 class CustomerSegmentController extends Controller
 {
-     public function index()
+    public function index()
     {
-       $segments = CustomerSegment::all();
-    return response()->json($segments);
+        $segments = CustomerSegment::all();
+        return response()->json($segments);
     }
 }

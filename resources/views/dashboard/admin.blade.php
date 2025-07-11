@@ -1,3 +1,11 @@
+{{-- Debug --}}
+@isset($segments)
+    <p>✅ Segments loaded: {{ count($segments) }}</p>
+@else
+    <p>❌ $segments is not set</p>
+@endisset
+
+
 
 @extends('admin.app')
 
@@ -28,67 +36,34 @@
             <canvas id="combinedChart" height="400"></canvas>
         </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+        <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Labels and data from backend
-        const segmentLabels = @json($segments->pluck('customer_id'));
-        const segmentData = @json($segments->pluck('total_quantity'));
+        const segmentLabels = [1, 2, 3];
+        const segmentData = [100, 200, 300];
+        const predictionLabels = ["2025-07-01", "2025-07-02", "2025-07-03"];
+        const predictionData = [120, 250, 280];
 
-        const predictionLabels = @json($predictions->pluck('prediction_date'));
-        const predictionData = @json($predictions->pluck('predicted_quantity'));
+        console.log("Chart loaded OK");
 
         const ctx = document.getElementById('combinedChart').getContext('2d');
-        const combinedChart = new Chart(ctx, {
-            type: 'line', 
+        new Chart(ctx, {
+            type: 'line',
             data: {
-                // Use union of labels (dates + customer IDs combined as strings)
-                labels: [...new Set([...segmentLabels, ...predictionLabels])],
+                labels: predictionLabels,
                 datasets: [
                     {
-                        label: 'Total Quantity (Customer Segments)',
+                        label: 'Actual',
                         data: segmentData,
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        fill: false,
-                        tension: 0.3,
-                        yAxisID: 'y1',
+                        borderColor: 'blue',
+                        fill: false
                     },
                     {
-                        label: 'Predicted Quantity (Demand Forecast)',
+                        label: 'Predicted',
                         data: predictionData,
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        fill: false,
-                        tension: 0.3,
-                        yAxisID: 'y2',
+                        borderColor: 'red',
+                        fill: false
                     }
                 ]
-            },
-            options: {
-                responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                stacked: false,
-                scales: {
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: { display: true, text: 'Total Quantity' },
-                    },
-                    y2: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: { display: true, text: 'Predicted Quantity' },
-                        grid: {
-                            drawOnChartArea: false,
-                        }
-                    }
-                }
             }
         });
     });
