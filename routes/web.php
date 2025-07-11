@@ -43,7 +43,7 @@ Route::post('/supplier/register', [SupplierController::class, 'register'])->name
 
 Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
 
-// Inventory routes
+// Inventory routes 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
     Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
