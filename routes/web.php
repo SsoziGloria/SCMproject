@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RetailerDashboardController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\CustomerSegmentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductReviewController;
@@ -251,6 +254,10 @@ Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confir
 
 //for customer segments under ml
 Route::get('/admin/customer_segments', [App\Http\Controllers\CustomerSegmentController::class, 'index'])->name('customer-segments.index');
+
+//For machine learning
+Route::get('/retailer/dashboard', [RetailerDashboardController::class, 'index'])->name('retailer.dashboard');
+Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
 // Shipment Routes
 Route::group(['middleware' => ['auth']], function () {
