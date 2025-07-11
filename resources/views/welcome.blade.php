@@ -91,5 +91,3 @@
             &copy; 2024 SCM Project. All rights reserved.
         </div>
     </div>
-</body>
-</html>
