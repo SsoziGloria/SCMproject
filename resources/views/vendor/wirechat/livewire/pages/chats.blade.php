@@ -10,8 +10,8 @@
     <div class="m-auto text-center justify-center flex gap-3 flex-col   items-center  col-span-12">
 
       <h4
-        class="font-medium p-2 px-3 rounded-full font-semibold bg-[var(--wc-light-secondary)] dark:bg-[var(--wc-dark-secondary)] dark:text-white dark:font-normal">
-        @lang('wirechat::pages.chat.messages.welcome')</h4>
+        class="font-medium p-2 px-3 rounded-full font-semibold bg-[var(--wc-light-secondary)] dark:bg-[var(--wc-dark-secondary)] dark:text-white dark:font-normal"
+        style="font-size: inherit;" @lang('wirechat::pages.chat.messages.welcome')</h4>
 
     </div>
   </main>

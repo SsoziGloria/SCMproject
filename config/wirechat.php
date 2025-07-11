@@ -27,7 +27,7 @@ return [
     | Useful if you're sharing a database with other apps or packages.
     |
     */
-    'table_prefix' => 'wire_',
+    'table_prefix' => 'chat_',
 
     /*
     |--------------------------------------------------------------------------
@@ -65,7 +65,7 @@ return [
     | This will be used to highlight buttons and elements.
     |
     */
-    'color' => '#f59e0b',
+    'color' => '#c27f21',
 
     /*
     |--------------------------------------------------------------------------
@@ -103,7 +103,7 @@ return [
     | the dynamic chat content.
     |
     */
-    'layout' => 'chat.layout',
+    'layout' => 'wirechat::layouts.app',
 
     /*
     |--------------------------------------------------------------------------
@@ -129,8 +129,8 @@ return [
     |
     */
     'notifications' => [
-        'enabled' => true,
-        'main_sw_script' => 'sw.js', // Relative to public path
+        'enabled' => false,
+        'main_sw_script' => '/sw.js', // Relative to public path
     ],
 
     /*

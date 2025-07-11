@@ -4,7 +4,7 @@
 
 
     {{-- Title/name and Icon --}}
-    <section class=" justify-between flex items-center   pb-2">
+    <section class=" justify-between border-b-4 border-gray-300 dark:border-gray-600 flex items-center   pb-2">
 
         @if (isset($title))
             <div class="flex items-center gap-2 truncate  " wire:ignore>
@@ -20,7 +20,7 @@
 
                 <x-wirechat::actions.new-chat widget="{{$this->isWidget()}}">
                     <button id="open-new-chat-modal-button" class=" flex items-center focus:outline-hidden">
-                        <svg class="w-8 h-8 -mb-1 text-black-500 cursor-pointer hover:text-gray-100 dark:hover:text-gray-900 dark:text-black-300"
+                        <svg class="w-8 h-8 -mb-1 text-black-500 cursor-pointer hover:text-gray-400 dark:hover:text-gray-900 dark:text-black-300"
                             xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
                             <g fill="none" stroke="currentColor">
                                 <path

@@ -14,15 +14,19 @@ return new class extends Migration {
             $table->id();
             $table->string('order_number')->unique();
             $table->unsignedBigInteger('user_id'); // Customer placing the order
-            $table->unsignedBigInteger('supplier_id')->nullable(); // Optional: supplier fulfilling the order
+            $table->string('phone')->nullable();
             $table->decimal('total_amount', 10, 2);
-            $table->string('status')->default('pending'); // e.g. pending, processing, shipped, delivered, cancelled
+            $table->string('status')->default('pending');
+            $table->string('payment');
+            $table->string('payment_status')->default('pending');
             $table->text('shipping_address')->nullable();
-            $table->date('ordered_at')->nullable();
+            $table->string('shipping_city')->nullable();
+            $table->string('shipping_country')->nullable();
+            $table->string('notes')->nullable();
             $table->date('delivered_at')->nullable();
+            $table->timestamp('order_date')->useCurrent();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreign('supplier_id')->references('id')->on('users')->nullOnDelete();
         });
     }
 
