@@ -11,7 +11,7 @@ class AdminDashboardController extends Controller
     public function index()
     {
 
-        $segments = CustomerSegment::all();
+        $segments = CustomerSegment::paginate(10);
         $predictions = DemandPrediction::all();
 
         return view('dashboard.admin', compact('segments', 'predictions'));

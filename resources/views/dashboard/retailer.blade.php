@@ -132,7 +132,9 @@
                                 <!-- ML Combined Chart Section -->
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Customer Segments & Demand Forecast</h5>
+        <h5 class="card-title text-center" style="color: #4B49AC; font-weight: bold;">
+                        📊 Customer Segments & Demand Forecast
+                </h5>
         <!-- Responsive container inside card body -->
         <div style="width: 100%; max-width: 900px; margin: auto;">
             <canvas id="combinedChart" height="400"></canvas>
@@ -235,11 +237,25 @@
                     @endforeach
                 </tbody>
             </table>
+            {{ $segments->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>
+  <!-- Cluster Descriptions -->
+<div class="mt-3">
+    <h6><strong>Cluster Descriptions and Insights from Customer Segments:</strong></h6>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Cluster 0:</strong> Low spenders with infrequent purchases</li>
+        <li class="list-group-item"><strong>Cluster 1:</strong> Medium spenders with moderate frequency</li>
+        <li class="list-group-item"><strong>Cluster 2:</strong> High-value loyal customers with regular purchases</li>
+        <li class="list-group-item"><strong>Cluster 3:</strong> New customers with uncertain behavior</li>
+    </ul>
+</div>
+<br>
+
 
 <!-- End Customer Segments Table -->
+
 
 <!-- Demand Predictions Table -->
 <div class="card mt-4">

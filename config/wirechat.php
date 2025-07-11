@@ -27,7 +27,7 @@ return [
     | Useful if you're sharing a database with other apps or packages.
     |
     */
-    'table_prefix' => 'chat_',
+    'table_prefix' => 'wirechat_',
 
     /*
     |--------------------------------------------------------------------------
