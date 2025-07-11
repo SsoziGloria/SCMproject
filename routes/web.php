@@ -248,6 +248,10 @@ Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checko
 Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
 
+
+//for customer segments under ml
+Route::get('/admin/customer_segments', [App\Http\Controllers\CustomerSegmentController::class, 'index'])->name('customer-segments.index');
+
 // Shipment Routes
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/shipments', [ShipmentController::class, 'index'])->name('shipments.index');
