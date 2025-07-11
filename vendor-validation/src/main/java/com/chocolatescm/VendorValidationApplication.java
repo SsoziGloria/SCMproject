@@ -9,16 +9,16 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.chocolatescm.repository")  
+@EnableJpaRepositories(basePackages = "com.chocolatescm.repository")
 @EntityScan(basePackages = "com.chocolatescm.model")
 
 // Add OpenAPI metadata here
 @OpenAPIDefinition(
-    info = @Info(
-        title = "Chocolate SCM Vendor API",
-        version = "v1",
-        description = "API for validating vendors in the Chocolate Supply Chain Management system"
-    )
+        info = @Info(
+                title = "Chocolate SCM Vendor API",
+                version = "v1",
+                description = "API for validating vendors in the Chocolate Supply Chain Management system"
+        )
 )
 public class VendorValidationApplication {
 
@@ -34,6 +34,3 @@ public class VendorValidationApplication {
             """);
     }
 }
-
-	
-

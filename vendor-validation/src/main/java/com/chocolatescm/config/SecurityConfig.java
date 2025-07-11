@@ -16,6 +16,7 @@ public class SecurityConfig {
         return "OK";
     }
 
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
@@ -29,7 +30,9 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/webjars/**",
                         "/swagger-resources/**",
-                        "/api/**"
+                        "/api/**",
+                        "/swagger-ui/**",
+                        "/api/vendors/validate"
                 ).permitAll()
                 .anyRequest().permitAll()
                 )
