@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -111,3 +112,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 }
+=======
+use Illuminate\Database\Eloquent\Model;
+
+class Order extends Model
+{
+    //
+}
+>>>>>>> 0fb332c (Restore welcome page to original design without slideshow)

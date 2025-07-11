@@ -12,6 +12,12 @@ use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
+    // Redirect to the welcome page
+    public function welcome()
+    {
+        return view('welcome');
+    }
+    
     // Show the login form
     public function showLoginForm()
     {
