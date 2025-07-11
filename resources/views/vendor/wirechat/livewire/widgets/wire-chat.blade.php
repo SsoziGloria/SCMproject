@@ -211,8 +211,8 @@
 
             <div x-show="!show && !chatIsOpen " class="m-auto  justify-center flex gap-3 flex-col  items-center ">
 
-                <h4
-                    class="font-medium p-2 px-3 rounded-full font-semibold bg-[var(--wc-light-secondary)] dark:bg-[var(--wc-dark-secondary)] dark:text-white dark:font-normal">
+                <h4 class="font-medium p-2 px-3 rounded-full font-semibold bg-[var(--wc-light-secondary)] dark:bg-[var(--wc-dark-secondary)] dark:text-white dark:font-normal"
+                    style="font-size: inherit;">
                     @lang('wirechat::widgets.wirechat.messages.welcome')
                 </h4>
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ProfileController extends Controller
 {
@@ -81,12 +83,36 @@ class ProfileController extends Controller
 
         // Handle profile photo upload
         if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $user->profile_photo = $path;
+            $image = $request->file('profile_photo');
+            $filename = uniqid('profile_') . '.' . $image->getClientOriginalExtension();
+
+            $resized = Image::read($image)
+                ->cover(300, 300) // This creates a square by cropping
+                ->toJpeg(90);
+
+            Storage::disk('public')->put('profile_photos/' . $filename, $resized);
+
+            if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+                Storage::disk('public')->delete($user->profile_photo);
+            }
+
+            $user->profile_photo = 'profile_photos/' . $filename;
         }
 
         $user->save();
 
         return back()->with('success', 'Profile updated successfully!');
+    }
+
+    public function deletePhoto(Request $request)
+    {
+        $user = auth()->user();
+        if ($user->profile_photo && \Storage::disk('public')->exists($user->profile_photo)) {
+            \Storage::disk('public')->delete($user->profile_photo);
+        }
+        $user->profile_photo = null;
+        $user->save();
+
+        return back()->with('success', 'Profile photo removed.');
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Namu\WireChat\Traits\Chatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -56,6 +56,18 @@ class User extends Authenticatable
      */
     public function getCoverUrlAttribute(): ?string
     {
-        return $this->avatar_url ?? null;
+        return $this->avatar_url
+            ?? ($this->profile_photo ? asset('storage/' . $this->profile_photo) : null)
+            ?? asset('assets/img/profile-img.jpg');
+    }
+
+    public function canCreateGroups(): bool
+    {
+        return in_array($this->role, ['admin', 'supplier']);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
     }
 }

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>Retailer Dashboard</h1>
+        <h1> 🛒 Retailer </h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
@@ -16,79 +16,84 @@
             <!-- Left side columns -->
             <div class="col-lg-8">
                 <div class="row">
-                    <!-- Inventory Card -->
+
+                    <!-- Pending Orders Card -->
                     <div class="col-xxl-4 col-md-6">
-                        <div class="card info-card inventory-card">
-                            <div class="card-body">
-                                <h5 class="card-title">Total Inventory</h5>
-                                <div class="d-flex align-items-center">
-                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-box-seam"></i>
+                        <div class="card info-card retailer-card">
+
+                            <div class="card border-info shadow-sm">
+                                <div class="card-body text-start">
+                                    <h5 class="card-title">Pending Orders</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle bg-info text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                            style="width:40px; height:40px;">
+                                            <i class="bi bi-hourglass-split"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="fw-bold">{{ $pendingOrders ?? 0 }}</h6>
+                                            <a href="#" class="btn btn-sm btn-outline-info mt-2">View</a>
+
+                                        </div>
                                     </div>
-                                    <div class="ps-3">
-                                        <h6>{{ $inventoryCount ?? 0 }}</h6>
-                                        <span class="text-muted small pt-2 ps-1">items in stock</span>
+                                </div>
+
+                            </div>
+                        </div><!-- End PendingOrders Card -->
+
+
+                        <!-- Returns Card -->
+                        <div class="col-xxl-4 col-xl-12">
+
+                            <div class="card info-card returns-card">
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Returns </h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle bg-warning text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                            style="width:40px; height:40px;">
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="fw-bold">{{ $returns ?? 0 }}</h6>
+                                            <a href="#" class="btn btn-sm btn-outline-warning mt-2">View</a>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div><!-- End Inventory Card -->
 
-                    <!-- Low Stock Card -->
-                    <div class="col-xxl-4 col-md-6">
-                        <div class="card info-card low-stock-card">
-                            <div class="card-body">
-                                <h5 class="card-title">Low Stock</h5>
-                                <div class="d-flex align-items-center">
-                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
-                                    </div>
-                                    <div class="ps-3">
-                                        <h6>{{ $lowStock->count() ?? 0 }}</h6>
-                                        <span class="text-muted small pt-2 ps-1">items low</span>
+                        </div><!-- End Returns Card -->
+
+                        <!-- delivered orders Card -->
+                        <div class="col-xxl-4 col-xl-12">
+
+                            <div class="card info-card supplierMessage-card">
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Delivered Orders </h5>
+
+                                    <div class="d-flex align-items-center">
+
+                                        <div class="card-icon rounded-circle bg-success text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                            style="width:40px; height:40px;">
+                                            <i class="bi bi-truck"></i>
+                                        </div>
+                                        <div class="ps-3">
+
+                                            <h6 class="fw-bold">{{ $deliveredOrders ?? 0 }}</h6>
+                                            <a href="#" class="btn btn-sm btn-outline-success mt-2">View</a>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div><!-- End Low Stock Card -->
 
-                    <!-- Expiring Soon Card -->
-                    <div class="col-xxl-4 col-md-6">
-                        <div class="card info-card expired-card">
-                            <div class="card-body">
-                                <h5 class="card-title">Expiring Soon</h5>
-                                <div class="d-flex align-items-center">
-                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-hourglass-split"></i>
-                                    </div>
-                                    <div class="ps-3">
-                                        <h6>{{ $expiringSoon->count() ?? 0 }}</h6>
-                                        <span class="text-muted small pt-2 ps-1">items</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-                    </div><!-- End Expiring Soon Card -->
 
-                    <!-- Shipments Card (example) -->
-                    <div class="col-xxl-4 col-md-6">
-                        <div class="card info-card shipments-card">
-                            <div class="card-body">
-                                <h5 class="card-title">Pending Shipments</h5>
-                                <div class="d-flex align-items-center">
-                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-truck"></i>
-                                    </div>
-                                    <div class="ps-3">
-                                        <h6>{{ $pendingShipments->count() ?? 0 }}</h6>
-                                        <span class="text-muted small pt-2 ps-1">to deliver</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- End Shipments Card -->
+                    </div><!-- End Right side columns -->
 
-                    <!-- Add more supplier-specific cards as needed -->
                 </div>
             </div><!-- End Left side columns -->
 
@@ -264,6 +269,7 @@
 </div>
 
 <!-- End Demand Predictions Table -->
+
     </section>
 
 @endsection
