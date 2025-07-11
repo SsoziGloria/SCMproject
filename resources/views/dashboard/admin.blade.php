@@ -1,12 +1,3 @@
-{{-- Debug --}}
-@isset($segments)
-    <p>✅ Segments loaded: {{ count($segments) }}</p>
-@else
-    <p>❌ $segments is not set</p>
-@endisset
-
-
-
 @extends('admin.app')
 
 @section('content')
@@ -27,113 +18,243 @@
             <div class="col-lg-8">
                 <div class="row">
 
-                        <!-- ML Combined Chart Section -->
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Customer Segments & Demand Forecast</h5>
-        <!-- Responsive container inside card body -->
-        <div style="width: 100%; max-width: 900px; margin: auto;">
-            <canvas id="combinedChart" height="400"></canvas>
+                    <!-- Pending Orders Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card retailer-card">
+
+                            <div class="card border-info shadow-sm">
+                                <div class="card-body text-start">
+                                    <h5 class="card-title">Pending Orders</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle bg-info text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                            style="width:40px; height:40px;">
+                                            <i class="bi bi-hourglass-split"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="fw-bold">{{ $pendingOrders ?? 0 }}</h6>
+                                            <a href="#" class="btn btn-sm btn-outline-info mt-2">View</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div><!-- End PendingOrders Card -->
+
+
+                        <!-- Returns Card -->
+                        <div class="col-xxl-4 col-xl-12">
+
+                            <div class="card info-card returns-card">
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Returns </h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle bg-warning text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                            style="width:40px; height:40px;">
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 class="fw-bold">{{ $returns ?? 0 }}</h6>
+                                            <a href="#" class="btn btn-sm btn-outline-warning mt-2">View</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- End Returns Card -->
+
+                        <!-- delivered orders Card -->
+                        <div class="col-xxl-4 col-xl-12">
+
+                            <div class="card info-card supplierMessage-card">
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Delivered Orders </h5>
+
+                                    <div class="d-flex align-items-center">
+
+                                        <div class="card-icon rounded-circle bg-success text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                            style="width:40px; height:40px;">
+                                            <i class="bi bi-truck"></i>
+                                        </div>
+                                        <div class="ps-3">
+
+                                            <h6 class="fw-bold">{{ $deliveredOrders ?? 0 }}</h6>
+                                            <a href="#" class="btn btn-sm btn-outline-success mt-2">View</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div><!-- End Right side columns -->
+
+                </div>
+            </div><!-- End Left side columns -->
+
+            <!-- Right side columns -->
+            <div class="col-lg-4">
+
+
+                <!-- News & Updates (optional) -->
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">News &amp; Updates</h5>
+                        <div class="news">
+                            <!-- Supplier-related news here -->
+                        </div>
+                    </div>
+                </div><!-- End News & Updates -->
+            </div><!-- End Right side columns -->
         </div>
 
-        <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const segmentLabels = [1, 2, 3];
-        const segmentData = [100, 200, 300];
-        const predictionLabels = ["2025-07-01", "2025-07-02", "2025-07-03"];
-        const predictionData = [120, 250, 280];
+        <!-- ML Combined Chart Section -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Customer Segments & Demand Forecast</h5>
+                <!-- Responsive container inside card body -->
+                <div style="width: 100%; max-width: 900px; margin: auto;">
+                    <canvas id="combinedChart" height="400"></canvas>
+                </div>
 
-        console.log("Chart loaded OK");
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        // Labels and data from backend
+                        const segmentLabels = @json($segments->pluck('customer_id'));
+                        const segmentData = @json($segments->pluck('total_quantity'));
 
-        const ctx = document.getElementById('combinedChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: predictionLabels,
-                datasets: [
-                    {
-                        label: 'Actual',
-                        data: segmentData,
-                        borderColor: 'blue',
-                        fill: false
-                    },
-                    {
-                        label: 'Predicted',
-                        data: predictionData,
-                        borderColor: 'red',
-                        fill: false
-                    }
-                ]
-            }
-        });
-    });
-</script>
+                        const predictionLabels = @json($predictions->pluck('prediction_date'));
+                        const predictionData = @json($predictions->pluck('predicted_quantity'));
 
-    </div>
-</div>
-<!-- End ML Combined Chart Section -->
+                        const ctx = document.getElementById('combinedChart').getContext('2d');
+                        const combinedChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                // Use union of labels (dates + customer IDs combined as strings)
+                                labels: [...new Set([...segmentLabels, ...predictionLabels])],
+                                datasets: [
+                                    {
+                                        label: 'Total Quantity (Customer Segments)',
+                                        data: segmentData,
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                        fill: false,
+                                        tension: 0.3,
+                                        yAxisID: 'y1',
+                                    },
+                                    {
+                                        label: 'Predicted Quantity (Demand Forecast)',
+                                        data: predictionData,
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        fill: false,
+                                        tension: 0.3,
+                                        yAxisID: 'y2',
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                interaction: {
+                                    mode: 'index',
+                                    intersect: false,
+                                },
+                                stacked: false,
+                                scales: {
+                                    y1: {
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left',
+                                        title: { display: true, text: 'Total Quantity' },
+                                    },
+                                    y2: {
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right',
+                                        title: { display: true, text: 'Predicted Quantity' },
+                                        grid: {
+                                            drawOnChartArea: false,
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    });
+                </script>
 
-<!-- Customer Segments Table -->
-<div class="card mt-4">
-    <div class="card-body">
-        <h5 class="card-title">Customer Segments Table</h5>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover table-bordered">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Customer ID</th>
-                        <th>Quantity</th>
-                        <th>Total Quantity</th>
-                        <th>Purchase Count</th>
-                        <th>Cluster</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($segments as $seg)
-                        <tr>
-                            <td>{{ $seg->customer_id }}</td>
-                            <td>{{ $seg->quantity }}</td>
-                            <td>{{ $seg->total_quantity }}</td>
-                            <td>{{ $seg->purchase_count }}</td>
-                            <td>{{ $seg->cluster }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            </div>
         </div>
-    </div>
-</div>
+        <!-- End ML Combined Chart Section -->
 
-<!-- End Customer Segments Table -->
-
-<!-- Demand Predictions Table -->
-<div class="card mt-4">
-    <div class="card-body">
-        <h5 class="card-title">Demand Predictions Table</h5>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover table-bordered">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Product ID</th>
-                        <th>Prediction Date</th>
-                        <th>Predicted Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($predictions as $pred)
-                        <tr>
-                            <td>{{ $pred->product_id }}</td>
-                            <td>{{ $pred->prediction_date }}</td>
-                            <td>{{ $pred->predicted_quantity }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <!-- Customer Segments Table -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Customer Segments Table</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Quantity</th>
+                                <th>Total Quantity</th>
+                                <th>Purchase Count</th>
+                                <th>Cluster</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($segments as $seg)
+                                <tr>
+                                    <td>{{ $seg->customer_id }}</td>
+                                    <td>{{ $seg->quantity }}</td>
+                                    <td>{{ $seg->total_quantity }}</td>
+                                    <td>{{ $seg->purchase_count }}</td>
+                                    <td>{{ $seg->cluster }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-<!-- End Demand Predictions Table -->
+        <!-- End Customer Segments Table -->
+
+        <!-- Demand Predictions Table -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Demand Predictions Table</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Prediction Date</th>
+                                <th>Predicted Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($predictions as $pred)
+                                <tr>
+                                    <td>{{ $pred->product_id }}</td>
+                                    <td>{{ $pred->prediction_date }}</td>
+                                    <td>{{ $pred->predicted_quantity }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Demand Predictions Table -->
+
         </div>
     </section>
 

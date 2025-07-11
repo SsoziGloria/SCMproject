@@ -16,4 +16,7 @@ class AdminDashboardController extends Controller
 
         return view('dashboard.admin', compact('segments', 'predictions'));
     }
+
 }
+
+

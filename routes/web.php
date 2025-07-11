@@ -68,7 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $role = auth()->user()->role;
         switch ($role) {
             case 'admin':
-                return view('dashboard.admin');
+                return redirect()->route('admin.dashboard');
             case 'supplier':
                 return redirect()->route('dashboard.supplier');
             case 'retailer':
@@ -79,11 +79,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
 
     })->name('dashboard');
+
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/dashboard-s', [InventoryController::class, 'dashboard'])
         ->name('dashboard.supplier');
     Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->middleware('auth')->name('check.stock.alert');
-
-
     Route::get('/home', function () {
         return view('dashboard.user');
     })->name('dashboard.user');
@@ -231,6 +231,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+
+     
 });
 
 // Shop routes
@@ -255,9 +257,9 @@ Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confir
 //for customer segments under ml
 Route::get('/admin/customer_segments', [App\Http\Controllers\CustomerSegmentController::class, 'index'])->name('customer-segments.index');
 
-//For machine learning
+//For machine learning with retailer blade
 Route::get('/retailer/dashboard', [RetailerDashboardController::class, 'index'])->name('retailer.dashboard');
-Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
 
 // Shipment Routes
 Route::group(['middleware' => ['auth']], function () {
