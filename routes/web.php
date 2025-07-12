@@ -99,6 +99,11 @@ Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 
+//home route
+Route::get('/welcome', function () {
+    return view('welcome');
+});
+
 //Redirect to dashboard or login
 Route::get('/', function () {
     return auth()->check()
