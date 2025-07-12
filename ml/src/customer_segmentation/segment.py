@@ -1,19 +1,19 @@
-from db.mysql_connector import MySQLConnector
-from sqlalchemy import create_engine
-import pandas as pd
 import json
-import numpy as np
+
 import matplotlib.pyplot as plt
-from sqlalchemy import text
+import numpy as np
+import pandas as pd
+from customer_segmentation.data_loader import CustomerDataLoader
+from customer_segmentation.kmeans_model import CustomerSegmentation
+from db.mysql_connector import MySQLConnector
 from sklearn.exceptions import NotFittedError
-from .kmeans_model import CustomerSegmentation
-from .data_loader import CustomerDataLoader
-from sklearn.metrics import silhouette_score, davies_bouldin_score
+from sklearn.metrics import davies_bouldin_score, silhouette_score
+from sqlalchemy import create_engine, text
 
 
 def validate_features(features):
     """Simplified validation with debug output"""
-    required = ['quantity', 'total_quantity', 'purchase_count']
+    required = ["quantity", "total_quantity", "purchase_count"]
 
     print("\n=== VALIDATION DEBUG ===")
     print("Input columns:", features.columns.tolist())
@@ -32,19 +32,19 @@ def validate_features(features):
 
 def analyze_clusters(clustered_data, features_used):
     """Generate cluster statistics."""
-    stats = clustered_data.groupby('cluster')[features_used].agg(
-        ['mean', 'median', 'std', 'count']
+    stats = clustered_data.groupby("cluster")[features_used].agg(
+        ["mean", "median", "std", "count"]
     )
-    stats.columns = ['_'.join(col).strip() for col in stats.columns.values]
+    stats.columns = ["_".join(col).strip() for col in stats.columns.values]
 
     # Add percentiles
     for p in [10, 25, 75, 90]:
-        stats[f'quantity_q{p}'] = clustered_data.groupby(
-            'cluster')['quantity'].quantile(p/100)
+        stats[f"quantity_q{p}"] = clustered_data.groupby("cluster")[
+            "quantity"
+        ].quantile(p / 100)
 
-    stats['customer_count'] = clustered_data.groupby(
-        'cluster')['Customer_ID'].nunique()
-    return stats.sort_values('quantity_mean', ascending=False)
+    stats["customer_count"] = clustered_data.groupby("cluster")["Customer_ID"].nunique()
+    return stats.sort_values("quantity_mean", ascending=False)
 
 
 def visualize_clusters(model, features):
@@ -57,19 +57,22 @@ def visualize_clusters(model, features):
         model.scaled_data[:, 0],
         model.scaled_data[:, 1],
         c=model.get_labels(),
-        cmap='viridis',
+        cmap="viridis",
         alpha=0.6,
-        s=50
+        s=50,
     )
     plt.scatter(
         model.model.cluster_centers_[:, 0],
         model.model.cluster_centers_[:, 1],
-        marker='X', s=200, c='red', label='Centroids'
+        marker="X",
+        s=200,
+        c="red",
+        label="Centroids",
     )
     plt.title("Customer Segments (PCA)")
     plt.xlabel("Principal Component 1")
     plt.ylabel("Principal Component 2")
-    plt.colorbar(scatter, label='Cluster')
+    plt.colorbar(scatter, label="Cluster")
     plt.grid(alpha=0.3)
     plt.tight_layout()
     plt.show()
@@ -101,13 +104,16 @@ def save_segments(engine, df):
     """
     with engine.connect() as conn:
         for _, row in df.iterrows():
-            conn.execute(text(insert_query), {
-                'customer_id': int(row['Customer_ID']),
-                'quantity': float(row['quantity']),
-                'total_quantity': float(row['total_quantity']),
-                'purchase_count': int(row['purchase_count']),
-                'cluster': int(row['cluster'])
-            })
+            conn.execute(
+                text(insert_query),
+                {
+                    "customer_id": int(row["Customer_ID"]),
+                    "quantity": float(row["quantity"]),
+                    "total_quantity": float(row["total_quantity"]),
+                    "purchase_count": int(row["purchase_count"]),
+                    "cluster": int(row["cluster"]),
+                },
+            )
         conn.commit()
     print(f"✅ Inserted {len(df)} records into customer_segments")
 
@@ -136,23 +142,21 @@ def main():
         # 3. Train model
         print("\n🔧 Training model...")
         segmentation = CustomerSegmentation(
-            n_clusters=N_CLUSTERS,
-            use_pca=USE_PCA,
-            random_state=42
+            n_clusters=N_CLUSTERS, use_pca=USE_PCA, random_state=42
         )
-        segmentation.fit(
-            features[['quantity', 'total_quantity', 'purchase_count']])
+        segmentation.fit(features[["quantity", "total_quantity", "purchase_count"]])
 
         # 4. Save results
         raw_features = raw_features.reset_index()  # Make Customer_ID a column
-        raw_features['cluster'] = segmentation.get_labels()
+        raw_features["cluster"] = segmentation.get_labels()
         clustered_data = raw_features
         clustered_data.to_csv(OUTPUT_PATH, index=False)
         print(f"\n💾 Results saved to {OUTPUT_PATH}")
 
         # ✅ Save to MySQL using MySQLConnector
-        mysql = MySQLConnector(user='root', password='',
-                               host='127.0.0.1', database='chocolate_scm')
+        mysql = MySQLConnector(
+            user="root", password="00000000", host="127.0.0.1", database="chocolate_scm"
+        )
         engine = mysql.get_engine()
         create_table_if_not_exists(engine)
         save_segments(engine, clustered_data)
@@ -160,8 +164,7 @@ def main():
         # ===== 5. Generate Visualization Data =====
         print("\n📊 Preparing visualization data...")
         stats = analyze_clusters(
-            clustered_data,
-            ['quantity', 'total_quantity', 'purchase_count']
+            clustered_data, ["quantity", "total_quantity", "purchase_count"]
         )
         print(stats)
         # 6. Generate visualization data
@@ -170,13 +173,17 @@ def main():
             "cluster_centers": segmentation.get_cluster_centers().tolist(),
             "features": features.columns.tolist(),
             "metrics": {
-                "silhouette": silhouette_score(segmentation.scaled_data, segmentation.get_labels()),
-                "davies_bouldin": davies_bouldin_score(segmentation.scaled_data, segmentation.get_labels())
+                "silhouette": silhouette_score(
+                    segmentation.scaled_data, segmentation.get_labels()
+                ),
+                "davies_bouldin": davies_bouldin_score(
+                    segmentation.scaled_data, segmentation.get_labels()
+                ),
             },
-            "cluster_stats": stats.to_dict()
+            "cluster_stats": stats.to_dict(),
         }
 
-        with open(VISUALIZATION_PATH, 'w') as f:
+        with open(VISUALIZATION_PATH, "w") as f:
             json.dump(viz_data, f, indent=2)
         print(f"📈 Visualisation data saved to '{VISUALIZATION_PATH}'")
 
