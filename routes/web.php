@@ -163,7 +163,11 @@ Route::get('/faq', function () {
     return view('faq.pages-faq');
 })->name('faq');
 
-// Products & Categories
+//Products routes
+Route::put('products/{product}/stock', [ProductController::class, 'updateStock'])->name('products.update-stock');
+Route::put('products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
+
+//Export routes
 Route::get('/products/export', function (Request $request) {
     $filters = $request->only(['category', 'supplier', 'stock']);
     return Excel::download(new ProductsExport($filters), 'products.xlsx');
@@ -171,12 +175,18 @@ Route::get('/products/export', function (Request $request) {
 
 // Product Catalog routes
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::resource('products', ProductController::class);
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/stock-levels', [InventoryController::class, 'index'])->name('stockLevels.index');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+Route::post('/products/bulk-action', [ProductController::class, 'bulkAction'])->name('products.bulk-action');
 
-// Product CRUD routes
+Route::get('/stock-levels', [InventoryController::class, 'index'])->name('stockLevels.index');
 
 Route::resource('products', ProductController::class);
 Route::resource('categories', CategoryController::class);
+
+// Category Routes
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
 Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');

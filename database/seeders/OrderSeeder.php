@@ -11,22 +11,22 @@ class OrderSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::firstOrCreate(
-            ['email' => 'user@example.com'],
-            ['name' => 'Sample User', 'password' => bcrypt('password'), 'role' => 'retailer']
-        );
+        // $user = User::firstOrCreate(
+        //     ['email' => 'user@example.com'],
+        //     ['name' => 'Sample User', 'password' => bcrypt('password'), 'role' => 'retailer']
+        // );
 
-        // Create or get a supplier user
-        $supplier = User::firstOrCreate(
-            ['email' => 'supplier@example.com'],
-            ['name' => 'Supplier User', 'password' => bcrypt('password'), 'role' => 'supplier']
-        );
+        // // Create or get a supplier user
+        // $supplier = User::firstOrCreate(
+        //     ['email' => 'supplier@example.com'],
+        //     ['name' => 'Supplier User', 'password' => bcrypt('password'), 'role' => 'supplier']
+        // );
 
         Order::insert([
             [
-                'order_number' => strtoupper(Str::random(8)),
-                'user_id' => $user->id,
-                'total_amount' => 150000,
+                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'user_id' => 3,
+                'total_amount' => 50000,
                 'status' => 'pending',
                 'payment' => 'bank_transfer',
                 'payment_status' => 'pending',
@@ -39,9 +39,9 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'order_number' => strtoupper(Str::random(8)),
-                'user_id' => $user->id,
-                'total_amount' => 180000,
+                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'user_id' => 3,
+                'total_amount' => 18000,
                 'status' => 'shipped',
                 'payment' => 'mobile_money',
                 'payment_status' => 'paid',

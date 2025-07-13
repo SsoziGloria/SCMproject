@@ -31,8 +31,11 @@ return new class extends Migration {
             $table->enum('reputation', ['Excellent', 'Good', 'Average', 'Poor'])->default('Average');
             $table->enum('validation_status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->date('visit_date')->nullable();
-            $table->string('pdf_path')->nullable(); // optional: to store uploaded PDF file path
+            $table->string('pdf_path')->nullable();
+            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('supplier_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

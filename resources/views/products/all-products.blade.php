@@ -129,7 +129,7 @@
           <select class="form-select" id="supplierFilter" onchange="filterProducts()">
             <option value="">All Suppliers</option>
             @foreach($suppliers as $supplier)
-        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+        <option value="{{ $supplier->vendor_id }}">{{ $supplier->name }}</option>
         @endforeach
           </select>
           </div>
@@ -225,7 +225,7 @@
           <td>
           @if($product->supplier)
         <a href="#" class="text-decoration-none">
-          <!--#removed { route('suppliers.show', $product->supplier->id) }} -->
+          {{-- {{ route('suppliers.show', $product->supplier->id) }} --}}
           {{ $product->supplier->name }}
         </a>
         @else
@@ -241,8 +241,8 @@
           </td>
           <td>
           <div class="btn-group" role="group">
-            <a href="#" class="btn btn-outline-primary btn-sm" title="View">
-            <!-- #removed { route('products.show', $product->id) }} -->
+            <a href="{{ route('products.show', $product->id) }}" class="btn btn-outline-primary btn-sm"
+            title="View">
             <i class="bi bi-eye"></i>
             </a>
             @can('update', $product)
@@ -376,7 +376,7 @@
           <select class="form-select" id="supplier_id" name="supplier_id">
             <option value="">Select Supplier</option>
             @foreach($suppliers as $supplier)
-        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+        <option value="{{ $supplier->vendor_id }}">{{ $supplier->name }}</option>
         @endforeach
           </select>
           </div>

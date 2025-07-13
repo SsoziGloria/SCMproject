@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use App\Models\Vendor;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -44,22 +47,45 @@ class ProductController extends Controller
     public function create()
     {
         $products = Product::all();
-        return view('products.create', compact('products'));
+        $suppliers = Vendor::orderBy('name')->get();
+        return view('products.create', compact('products', 'suppliers'));
     }
 
     // Store a new product
     public function store(Request $request)
     {
-        // Validate and save
         $validated = $request->validate([
+            'product_id' => 'required|string|max:50|unique:products',
             'name' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'stock' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
-            'status' => 'required|in:active,inactive',
+            'stock' => 'required|integer|min:0',
+            'category' => 'nullable|string|max:100',
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'description' => 'nullable|string',
+            'ingredients' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'featured' => 'nullable|boolean',
         ]);
+
+        // Handle featured checkbox
+        $validated['featured'] = $request->has('featured') ? 1 : 0;
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = uniqid('product_') . '.' . $image->getClientOriginalExtension();
+
+            $resized = Image::read($image)
+                ->toJpeg(90);
+
+            Storage::disk('public')->put('product/' . $filename, $resized);
+
+            $validated['image'] = 'product/' . $filename;
+        }
+
         Product::create($validated);
-        return redirect()->route('products.index')->with('success', 'Product created!');
+
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
     // Show a single product.
@@ -73,32 +99,67 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
+        if (auth()->user()->role === 'admin') {
+            $suppliers = Vendor::orderBy('name')->get();
+        } else {
+            $suppliers = Vendor::where('supplier_id', auth()->user()->id)->orderBy('name')->get();
+        }
         // $categories = Category::all();
         // return view('products.edit', compact('product', 'categories'));
-        return view('products.edit', compact('product'));
+        return view('products.edit', compact('product', 'suppliers'));
     }
 
     // Update a product
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        $product = Product::findOrFail($id);
         $validated = $request->validate([
+            'product_id' => 'required|string|max:50|unique:products,product_id,' . $product->id,
             'name' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'stock' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
-            'status' => 'required|in:active,inactive',
+            'stock' => 'required|integer|min:0',
+            'category' => 'nullable|string|max:100',
+            'supplier_id' => 'nullable|exists:suppliers,id',
+            'description' => 'nullable|string',
+            'ingredients' => 'nullable|string',
+            'image' => 'nullable|image|max:2048', // 2MB Max
+            'featured' => 'nullable|boolean',
         ]);
+
+        // Handle featured checkbox
+        $validated['featured'] = $request->has('featured') ? 1 : 0;
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $validated['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        // Handle image removal checkbox
+        if ($request->has('remove_image') && $product->image) {
+            Storage::disk('public')->delete($product->image);
+            $validated['image'] = null;
+        }
+
         $product->update($validated);
-        return redirect()->route('products.index')->with('success', 'Product updated!');
+
+        return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
     // Delete a product
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        $product = Product::findOrFail($id);
+        // Delete the product image if it exists
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted!');
+
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
     public function bulkAction(Request $request)
     {
@@ -118,6 +179,26 @@ class ProductController extends Controller
         // ... handle other actions ...
 
         return response()->json(['success' => false, 'message' => 'Invalid action.']);
+    }
+
+    public function updateStock(Request $request, Product $product)
+    {
+        $request->validate([
+            'stock' => 'required|integer|min:0',
+        ]);
+
+        $product->stock = $request->stock;
+        $product->save();
+
+        return redirect()->back()->with('success', 'Stock updated successfully.');
+    }
+
+    public function toggleFeatured(Product $product)
+    {
+        $product->featured = !$product->featured;
+        $product->save();
+
+        return redirect()->back()->with('success', 'Featured status updated.');
     }
 
 }

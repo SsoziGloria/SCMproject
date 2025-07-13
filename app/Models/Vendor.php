@@ -30,8 +30,8 @@ class Vendor extends Model
 
     protected $casts = [
         'visitDate' => 'date',
-        'revenue' => 'decimal:2',
-        'monthlyRevenue' => 'decimal:2'
+        'revenue' => 'decimal:0',
+        'monthlyRevenue' => 'decimal:0'
     ];
 
     /**
