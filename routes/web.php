@@ -4,6 +4,7 @@ use App\Http\Controllers\InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -22,7 +23,7 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\VendorValidationController;
-
+use App\Http\Controllers\API\VendorValidationAPIController;
 
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
@@ -333,4 +334,57 @@ Route::middleware('auth')->group(function () {
     // History view
     Route::get('/admin/vendor-validation/history', [VendorValidationController::class, 'validationHistory'])
         ->name('admin.vendor-validation.history');
+});
+
+// =====================================================================
+//  API ROUTES (Served from web.php)
+// =====================================================================
+// This group handles all API requests. The Route::prefix('api') ensures
+// that all URLs inside are correctly prefixed with '/api/', matching
+// the calls made by the frontend JavaScript.
+// =====================================================================
+
+Route::prefix('api')->name('api.')->group(function () {
+
+    /**
+     * HEALTH CHECK PROXY
+     * Securely checks the health of the Java service from the frontend.
+     * URL: GET /api/service-health/vendor-validation
+     */
+    Route::get('/service-health/vendor-validation', function () {
+        try {
+            $javaUrl = config('services.vendor_validation.url', 'http://localhost:8080');
+            $response = Http::timeout(5)->get($javaUrl . '/api/v1/vendor/health');
+            return response()->json(['status' => $response->json('status', 'DOWN')]);
+        } catch (Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Health check proxy failed: ' . $e->getMessage());
+            return response()->json(['status' => 'DOWN', 'error' => 'Service unavailable'], 503);
+        }
+    })->name('health-check');
+
+
+    /**
+     * VENDOR VALIDATION API ENDPOINTS
+     * All routes related to the core document validation functionality.
+     */
+    Route::prefix('vendor-validation')->name('vendor-validation.')->group(function () {
+
+        // POST /api/vendor-validation/validate
+        // Handles the main document upload and validation request.
+        Route::post('/validate', [VendorValidationAPIController::class, 'validateDocument'])->name('validate');
+
+        // GET /api/vendor-validation/vendor/{vendorId}/history
+        // Fetches validation history for a specific vendor.
+        Route::get('/vendor/{vendorId}/history', [VendorValidationAPIController::class, 'history'])->name('history');
+
+        // GET /api/vendor-validation/validation/{id}
+        // Fetches the details of a single validation record.
+        Route::get('/validation/{id}', [VendorValidationAPIController::class, 'show'])->name('show');
+
+        // POST /api/vendor-validation/validation/{id}/revalidate
+        // Triggers a revalidation of a previously uploaded document.
+        Route::post('/validation/{id}/revalidate', [VendorValidationAPIController::class, 'revalidate'])->name('revalidate');
+
+    });
+
 });

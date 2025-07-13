@@ -33,7 +33,7 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Vendor</th>
                                 <th>Document</th>
                                 <th>Status</th>
@@ -45,7 +45,7 @@
                             @forelse($validations as $validation)
                                 <tr>
                                     <td>{{ $validation->id }}</td>
-                                    <td>{{ $validation->vendor->name }}</td>
+                                    <td>{{ $validation->vendor->name ?? 'Unknown' }}</td>
                                     <td>{{ $validation->original_filename }}</td>
                                     <td>
                                         @if($validation->is_valid)
@@ -94,7 +94,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p><strong>Vendor:</strong> {{ $validation->vendor->name }}</p>
+                        <p><strong>Vendor:</strong> {{ $validation->name }}</p>
                         <p><strong>Document:</strong> {{ $validation->original_filename }}</p>
                         <p><strong>Status:</strong>
                             @if($validation->is_valid)

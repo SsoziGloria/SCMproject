@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Vendor;
 use App\Models\VendorValidation;
 use Exception;
-use App\Services\VendorValidationService;
 
 class VendorValidationController extends Controller
 {
@@ -50,7 +49,7 @@ class VendorValidationController extends Controller
                     'message' => 'Document validation successful',
                     'validation_id' => $validationRecord->id,
                     'is_valid' => true,
-                    'validation_details' => $validationResult['validationResults'] ?? []
+                    'validation_results' => $validationResult['validationResults'] ?? []
                 ], 200);
             } else {
                 return response()->json([
@@ -58,7 +57,7 @@ class VendorValidationController extends Controller
                     'message' => $validationResult['message'] ?? 'Document validation failed',
                     'validation_id' => $validationRecord->id,
                     'is_valid' => false,
-                    'validation_details' => $validationResult['validationResults'] ?? []
+                    'validation_results' => $validationResult['validationResults'] ?? []
                 ], 422);
             }
 
@@ -181,7 +180,7 @@ class VendorValidationController extends Controller
     {
         try {
             $response = Http::timeout(30)
-                ->attach('file', file_get_contents($file->path()), $file->getClientOriginalName())
+                ->attach('file', fopen($file->path(), 'r'), $file->getClientOriginalName())
                 ->post($this->validationServerUrl . '/api/v1/vendor/validate', [
                     'vendorId' => $vendorId
                 ]);
@@ -208,7 +207,7 @@ class VendorValidationController extends Controller
 
         // Create validation record
         return VendorValidation::create([
-            'vendor_id' => $vendor->id,
+            'vendor_id' => $vendor->vendor_id,
             'original_filename' => $file->getClientOriginalName(),
             'file_path' => $filePath,
             'file_size' => $file->getSize(),

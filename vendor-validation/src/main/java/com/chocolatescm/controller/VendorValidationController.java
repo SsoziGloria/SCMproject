@@ -19,7 +19,7 @@ import com.chocolatescm.dto.ValidationResponse;
 import com.chocolatescm.service.VendorValidationService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/v1/vendor")
 @CrossOrigin(origins = "*") // Configure this properly for production
 public class VendorValidationController {
 

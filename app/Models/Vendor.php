@@ -10,6 +10,7 @@ class Vendor extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'vendor_id';
     protected $fillable = [
         'name',
         'email',

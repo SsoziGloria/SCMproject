@@ -32,7 +32,7 @@ class VendorValidationService
         try {
             $response = Http::timeout($this->timeout)
                 ->attach('file', file_get_contents($filePath), basename($filePath))
-                ->post("{$this->baseUrl}/api/vendors/validate", [
+                ->post("{$this->baseUrl}/api/v1/vendor/validate", [
                     'vendorId' => $vendorId
                 ]);
 

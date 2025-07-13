@@ -1,34 +1,23 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\VendorValidationAPIController;
+use Illuminate\Support\Facades\Http;
+use Exception;
 
-// Vendor validation routes
-Route::prefix('vendor-validation')->group(function () {
-    // Upload and validate document
-    Route::post('/validate', [VendorValidationAPIController::class, 'validateDocument'])
-        ->name('vendor.validate');
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
 
-    // Get validation history for a vendor
-    Route::get('/vendor/{vendorId}/history', [VendorValidationAPIController::class, 'getValidationHistory'])
-        ->name('vendor.validation.history');
-
-    // Get specific validation details
-    Route::get('/validation/{validationId}', [VendorValidationAPIController::class, 'getValidationDetails'])
-        ->name('vendor.validation.details');
-
-    // Revalidate existing document
-    Route::post('/validation/{validationId}/revalidate', [VendorValidationAPIController::class, 'revalidateDocument'])
-        ->name('vendor.validation.revalidate');
-
-    // Health check for validation service
-    Route::prefix('vendor-validation')->group(function () {
-        Route::get('/health', [VendorValidationAPIController::class, 'health']);
-        Route::post('/validate', [VendorValidationAPIController::class, 'validate']);
-        // Other routes
-    });
+Route::get('/service-health/vendor-validation', function () {
+    try {
+        $javaUrl = config('services.vendor_validation.url', 'http://localhost:8080');
+        $response = Http::timeout(5)->get($javaUrl . '/api/v1/vendor/health');
+        return response()->json(['status' => $response->json('status', 'DOWN')]);
+    } catch (Exception $e) {
+        // Log the error for debugging
+        \Illuminate\Support\Facades\Log::error('Health check proxy failed: ' . $e->getMessage());
+        return response()->json(['status' => 'DOWN', 'error' => 'Service unavailable'], 503);
+    }
 });
-
-// Alternative RESTful approach (if you prefer)
-Route::apiResource('vendors.validations', VendorValidationAPIController::class)
-    ->except(['update', 'destroy']);
