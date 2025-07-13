@@ -20,7 +20,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ShipmentController;
 
-
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -278,3 +277,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/shipments/{shipment}', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
     Route::get('/shipments/export', [ShipmentController::class, 'export'])->name('shipments.export');
 });
+
+// Resourceful routes for workers and workforce
+Route::resource('workers', App\Http\Controllers\WorkerController::class);
+Route::resource('workforce', App\Http\Controllers\WorkforceController::class);

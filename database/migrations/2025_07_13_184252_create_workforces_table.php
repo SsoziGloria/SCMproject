@@ -11,9 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('workforces', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('worker_id');
+            $table->string('location');
+            $table->string('task');
+            $table->date('assigned_date');
             $table->timestamps();
+
+            $table->foreign('worker_id')->references('id')->on('workers')->onDelete('cascade');
         });
     }
 
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('workforces');
     }
 };
