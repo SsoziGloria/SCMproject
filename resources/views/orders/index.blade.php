@@ -164,13 +164,13 @@
                                     <td>
                                         <span
                                             class="badge 
-                                                                                                                                        @if($order->status === 'pending') bg-warning
-                                                                                                                                        @elseif($order->status === 'processing') bg-info
-                                                                                                                                        @elseif($order->status === 'shipped') bg-primary
-                                                                                                                                        @elseif($order->status === 'delivered') bg-success
-                                                                                                                                        @elseif($order->status === 'cancelled') bg-danger
-                                                                                                                                            @else bg-secondary
-                                                                                                                                        @endif">
+                                                                                                                                                                        @if($order->status === 'pending') bg-warning
+                                                                                                                                                                        @elseif($order->status === 'processing') bg-info
+                                                                                                                                                                        @elseif($order->status === 'shipped') bg-primary
+                                                                                                                                                                        @elseif($order->status === 'delivered') bg-success
+                                                                                                                                                                        @elseif($order->status === 'cancelled') bg-danger
+                                                                                                                                                                            @else bg-secondary
+                                                                                                                                                                        @endif">
                                             {{ ucfirst($order->status) }}
                                         </span>
                                     </td>
@@ -178,10 +178,10 @@
                                         <div>{{ ucfirst(str_replace('_', ' ', $order->payment ?? 'N/A')) }}</div>
                                         <span
                                             class="badge 
-                                                                                                                                        @if($order->payment_status === 'paid') bg-success
-                                                                                                                                        @elseif($order->payment_status === 'pending') bg-warning
-                                                                                                                                            @else bg-danger
-                                                                                                                                        @endif">
+                                                                                                                                                                        @if($order->payment_status === 'paid') bg-success
+                                                                                                                                                                        @elseif($order->payment_status === 'pending') bg-warning
+                                                                                                                                                                            @else bg-danger
+                                                                                                                                                                        @endif">
                                             {{ ucfirst($order->payment_status) }}
                                         </span>
                                     </td>
@@ -253,15 +253,15 @@
         @if(Auth::user()->role === 'admin' || Auth::user()->role === 'retailer')
             <div class="row mt-4">
                 <div class="col-md-3">
-                    <div class="card bg-primary text-white shadow-sm mb-3">
+                    <div class="card shadow-sm mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">Total Orders</h6>
+                                    <h6 class="mb-0 text-primary">Total Orders</h6>
                                     <h3 class="mb-0">{{ $stats['total_orders'] ?? $orders->total() }}</h3>
                                 </div>
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-cart-check fs-1"></i>
+                                <div class="flex-shrink-0 text-primary">
+                                    <i class="bi bi-bag-check fs-1"></i>
                                 </div>
                             </div>
                         </div>
@@ -269,15 +269,15 @@
                 </div>
 
                 <div class="col-md-3">
-                    <div class="card bg-success text-white shadow-sm mb-3">
+                    <div class="card shadow-sm mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">Revenue</h6>
-                                    <h3 class="mb-0">UGX {{ number_format($stats['total_revenue'] ?? 0, 0) }}</h3>
+                                    <h6 class="mb-0 text-success">Revenue</h6>
+                                    <h5 class="mb-0">UGX {{ number_format($stats['total_revenue'] ?? 0, 0) }}</h3>
                                 </div>
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-cash-stack fs-1"></i>
+                                <div class="flex-shrink-0 text-success">
+                                    <i class="bi bi-currency-exchange fs-1"></i>
                                 </div>
                             </div>
                         </div>
@@ -285,15 +285,15 @@
                 </div>
 
                 <div class="col-md-3">
-                    <div class="card bg-info text-white shadow-sm mb-3">
+                    <div class="card shadow-sm mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">Pending Orders</h6>
+                                    <h6 class="mb-0 text-info">Pending Orders</h6>
                                     <h3 class="mb-0">{{ $stats['pending_orders'] ?? 0 }}</h3>
                                 </div>
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-hourglass-split fs-1"></i>
+                                <div class="flex-shrink-0 text-info">
+                                    <i class="bi bi-clock-history fs-1"></i>
                                 </div>
                             </div>
                         </div>
@@ -301,15 +301,15 @@
                 </div>
 
                 <div class="col-md-3">
-                    <div class="card bg-warning text-white shadow-sm mb-3">
+                    <div class="card shadow-sm mb-3">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">Shipped Orders</h6>
+                                    <h6 class="mb-0 text-warning">Shipped Orders</h6>
                                     <h3 class="mb-0">{{ $stats['shipped_orders'] ?? 0 }}</h3>
                                 </div>
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-truck fs-1"></i>
+                                <div class="flex-shrink-0 text-warning">
+                                    <i class="bi bi-truck-flatbed fs-1"></i>
                                 </div>
                             </div>
                         </div>

@@ -13,6 +13,7 @@
 
         @include('layouts.footer')
     </div>
+    @stack('scripts')
     @include('layouts.scripts')
 </body>
 

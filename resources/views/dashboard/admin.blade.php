@@ -102,7 +102,7 @@
             <div class="col-lg-4">
 
 
-                
+
             </div><!-- End Right side columns -->
         </div>
 
@@ -110,7 +110,7 @@
         <div class="card mx-auto mt-4" style="max-width: 800px;">
             <div class="card-body">
                 <h5 class="card-title text-center" style="color: #4B49AC; font-weight: bold;">
-                        📊 Customer Segments & Demand Forecast
+                    📊 Customer Segments & Demand Forecast
                 </h5>
 
                 <!-- Responsive container inside card body -->
@@ -163,10 +163,10 @@
                                 },
                                 stacked: false,
                                 scales: {
-                                    
+
                                     x: {
                                         type: 'category',
-                                        title: { display: true, text: 'Customer ID  and  Prediction Date', color:'#4B49AC', font: { size: 16, weight: 'bold', family: 'Arial' } },
+                                        title: { display: true, text: 'Customer ID  and  Prediction Date', color: '#4B49AC', font: { size: 16, weight: 'bold', family: 'Arial' } },
                                         ticks: {
                                             autoSkip: true,
                                             maxTicksLimit: 20,
@@ -176,13 +176,13 @@
                                         type: 'linear',
                                         display: true,
                                         position: 'left',
-                                        title: { display: true, text: 'Total Quantity', color:'#4B49AC', font: { size: 14, weight: 'bold', family: 'Arial' } },
+                                        title: { display: true, text: 'Total Quantity', color: '#4B49AC', font: { size: 14, weight: 'bold', family: 'Arial' } },
                                     },
                                     y2: {
                                         type: 'linear',
                                         display: true,
                                         position: 'right',
-                                        title: { display: true, text: 'Predicted Quantity', color:'#4B49AC', font: { size: 14, weight: 'bold', family: 'Arial' } },
+                                        title: { display: true, text: 'Predicted Quantity', color: '#4B49AC', font: { size: 14, weight: 'bold', family: 'Arial' } },
                                         grid: {
                                             drawOnChartArea: false,
                                         }
@@ -230,16 +230,17 @@
             </div>
         </div>
         <!-- Cluster Descriptions -->
-<div class="mt-3">
-    <h6><strong>Cluster Descriptions and Insights from Customer Segments:</strong></h6>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item"><strong>Cluster 0:</strong> Low spenders with infrequent purchases</li>
-        <li class="list-group-item"><strong>Cluster 1:</strong> Medium spenders with moderate frequency</li>
-        <li class="list-group-item"><strong>Cluster 2:</strong> High-value loyal customers with regular purchases</li>
-        <li class="list-group-item"><strong>Cluster 3:</strong> New customers with uncertain behavior</li>
-    </ul>
-</div>
-<br>
+        <div class="mt-3">
+            <h6><strong>Cluster Descriptions and Insights from Customer Segments:</strong></h6>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Cluster 0:</strong> Low spenders with infrequent purchases</li>
+                <li class="list-group-item"><strong>Cluster 1:</strong> Medium spenders with moderate frequency</li>
+                <li class="list-group-item"><strong>Cluster 2:</strong> High-value loyal customers with regular purchases
+                </li>
+                <li class="list-group-item"><strong>Cluster 3:</strong> New customers with uncertain behavior</li>
+            </ul>
+        </div>
+        <br>
 
         <!-- End Customer Segments Table -->
 

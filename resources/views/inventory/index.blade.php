@@ -19,69 +19,66 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="row mb-4">
+        <div class="row mb-4 g-4">
             <div class="col-xl-3 col-md-6">
-                <div class="card bg-primary text-white mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Total Stock Items</div>
-                            <div class="h5 mb-0 font-weight-bold">{{ number_format($stats['total_items']) }}</div>
+                            <div class="text-muted text-uppercase small mb-1">Total Stock Items</div>
+                            <div class="h4 mb-0 fw-bold">{{ number_format($stats['total_items']) }}</div>
                         </div>
-                        <div class="icon">
-                            <i class="bi bi-boxes fs-1"></i>
-                        </div>
+                        <span class="bg-primary bg-opacity-10 text-primary rounded-circle p-3">
+                            <i class="bi bi-boxes fs-2"></i>
+                        </span>
                     </div>
                 </div>
             </div>
-
             <div class="col-xl-3 col-md-6">
-                <div class="card bg-success text-white mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Products Stocked</div>
-                            <div class="h5 mb-0 font-weight-bold">{{ $stats['product_count'] }}</div>
+                            <div class="text-muted text-uppercase small mb-1">Products Stocked</div>
+                            <div class="h4 mb-0 fw-bold">{{ $stats['product_count'] }}</div>
                         </div>
-                        <div class="icon">
-                            <i class="bi bi-box-seam fs-1"></i>
-                        </div>
+                        <span class="bg-success bg-opacity-10 text-success rounded-circle p-3">
+                            <i class="bi bi-box-seam fs-2"></i>
+                        </span>
                     </div>
                 </div>
             </div>
-
             <div class="col-xl-3 col-md-6">
-                <div class="card bg-warning text-white mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Low Stock Items</div>
-                            <div class="h5 mb-0 font-weight-bold">{{ $stats['low_stock_count'] }}</div>
+                            <div class="text-muted text-uppercase small mb-1">Low Stock Items</div>
+                            <div class="h4 mb-0 fw-bold">{{ $stats['low_stock_count'] }}</div>
                         </div>
-                        <div class="icon">
-                            <i class="bi bi-exclamation-triangle fs-1"></i>
-                        </div>
+                        <span class="bg-warning bg-opacity-10 text-warning rounded-circle p-3">
+                            <i class="bi bi-exclamation-triangle fs-2"></i>
+                        </span>
                     </div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link"
+                    <div class="card-footer bg-transparent border-0 d-flex align-items-center justify-content-between px-3">
+                        <a class="small text-warning fw-semibold text-decoration-none"
                             href="{{ route('inventory.index', ['status' => 'low_stock']) }}">View Details</a>
-                        <div class="small text-white"><i class="bi bi-angle-right"></i></div>
+                        <i class="bi bi-chevron-right text-warning"></i>
                     </div>
                 </div>
             </div>
-
             <div class="col-xl-3 col-md-6">
-                <div class="card bg-danger text-white mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body d-flex align-items-center justify-content-between">
                         <div>
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Expiring Soon</div>
-                            <div class="h5 mb-0 font-weight-bold">{{ $stats['expiring_soon_count'] }}</div>
+                            <div class="text-muted text-uppercase small mb-1">Expiring Soon</div>
+                            <div class="h4 mb-0 fw-bold">{{ $stats['expiring_soon_count'] }}</div>
                         </div>
-                        <div class="icon">
-                            <i class="bi bi-calendar-x fs-1"></i>
-                        </div>
+                        <span class="bg-danger bg-opacity-10 text-danger rounded-circle p-3">
+                            <i class="bi bi-calendar-x fs-2"></i>
+                        </span>
                     </div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link"
+                    <div class="card-footer bg-transparent border-0 d-flex align-items-center justify-content-between px-3">
+                        <a class="small text-danger fw-semibold text-decoration-none"
                             href="{{ route('inventory.index', ['expiration' => 'soon']) }}">View Details</a>
-                        <div class="small text-white"><i class="bi bi-angle-right"></i></div>
+                        <i class="bi bi-chevron-right text-danger"></i>
                     </div>
                 </div>
             </div>

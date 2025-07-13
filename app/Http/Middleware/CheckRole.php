@@ -23,13 +23,11 @@ class CheckRole
         $user = Auth::user();
 
         foreach ($roles as $role) {
-            // Check if user has the role
             if ($user->role === $role) {
                 return $next($request);
             }
         }
 
-        // If the user doesn't have any of the required roles
         return redirect()->route('dashboard')->with('error', 'You do not have permission to access this page.');
     }
 }

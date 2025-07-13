@@ -19,6 +19,9 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ShipmentController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\VendorValidationController;
 
 
 use App\Http\Controllers\SearchController;
@@ -237,7 +240,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
 
-     
+
 });
 
 // Shop routes
@@ -277,4 +280,57 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/shipments/{shipment}/status', [ShipmentController::class, 'updateStatus'])->name('shipments.update-status');
     Route::delete('/shipments/{shipment}', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
     Route::get('/shipments/export', [ShipmentController::class, 'export'])->name('shipments.export');
+});
+
+// Admin routes group (protected by auth and admin middleware)
+
+
+// Analytics route
+Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+
+// You can also add additional analytics routes if needed
+Route::get('/analytics/revenue', [AnalyticsController::class, 'revenueDetails'])->name('analytics.revenue');
+Route::get('/analytics/products', [AnalyticsController::class, 'productAnalytics'])->name('analytics.products');
+Route::get('/analytics/users', [AnalyticsController::class, 'userAnalytics'])->name('analytics.users');
+
+// Orders management
+Route::resource('orders', OrderController::class);
+
+
+
+Route::middleware('auth')->prefix('api/admin')->group(function () {
+    Route::get('/analytics/revenue-data', [AnalyticsController::class, 'getRevenueData']);
+    Route::get('/analytics/order-status-data', [AnalyticsController::class, 'getOrderStatusData']);
+});
+
+
+
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    // User management
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}', [AdminUserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.reset-password');
+    Route::post('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::post('/users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
+    Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');
+});
+
+// Vendor Validation UI Routes
+Route::middleware('auth')->group(function () {
+    // Form display
+    Route::get('/admin/vendor-validation', [VendorValidationController::class, 'showValidationForm'])
+        ->name('admin.vendor-validation');
+
+    // File download (if needed)
+    Route::get('/admin/vendor-validation/download/{id}', [VendorValidationController::class, 'downloadValidationDocument'])
+        ->name('admin.vendor-validation.download');
+
+    // History view
+    Route::get('/admin/vendor-validation/history', [VendorValidationController::class, 'validationHistory'])
+        ->name('admin.vendor-validation.history');
 });
