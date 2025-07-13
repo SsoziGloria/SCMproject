@@ -67,7 +67,7 @@
                             </div>
 
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" id='submit-button' class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i> Validate Document
                                 </button>
                             </div>
@@ -170,22 +170,20 @@
             formData.append('vendor_id', document.getElementById('vendor_id').value);
             formData.append('file', document.getElementById('file').files[0]);
 
-            const formData = new FormData(this);
             const resultDiv = document.getElementById('result');
 
             // Show loading state
             resultDiv.innerHTML = `
-                                                                                                                <div class="d-flex flex-column align-items-center justify-content-center py-5">
-                                                                                                                    <div class="spinner-border text-primary mb-3" role="status">
-                                                                                                                        <span class="visually-hidden">Loading...</span>
-                                                                                                                    </div>
-                                                                                                                    <p class="text-muted">Validating document, please wait...</p>
-                                                                                                                </div>`;
+                                                                                                                        <div class="d-flex flex-column align-items-center justify-content-center py-5">
+                                                                                                                            <div class="spinner-border text-primary mb-3" role="status">
+                                                                                                                                <span class="visually-hidden">Loading...</span>
+                                                                                                                            </div>
+                                                                                                                            <p class="text-muted">Validating document, please wait...</p>
+                                                                                                                        </div>`;
 
             try {
                 const response = await axios.post('/api/vendor-validation/validate', formData);
 
-                displayResult(response.data, 'success');
 
                 displayResult(response.data);
                 loadValidationHistory(formData.get('vendor_id'));
@@ -211,13 +209,13 @@
             const isValid = data.valid === true;
 
             let html = `
-                    <div class="text-center mb-4">
-                        <div class="badge bg-${isValid ? 'success' : 'danger'} p-3 mb-3">
-                            <i class="bi bi-${isValid ? 'check-circle' : 'x-circle'}" style="font-size: 2rem;"></i>
-                        </div>
-                        <h4>${isValid ? 'Document is Valid' : 'Document is Invalid'}</h4>
-                        <p class="text-muted">${data.message}</p>
-                    </div>`;
+                            <div class="text-center mb-4">
+                                <div class="badge bg-${isValid ? 'success' : 'danger'} p-3 mb-3">
+                                    <i class="bi bi-${isValid ? 'check-circle' : 'x-circle'}" style="font-size: 2rem;"></i>
+                                </div>
+                                <h4>${isValid ? 'Document is Valid' : 'Document is Invalid'}</h4>
+                                <p class="text-muted">${data.message}</p>
+                            </div>`;
 
             // Note: The JSON key from Java is 'validationResults' (camelCase).
             // Your old code used 'validation_details', which might be why it was null.
@@ -231,16 +229,15 @@
                     const status = value ? 'success' : 'danger';
                     const icon = value ? 'check-circle' : 'x-circle';
                     html += `
-                            <tr>
-                                <td>${formatCheckName(key)}</td>
-                                <td><span class="text-${status}"><i class="bi bi-${icon}"></i> ${value ? 'Pass' : 'Fail'}</span></td>
-                            </tr>`;
+                                    <tr>
+                                        <td>${formatCheckName(key)}</td>
+                                        <td><span class="text-${status}"><i class="bi bi-${icon}"></i> ${value ? 'Pass' : 'Fail'}</span></td>
+                                    </tr>`;
                 }
 
                 html += '</tbody></table></div>';
             }
 
-            html += '</div>';
             resultDiv.innerHTML = html;
         }
 
@@ -263,12 +260,12 @@
         async function checkHealth() {
             const statusDiv = document.getElementById('health-status');
             statusDiv.innerHTML = `
-                                                                                                                <div class="d-flex align-items-center">
-                                                                                                                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
-                                                                                                                        <span class="visually-hidden">Loading...</span>
-                                                                                                                    </div>
-                                                                                                                    Checking service status...
-                                                                                                                </div>`;
+                                                                                                                        <div class="d-flex align-items-center">
+                                                                                                                            <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                                                                                                                                <span class="visually-hidden">Loading...</span>
+                                                                                                                            </div>
+                                                                                                                            Checking service status...
+                                                                                                                        </div>`;
 
             try {
                 const response = await axios.get('/api/service-health/vendor-validation');
@@ -276,24 +273,24 @@
 
                 if (status === 'UP') {
                     statusDiv.innerHTML = `
-                                                                                                                        <div class="alert alert-success d-flex align-items-center m-0">
-                                                                                                                            <i class="bi bi-check-circle-fill me-2"></i>
-                                                                                                                            <div>Validation service is online and ready</div>
-                    </div>`;
+                                                                                                                                <div class="alert alert-success d-flex align-items-center m-0">
+                                                                                                                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                                                                                                                    <div>Validation service is online and ready</div>
+                                                                                                                                </div>`;
                 } else {
                     statusDiv.innerHTML = `
-                                                                                                                        <div class="alert alert-warning d-flex align-items-center m-0">
-                                                                                                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                                                                                                            <div>Validation service is available but reported issues</div>
-                                                                                                                        </div>`;
+                                                                                                                                <div class="alert alert-warning d-flex align-items-center m-0">
+                                                                                                                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                                                                                                    <div>Validation service is available but reported issues</div>
+                                                                                                                                </div>`;
                 }
             } catch (error) {
                 console.error("Health check failed:", error);
                 statusDiv.innerHTML = `
-                                                                                                                    <div class="alert alert-danger d-flex align-items-center m-0">
-                                                                                                                        <i class="bi bi-x-circle-fill me-2"></i>
-                                                                                                                        <div>Cannot connect to validation service. Please check if the service is running.</div>
-                                                                                                                    </div>`;
+                                                                                                                            <div class="alert alert-danger d-flex align-items-center m-0">
+                                                                                                                                <i class="bi bi-x-circle-fill me-2"></i>
+                                                                                                                                <div>Cannot connect to validation service. Please check if the service is running.</div>
+                                                                                                                            </div>`;
             }
         }
 
@@ -301,19 +298,19 @@
         async function loadValidationHistory(vendorId) {
             if (!vendorId) {
                 document.getElementById('validation-history').innerHTML = `
-                                                                                                                    <p class="text-center text-muted py-5">
-                                                                                                                        Select a vendor to view validation history
-                                                                                                                    </p>`;
+                                                                                                                            <p class="text-center text-muted py-5">
+                                                                                                                                Select a vendor to view validation history
+                                                                                                                            </p>`;
                 return;
             }
 
             const historyDiv = document.getElementById('validation-history');
             historyDiv.innerHTML = `
-                                                                                                                <div class="d-flex justify-content-center py-5">
-                                                                                                                    <div class="spinner-border text-primary" role="status">
-                                                                                                                        <span class="visually-hidden">Loading...</span>
-                                                                                                                    </div>
-                                                                                                                </div>`;
+                                                                                                                        <div class="d-flex justify-content-center py-5">
+                                                                                                                            <div class="spinner-border text-primary" role="status">
+                                                                                                                                <span class="visually-hidden">Loading...</span>
+                                                                                                                            </div>
+                                                                                                                        </div>`;
 
             try {
                 const response = await axios.get(`/api/vendor-validation/vendor/${vendorId}/history`);
@@ -321,24 +318,24 @@
 
                 if (validations.length === 0) {
                     historyDiv.innerHTML = `
-                                                                                                                        <div class="text-center py-5">
-                                                                                                                            <i class="bi bi-inbox" style="font-size: 2.5rem; color: #ccc;"></i>
-                                                                                                                            <p class="mt-3 text-muted">No validation history found for this vendor</p>
-                                                                                                                        </div>`;
+                                                                                                                                <div class="text-center py-5">
+                                                                                                                                    <i class="bi bi-inbox" style="font-size: 2.5rem; color: #ccc;"></i>
+                                                                                                                                    <p class="mt-3 text-muted">No validation history found for this vendor</p>
+                                                                                                                                </div>`;
                     return;
                 }
 
                 let html = '<div class="table-responsive">';
                 html += '<table class="table table-hover align-middle">';
                 html += `
-                                                                                                                    <thead class="table-light">
-                                                                                                                        <tr>
-                                                                                                                            <th>Date</th>
-                                                                                                                            <th>Document</th>
-                                                                                                                            <th>Status</th>
-                                                                                                                            <th>Actions</th>
-                                                                                                                        </tr>
-                                                                                                                    </thead>`;
+                                                                                                                            <thead class="table-light">
+                                                                                                                                <tr>
+                                                                                                                                    <th>Date</th>
+                                                                                                                                    <th>Document</th>
+                                                                                                                                    <th>Status</th>
+                                                                                                                                    <th>Actions</th>
+                                                                                                                                </tr>
+                                                                                                                            </thead>`;
                 html += '<tbody>';
 
                 validations.forEach(validation => {
@@ -348,21 +345,21 @@
                     const statusText = validation.is_valid ? 'Valid' : 'Invalid';
 
                     html += `
-                                                                                                                        <tr>
-                            <td>${date}</td>
-                                                                                                                            <td class="text-truncate" style="max-width: 200px;">${validation.original_filename}</td>
-                                                                                                                            <td><span class="badge bg-${statusClass}"><i class="bi bi-${statusIcon}"></i> ${statusText}</span></td>
-                            <td>
-                                                                                                                                <div class="btn-group">
-                                                                                                                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="viewValidation(${validation.id})">
-                                                                                                                                        <i class="bi bi-eye"></i>
-                                                                                                                                    </button>
-                                                                                                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="revalidate(${validation.id})">
-                                                                                                                                        <i class="bi bi-arrow-repeat"></i>
-                                                                                                                                    </button>
-                                                                                                                                </div>
-                            </td>
-                        </tr>`;
+                                                                                                                                <tr>
+                                                                                                                                    <td>${date}</td>
+                                                                                                                                    <td class="text-truncate" style="max-width: 200px;">${validation.original_filename}</td>
+                                                                                                                                    <td><span class="badge bg-${statusClass}"><i class="bi bi-${statusIcon}"></i> ${statusText}</span></td>
+                                                                                                                                    <td>
+                                                                                                                                        <div class="btn-group">
+                                                                                                                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="viewValidation(${validation.id})">
+                                                                                                                                                <i class="bi bi-eye"></i>
+                                                                                                                                            </button>
+                                                                                                                                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="revalidate(${validation.id})">
+                                                                                                                                                <i class="bi bi-arrow-repeat"></i>
+                                                                                                                                            </button>
+                                                                                                                                        </div>
+                                                                                                                                    </td>
+                                                                                                                                </tr>`;
                 });
 
                 html += '</tbody></table></div>';
@@ -370,10 +367,10 @@
 
             } catch (error) {
                 historyDiv.innerHTML = `
-                                                                                                                    <div class="alert alert-danger m-0">
-                                                                                                                        <i class="bi bi-exclamation-triangle-fill"></i> 
-                                                                                                                        Error loading validation history
-                                                                                                                    </div>`;
+                                                                                                                            <div class="alert alert-danger m-0">
+                                                                                                                                <i class="bi bi-exclamation-triangle-fill"></i> 
+                                                                                                                                Error loading validation history
+                                                                                                                            </div>`;
             }
         }
 
@@ -383,11 +380,11 @@
             const modal = new bootstrap.Modal(document.getElementById('validationDetailsModal'));
 
             modalBody.innerHTML = `
-                                                                                                                <div class="d-flex justify-content-center py-4">
-                                                                                                                    <div class="spinner-border text-primary" role="status">
-                                                                                                                        <span class="visually-hidden">Loading...</span>
-                                                                                                                    </div>
-                                                                                                                </div>`;
+                                                                                                                        <div class="d-flex justify-content-center py-4">
+                                                                                                                            <div class="spinner-border text-primary" role="status">
+                                                                                                                                <span class="visually-hidden">Loading...</span>
+                                                                                                                            </div>
+                                                                                                                        </div>`;
 
             modal.show();
 
@@ -404,28 +401,28 @@
                 const statusIcon = validation.is_valid ? 'check-circle' : 'x-circle';
 
                 let html = `
-                                                                                                                    <div class="mb-4 p-3 bg-light rounded">
-                                                                                                                        <div class="d-flex justify-content-between">
-                                                                                                                            <div>
-                                                                                                                                <h6 class="mb-1">Document</h6>
-                                                                                                                                <p class="mb-0">${validation.original_filename}</p>
+                                                                                                                            <div class="mb-4 p-3 bg-light rounded">
+                                                                                                                                <div class="d-flex justify-content-between">
+                                                                                                                                    <div>
+                                                                                                                                        <h6 class="mb-1">Document</h6>
+                                                                                                                                        <p class="mb-0">${validation.original_filename}</p>
+                                                                                                                                    </div>
+                                                                                                                                    <span class="badge bg-${statusClass} d-flex align-items-center">
+                                                                                                                                        <i class="bi bi-${statusIcon} me-1"></i> 
+                                                                                                                                        ${validation.is_valid ? 'Valid' : 'Invalid'}
+                                                                                                                                    </span>
+                                                                                                                                </div>
                                                                                                                             </div>
-                                                                                                                            <span class="badge bg-${statusClass} d-flex align-items-center">
-                                                                                                                                <i class="bi bi-${statusIcon} me-1"></i> 
-                                                                                                                                ${validation.is_valid ? 'Valid' : 'Invalid'}
-                                                                                                                            </span>
-                                                                                                                        </div>
-                                                                                                                    </div>
 
-                                                                                                                    <div class="mb-3">
-                                                                                                                        <h6>Validation Message</h6>
-                                                                                                                        <p>${validation.validation_message || 'No message provided'}</p>
-                                                                                                                    </div>
+                                                                                                                            <div class="mb-3">
+                                                                                                                                <h6>Validation Message</h6>
+                                                                                                                                <p>${validation.validation_message || 'No message provided'}</p>
+                                                                                                                            </div>
 
-                                                                                                                    <div class="mb-3">
-                                                                                                                        <h6>Date</h6>
-                                                                                                                        <p>${date}</p>
-                                                                                                                    </div>`;
+                                                                                                                            <div class="mb-3">
+                                                                                                                                <h6>Date</h6>
+                                                                                                                                <p>${date}</p>
+                                                                                                                            </div>`;
 
                 if (validation.validation_details) {
                     html += '<div class="mb-3"><h6>Validation Checks</h6>';
@@ -436,10 +433,10 @@
                         const icon = value ? 'check-circle' : 'x-circle';
 
                         html += `
-                                                                                                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                                                                                                ${formatCheckName(key)}
-                                                                                                                                <span class="badge bg-${itemClass}"><i class="bi bi-${icon}"></i></span>
-                                                                                                                            </li>`;
+                                                                                                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                                                                                        ${formatCheckName(key)}
+                                                                                                                                        <span class="badge bg-${itemClass}"><i class="bi bi-${icon}"></i></span>
+                                                                                                                                    </li>`;
                     }
 
                     html += '</ul></div>';
@@ -449,10 +446,10 @@
 
             } catch (error) {
                 modalBody.innerHTML = `
-                                                                                                                    <div class="alert alert-danger">
-                                                                                                                        <i class="bi bi-exclamation-triangle-fill"></i> 
-                                                                                                                        Error loading validation details
-                                                                                                                    </div>`;
+                                                                                                                            <div class="alert alert-danger">
+                                                                                                                                <i class="bi bi-exclamation-triangle-fill"></i> 
+                                                                                                                                Error loading validation details
+                                                                                                                            </div>`;
             }
         }
 
