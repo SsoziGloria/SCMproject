@@ -23,7 +23,7 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\VendorValidationController;
-
+use App\Http\Controllers\API\VendorValidationAPIController;
 
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
@@ -99,13 +99,13 @@ Route::fallback(function () {
 // Home route
 Route::get('/welcome', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // Redirect to dashboard or login
 Route::get('/', function () {
     return auth()->check()
         ? redirect()->route('dashboard')
-        : redirect()->route('login');
+        : redirect()->route('welcome');
 });
 
 // Test mail
@@ -149,8 +149,10 @@ Route::middleware('auth')->group(function () {
     })->middleware(['signed'])->name('verification.verify');
     Route::post('/email/verification-notification', function () {
         $user = auth()->user();
-        if (!$user) abort(403, 'Not authenticated');
-        if ($user->hasVerifiedEmail()) return redirect('/');
+        if (!$user)
+            abort(403, 'Not authenticated');
+        if ($user->hasVerifiedEmail())
+            return redirect('/');
         $user->sendEmailVerificationNotification();
         return back()->with('status', 'verification-link-sent');
     })->middleware(['throttle:6,1'])->name('verification.send');
@@ -166,6 +168,13 @@ Route::get('/products/export', function (Request $request) {
     $filters = $request->only(['category', 'supplier', 'stock']);
     return Excel::download(new ProductsExport($filters), 'products.xlsx');
 })->name('products.export');
+
+// Product Catalog routes
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+
+// Product CRUD routes
+
 Route::resource('products', ProductController::class);
 Route::resource('categories', CategoryController::class);
 Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -268,10 +277,70 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');
 });
 
-// Vendor Validation UI Routes (auth required)
+// Vendor Validation UI Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/vendor-validation', [VendorValidationController::class, 'showValidationForm'])->name('admin.vendor-validation');
-    Route::get('/admin/vendor-validation/download/{id}', [VendorValidationController::class, 'downloadValidationDocument'])->name('admin.vendor-validation.download');
-    Route::get('/admin/vendor-validation/history', [VendorValidationController::class, 'validationHistory'])->name('admin.vendor-validation.history');
+    // Form display
+    Route::get('/admin/vendor-validation', [VendorValidationController::class, 'showValidationForm'])
+        ->name('admin.vendor-validation');
+
+    // File download (if needed)
+    Route::get('/admin/vendor-validation/download/{id}', [VendorValidationController::class, 'downloadValidationDocument'])
+        ->name('admin.vendor-validation.download');
+
+    // History view
+    Route::get('/admin/vendor-validation/history', [VendorValidationController::class, 'validationHistory'])
+        ->name('admin.vendor-validation.history');
 });
 
+// =====================================================================
+//  API ROUTES (Served from web.php)
+// =====================================================================
+// This group handles all API requests. The Route::prefix('api') ensures
+// that all URLs inside are correctly prefixed with '/api/', matching
+// the calls made by the frontend JavaScript.
+// =====================================================================
+
+Route::prefix('api')->name('api.')->group(function () {
+
+    /**
+     * HEALTH CHECK PROXY
+     * Securely checks the health of the Java service from the frontend.
+     * URL: GET /api/service-health/vendor-validation
+     */
+    Route::get('/service-health/vendor-validation', function () {
+        try {
+            $javaUrl = config('services.vendor_validation.url', 'http://localhost:8080');
+            $response = Http::timeout(5)->get($javaUrl . '/api/v1/vendor/health');
+            return response()->json(['status' => $response->json('status', 'DOWN')]);
+        } catch (Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Health check proxy failed: ' . $e->getMessage());
+            return response()->json(['status' => 'DOWN', 'error' => 'Service unavailable'], 503);
+        }
+    })->name('health-check');
+
+
+    /**
+     * VENDOR VALIDATION API ENDPOINTS
+     * All routes related to the core document validation functionality.
+     */
+    Route::prefix('vendor-validation')->name('vendor-validation.')->group(function () {
+
+        // POST /api/vendor-validation/validate
+        // Handles the main document upload and validation request.
+        Route::post('/validate', [VendorValidationAPIController::class, 'validateDocument'])->name('validate');
+
+        // GET /api/vendor-validation/vendor/{vendorId}/history
+        // Fetches validation history for a specific vendor.
+        Route::get('/vendor/{vendorId}/history', [VendorValidationAPIController::class, 'history'])->name('history');
+
+        // GET /api/vendor-validation/validation/{id}
+        // Fetches the details of a single validation record.
+        Route::get('/validation/{id}', [VendorValidationAPIController::class, 'show'])->name('show');
+
+        // POST /api/vendor-validation/validation/{id}/revalidate
+        // Triggers a revalidation of a previously uploaded document.
+        Route::post('/validation/{id}/revalidate', [VendorValidationAPIController::class, 'revalidate'])->name('revalidate');
+
+    });
+
+});
