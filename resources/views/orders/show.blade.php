@@ -37,13 +37,13 @@
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Order #{{ $order->order_number }}</h5>
                             <span class="badge 
-                                                @if($order->status === 'pending') bg-warning
-                                                @elseif($order->status === 'processing') bg-info
-                                                @elseif($order->status === 'shipped') bg-primary
-                                                @elseif($order->status === 'delivered') bg-success
-                                                @elseif($order->status === 'cancelled') bg-danger
-                                                    @else bg-secondary
-                                                @endif">
+                                                                        @if($order->status === 'pending') bg-warning
+                                                                        @elseif($order->status === 'processing') bg-info
+                                                                        @elseif($order->status === 'shipped') bg-primary
+                                                                        @elseif($order->status === 'delivered') bg-success
+                                                                        @elseif($order->status === 'cancelled') bg-danger
+                                                                            @else bg-secondary
+                                                                        @endif">
                                 {{ ucfirst($order->status) }}
                             </span>
                         </div>
@@ -263,7 +263,7 @@
                         </div>
                         <div class="card-body">
                             @if(Auth::user()->role === 'admin')
-                                <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST" class="mb-3">
+                                <form action="{{ route('orders.update', $order->id) }}" method="POST" class="mb-3">
                                     @csrf
                                     @method('PUT')
                                     <div class="input-group">

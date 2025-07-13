@@ -19,9 +19,11 @@
 /storage/*.key
 /storage/pail
 /vendor
+/ml/venv
 Homestead.json
 Homestead.yaml
 Thumbs.db
 composer.lock
 package-lock.json
 package.json
+/ml/config.yaml

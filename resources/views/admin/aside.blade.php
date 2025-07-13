@@ -3,6 +3,7 @@
     $userManagementRoutes = [
         'users',
         'admin.users.byRole',
+        'admin.users.index',
         // add more if needed
     ];
     // Check if current route matches any in the group
@@ -70,8 +71,8 @@
             <ul id="components-nav" class="nav-content collapse {{ $isUserManagementActive ? 'show' : '' }} "
                 data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('users') }}"
-                        class="nav-link {{ request()->routeIs('users') ? 'active' : 'collapsed' }}">
+                    <a href="{{ route('admin.users.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Users</span>
                     </a>
                 </li>
@@ -174,11 +175,11 @@
             </a>
             <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Sales Reports</span>
+                    <a href="{{ route('analytics') }}">
+                        <i class="bi bi-circle"></i><span>Dashboard</span>
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="#">
                         <i class="bi bi-circle"></i><span>User Activity Logs</span>
                     </a>
@@ -197,7 +198,7 @@
                     <a href="#">
                         <i class="bi bi-circle"></i><span>System Usage Logs</span>
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </li><!-- End Analytics Nav -->
 

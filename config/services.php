@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'vendor_validation' => [
+        'url' => env('VENDOR_VALIDATION_URL', 'http://localhost:8080'),
+        'timeout' => env('VENDOR_VALIDATION_TIMEOUT', 30),
+        'retry_attempts' => env('VENDOR_VALIDATION_RETRY_ATTEMPTS', 3),
+        'retry_delay' => env('VENDOR_VALIDATION_RETRY_DELAY', 1000), // milliseconds
+    ],
+
 ];

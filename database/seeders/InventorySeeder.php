@@ -17,7 +17,7 @@ class InventorySeeder extends Seeder
             [
                 'product_id' => $product1->id,
                 'product_name' => $product1->name,
-                'quantity' => 150,
+                'quantity' => 15,
                 'unit' => 'pcs',
                 'batch_number' => 'BATCH-DK-001',
                 'status' => 'available',
@@ -31,7 +31,7 @@ class InventorySeeder extends Seeder
             [
                 'product_id' => $product2->id,
                 'product_name' => $product2->name,
-                'quantity' => 80,
+                'quantity' => 10,
                 'unit' => 'kg',
                 'batch_number' => 'BATCH-MC-002',
                 'status' => 'available',
@@ -45,7 +45,7 @@ class InventorySeeder extends Seeder
             [
                 'product_id' => $product3->id,
                 'product_name' => $product3->name,
-                'quantity' => 60,
+                'quantity' => 13,
                 'unit' => 'pcs',
                 'batch_number' => 'BATCH-WH-003',
                 'status' => 'reserved',
