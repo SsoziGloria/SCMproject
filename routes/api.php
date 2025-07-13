@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\API\VendorValidationAPIController;
 
 // Vendor validation routes
@@ -32,3 +33,4 @@ Route::prefix('vendor-validation')->group(function () {
 // Alternative RESTful approach (if you prefer)
 Route::apiResource('vendors.validations', VendorValidationAPIController::class)
     ->except(['update', 'destroy']);
+

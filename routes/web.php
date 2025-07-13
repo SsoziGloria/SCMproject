@@ -4,6 +4,7 @@ use App\Http\Controllers\InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -22,6 +23,8 @@ use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\VendorValidationController;
+
+
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -190,7 +193,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+
     Route::resource('orders', OrderController::class);
+
 });
 
 // Shop
@@ -230,6 +235,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/shipments/export', [ShipmentController::class, 'export'])->name('shipments.export');
 });
 
+
 // Workers and workforce
 Route::resource('workers', App\Http\Controllers\WorkerController::class);
 Route::resource('workforce', App\Http\Controllers\WorkforceController::class);
@@ -239,13 +245,16 @@ Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics
 Route::get('/analytics/revenue', [AnalyticsController::class, 'revenueDetails'])->name('analytics.revenue');
 Route::get('/analytics/products', [AnalyticsController::class, 'productAnalytics'])->name('analytics.products');
 Route::get('/analytics/users', [AnalyticsController::class, 'userAnalytics'])->name('analytics.users');
+
 Route::middleware('auth')->prefix('api/admin')->group(function () {
     Route::get('/analytics/revenue-data', [AnalyticsController::class, 'getRevenueData']);
     Route::get('/analytics/order-status-data', [AnalyticsController::class, 'getOrderStatusData']);
 });
 
+
 // Admin user management (full resourceful, auth required)
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
     Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
@@ -265,3 +274,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/vendor-validation/download/{id}', [VendorValidationController::class, 'downloadValidationDocument'])->name('admin.vendor-validation.download');
     Route::get('/admin/vendor-validation/history', [VendorValidationController::class, 'validationHistory'])->name('admin.vendor-validation.history');
 });
+

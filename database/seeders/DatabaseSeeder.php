@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             InventorySeeder::class,
             OrderSeeder::class,
             OrderItemSeeder::class,
+            VendorSeeder::class,
         ]);
         // User::factory(10)->create();
 

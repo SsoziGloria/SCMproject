@@ -20,15 +20,18 @@ class VendorValidationAPIController extends Controller
         $this->validationService = $validationService;
     }
 
+
     public function validate(Request $request)
     {
         $request->validate([
             'file' => 'required|file|mimes:pdf|max:10240', // 10MB limit
             'vendor_id' => 'required|exists:vendors,id',
+ 
         ]);
 
         $vendor = Vendor::findOrFail($request->vendor_id);
         $file = $request->file('file');
+
 
         // Store the uploaded file
         $path = $file->store('uploads', config('vendor_validation.storage_disk'));
@@ -49,11 +52,11 @@ class VendorValidationAPIController extends Controller
 
         return response()->json($validationResult);
     }
-
     public function health()
     {
         \Log::info('Checking Java service health');
         try {
+
             $result = $this->validationService->checkHealth();
             \Log::info('Health check result', $result);
             return response()->json($result);
@@ -62,6 +65,7 @@ class VendorValidationAPIController extends Controller
             return response()->json(['validation_service_status' => 'DOWN', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     public function history($vendorId)
     {
@@ -78,10 +82,12 @@ class VendorValidationAPIController extends Controller
         return response()->json(['validation' => $validation]);
     }
 
+
     public function revalidate($id)
     {
         $validation = VendorValidation::findOrFail($id);
         $vendor = Vendor::findOrFail($validation->vendor_id);
+
 
         if (!Storage::disk(config('vendor_validation.storage_disk'))->exists($validation->file_path)) {
             return response()->json([
@@ -93,6 +99,7 @@ class VendorValidationAPIController extends Controller
         $fullPath = Storage::disk(config('vendor_validation.storage_disk'))->path($validation->file_path);
 
         // Call Java validation service
+
         $validationResult = $this->validationService->validateDocument($fullPath, $vendor->id);
 
         // Update validation record
@@ -103,4 +110,5 @@ class VendorValidationAPIController extends Controller
 
         return response()->json($validationResult);
     }
+
 }

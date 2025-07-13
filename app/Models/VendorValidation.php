@@ -34,7 +34,9 @@ class VendorValidation extends Model
      */
     public function vendor(): BelongsTo
     {
+
         return $this->belongsTo(Vendor::class);
+
     }
 
     /**
