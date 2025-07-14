@@ -4,7 +4,7 @@
 <head>
 
     @include('user.head')
-
+    @stack('styles')
 
 </head>
 
@@ -20,6 +20,7 @@
         </main>
         @include('layouts.footer')
     </div>
+    @stack('scripts')
     @include('layouts.scripts')
 </body>
 

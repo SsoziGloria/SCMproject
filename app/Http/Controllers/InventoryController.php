@@ -202,12 +202,13 @@ class InventoryController extends Controller
         $inventoryCount = Inventory::count();
         $lowStock = Inventory::where('quantity', '<', 10)->get();
         $expiringSoon = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
+        $supplierCount = \App\Models\User::where('role', 'supplier')->count();
 
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
             Notification::route('mail', 'irenemargi256@gmail.com')->notify(new StockAlertNotification($lowStock));
         }
 
-        return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'expiringSoon'));
+        return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'expiringSoon', 'supplierCount'));
     }
     public function stockLevels()
     {

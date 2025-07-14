@@ -19,8 +19,18 @@
         'products',
         'categories.index',
         'categories.edit',
+        'productReviews.index',
+        'productReviews.create',
+        'productReviews.edit',
         // add more if needed
     ];
+
+    $productReviewRoutes = [
+        'productReviews.index',
+        'productReviews.create',
+        'productReviews.edit',
+    ];
+
     // Check if current route matches any in the group
     $isproductManagementActive = false;
     foreach ($productManagementRoutes as $route) {
@@ -136,7 +146,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('productReviews.index') }}"
+                        class="nav-link {{ request()->routeIs($productReviewRoutes) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Product Reviews</span>
                     </a>
                 </li>

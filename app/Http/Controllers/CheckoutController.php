@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Helpers\LocationHelper;
 
 class CheckoutController extends Controller
 {
@@ -49,13 +50,14 @@ class CheckoutController extends Controller
     /**
      * Process the checkout
      */
+    // In the process method of CheckoutController, update to include new fields:
+
     public function process(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
             'phone' => 'required|string|max:20',
-            'address' => 'required|string|max:255',
+            'shipping_address' => 'required|string|max:255',
             'shipping_city' => 'required|string|max:100',
             'shipping_country' => 'required|string|max:2',
             'shipping_method' => 'required|in:standard,express,overnight',
@@ -74,25 +76,50 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
-            // Generate order number
-            $orderNumber = 'ORD-' . strtoupper(uniqid());
+            // Calculate shipping fee based on method
+            $shippingFee = 0;
+            if ($validated['shipping_method'] === 'express') {
+                $shippingFee = 3000;
+            } elseif ($validated['shipping_method'] === 'overnight') {
+                $shippingFee = 10000;
+            }
 
-            // Create the order
+            // Calculate subtotal
+            $subtotal = 0;
+            foreach ($cart as $productId => $details) {
+                $product = Product::find($productId);
+                if ($product) {
+                    $subtotal += $product->price * $details['quantity'];
+                }
+            }
+
+            // Generate order number
+            $orderNumber = 'ORD-' . date('Y') . '-' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
+
+            $region = LocationHelper::getRegionFromCity($validated['shipping_city']);
+            $country = LocationHelper::getCountryFromCity($validated['shipping_city']);
+
+            // Create the order with new fields
             $order = Order::create([
                 'order_number' => $orderNumber,
                 'user_id' => Auth::check() ? Auth::id() : null,
                 'phone' => $validated['phone'],
-                'total_amount' => $validated['total_amount'],
-                'status' => 'pending',
-                'payment' => $validated['payment'],
-                'payment_status' => $validated['payment'] === 'mobile_money' ? 'pending' : 'paid',
-                'shipping_address' => $validated['address'],
+                'shipping_address' => $validated['shipping_address'],
                 'shipping_city' => $validated['shipping_city'],
                 'shipping_country' => $validated['shipping_country'],
+                'shipping_region' => $region,
+                'shipping_fee' => $shippingFee,
+                'subtotal' => $subtotal,
+                'total_amount' => $validated['total_amount'],
+                'discount_amount' => 0,
+                'status' => 'pending',
+                'payment' => $validated['payment'],
                 'notes' => $request->input('notes'),
+                'sales_channel' => 'online', // Since this is from the website
+                'sales_channel_id' => 1,
             ]);
 
-            // Create order items and update stock
+            // Create order items with enhanced fields
             foreach ($cart as $productId => $details) {
                 $product = Product::find($productId);
 
@@ -100,23 +127,21 @@ class CheckoutController extends Controller
                     throw new \Exception('Product not available in requested quantity.');
                 }
 
-                // Create order item
+                // Create order item with enhanced fields
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $productId,
+                    'product_name' => $product->name,
+                    'product_category' => $product->category,
                     'quantity' => $details['quantity'],
                     'price' => $product->price,
+                    'unit_cost' => $product->cost,
+                    'subtotal' => $product->price * $details['quantity'],
                 ]);
 
                 // Update product stock
                 $product->stock -= $details['quantity'];
                 $product->save();
-            }
-
-            // Create customer record if not logged in
-            if (!Auth::check()) {
-                // You could create a guest customer record here
-                // Or require login before checkout
             }
 
             // Clear the cart
@@ -131,7 +156,6 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             // Roll back transaction on error
             DB::rollBack();
-
             return redirect()->back()->with('error', 'Error processing your order: ' . $e->getMessage());
         }
     }

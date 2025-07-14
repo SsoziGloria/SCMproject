@@ -48,9 +48,9 @@
                                         value="{{ old('phone', auth()->user()->phone ?? '') }}" required>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="email" class="form-label">Email*</label>
+                                    <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email"
-                                        value="{{ old('email', auth()->user()->email ?? '') }}" required>
+                                        value="{{ old('email', auth()->user()->email ?? '') }}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -65,22 +65,32 @@
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label for="address" class="form-label">Street Address*</label>
-                                    <input type="text" class="form-control" id="address" name="address"
+                                    <input type="text" class="form-control" id="shipping_address" name="shipping_address"
                                         value="{{ old('address') }}" required>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label for="city" class="form-label">City*</label>
-                                    <input type="text" class="form-control" id="city" name="shipping_city" value="{{ old('shipping_city') }}"
-                                        required>
+                                    <input type="text" class="form-control" id="shipping_city" name="shipping_city"
+                                        value="{{ old('shipping_city') }}" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="country" class="form-label">Country*</label>
-                                    <select class="form-select" id="country" name="shipping_country" required>
+                                <div class="col-md-4">
+                                    <label for="shipping_region" class="form-label">Region</label>
+                                    <select id="shipping_region" name="shipping_region" class="form-select">
+                                        <option value="">Select Region</option>
+                                        {{-- Optionally, pre-fill if old value exists --}}
+                                        @if(old('shipping_region'))
+                                            <option value="{{ old('shipping_region') }}" selected>{{ old('shipping_region') }}
+                                            </option>
+                                        @endif
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="shipping_country" class="form-label">Country*</label>
+                                    <select id="shipping_country" name="shipping_country" class="form-select">
                                         <option value="">Select Country</option>
-                                        <option value="UG" {{ old('country') == 'UG' ? 'selected' : '' }}>Uganda
-                                        </option>
-                                        <option value="KE" {{ old('country') == 'KE' ? 'selected' : '' }}>Kenya</option>
-                                        <option value="RW" {{ old('country') == 'RW' ? 'selected' : '' }}>Rwanda</option>
+                                        <option value="UG">Uganda</option>
+                                        <option value="KE">Kenya</option>
+                                        <option value="RW">Rwanda</option>
                                     </select>
                                 </div>
                             </div>
@@ -127,7 +137,7 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label">Payment Method*</label>
+                                <label class="form-label">Payment Method</label>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="radio" name="payment" id="mobile_money"
                                         value="mobile_money" checked>
@@ -174,11 +184,6 @@
                                         <input type="text" class="form-control" id="card_name" name="card_name">
                                     </div>
                                 </div>
-                            </div>
-
-                            <!-- PayPal Instructions (shown/hidden based on selection) -->
-                            <div id="paypal-instructions" class="d-none">
-                                <p>You will be redirected to PayPal to complete your payment after reviewing your order.</p>
                             </div>
 
                             <!-- Bank Transfer Instructions (shown/hidden based on selection) -->
@@ -253,7 +258,7 @@
                                         value="{{ $total + ($total * 0.1) }}">
                                 </div>
 
-                                <!-- Coupon Code -->
+                                {{-- <!-- Coupon Code -->
                                 <div class="mb-3">
                                     <label for="coupon" class="form-label">Have a coupon?</label>
                                     <div class="input-group">
@@ -262,7 +267,7 @@
                                         <button class="btn btn-outline-secondary" type="button"
                                             id="apply-coupon">Apply</button>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
@@ -271,6 +276,11 @@
                                             and conditions</a>*
                                     </label>
                                 </div>
+
+                                <!-- Add a hidden field for sales channel -->
+                                <input type="hidden" name="sales_channel" value="online">
+                                <!-- Add a hidden field for sales channel ID -->
+                                <input type="hidden" name="sales_channel_id" value="1">
 
                                 <button type="submit" class="btn btn-primary w-100">Place Order</button>
 
@@ -340,22 +350,66 @@
     </div>
 
     <script>
-        // Payment method toggle
         document.addEventListener('DOMContentLoaded', function () {
+            const cityInput = document.getElementById('shipping_city');
+            const regionSelect = document.getElementById('shipping_region');
+            const countrySelect = document.getElementById('shipping_country');
+
+            if (!cityInput || !regionSelect) {
+                console.log('City or region input not found!');
+                return;
+            }
+
+            cityInput.addEventListener('change', function () {
+                fetch('/get-region', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ city: this.value })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        regionSelect.innerHTML = '<option value="">Select Region</option>';
+                        if (data.region) {
+                            regionSelect.innerHTML += `<option value="${data.region}" selected>${data.region}</option>`;
+                        }
+                    });
+
+                fetch('/get-country', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ city: this.value })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.country) {
+                            countrySelect.value = data.country;
+                        }
+                    });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Copy address to shipping_address hidden field when address changes
+            document.getElementById('address').addEventListener('input', function () {
+                document.getElementById('shipping_address').value = this.value;
+            });
+
             const creditCardDetails = document.getElementById('credit-card-details');
-            const paypalInstructions = document.getElementById('paypal-instructions');
             const bankTransferInstructions = document.getElementById('bank-transfer-instructions');
 
             document.querySelectorAll('input[name="payment"]').forEach(function (radio) {
                 radio.addEventListener('change', function () {
                     creditCardDetails.classList.add('d-none');
-                    paypalInstructions.classList.add('d-none');
                     bankTransferInstructions.classList.add('d-none');
 
                     if (this.value === 'credit_card') {
                         creditCardDetails.classList.remove('d-none');
-                    } else if (this.value === 'paypal') {
-                        paypalInstructions.classList.remove('d-none');
                     } else if (this.value === 'bank_transfer') {
                         bankTransferInstructions.classList.remove('d-none');
                     }

@@ -24,6 +24,8 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\VendorValidationController;
 use App\Http\Controllers\API\VendorValidationAPIController;
+use App\Http\Controllers\RetailerSalesController;
+use App\Helpers\LocationHelper;
 
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
@@ -195,9 +197,11 @@ Route::post('/categories', [CategoryController::class, 'store'])->name('categori
 Route::post('/products/bulk-action', [ProductController::class, 'bulkAction'])->name('products.bulk-action');
 
 // Product reviews
-Route::get('/product-reviews', [ProductReviewController::class, 'index'])->name('productReviews.index');
-Route::get('/product-reviews/create', [ProductReviewController::class, 'create'])->name('productReviews.create');
-Route::post('/product-reviews', [ProductReviewController::class, 'store'])->name('productReviews.store');
+Route::resource('productReviews', ProductReviewController::class);
+
+// Optional: Convenience route for creating a review for a specific product
+Route::get('products/{product}/review', [ProductReviewController::class, 'createForProduct'])
+    ->name('products.review.create');
 
 // Stock levels
 Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index');
@@ -234,6 +238,16 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 Route::post('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
 Route::get('/checkout/confirmation/{order}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+
+Route::post('/get-region', function (Request $request) {
+    $region = LocationHelper::getRegionFromCity($request->city);
+    return response()->json(['region' => $region]);
+});
+
+Route::post('/get-country', function (Request $request) {
+    $country = LocationHelper::getCountryFromCity($request->city);
+    return response()->json(['country' => $country]);
+});
 
 // Customer segments (ML)
 Route::get('/admin/customer_segments', [CustomerSegmentController::class, 'index'])->name('customer-segments.index');
@@ -287,6 +301,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');
 });
 
+Route::get('/sales', [RetailerSalesController::class, 'index'])->name('sales');
 // Vendor Validation UI Routes
 Route::middleware('auth')->group(function () {
     // Form display
