@@ -42,6 +42,17 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+
+            [
+                'name' => 'Supplier2',
+                'email' => 'supplier2@s',
+                'password' => Hash::make('pppppp'),
+                'role' => 'supplier',
+                'email_verified_at' => now(),
+                'remember_token' => Str::random(10),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
             [
                 'name' => 'Admin',
                 'email' => 'admin@a',

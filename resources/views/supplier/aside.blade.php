@@ -27,9 +27,9 @@
     ];
 
     $isorderManagementActive = false;
-    foreach ($productManagementRoutes as $route) {
+    foreach ($orderManagementRoutes as $route) {
         if (request()->routeIs($route)) {
-            $isproductManagementActive = true;
+            $isorderManagementActive = true;
             break;
         }
     }
@@ -82,55 +82,66 @@
 
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs($orderManagementRoutes) ? '' : 'collapsed' }}"
-                data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-                <i class="ri-inbox-unarchive-line"></i><span>Orders</span><i class="bi bi-chevron-down ms-auto"></i>
+                data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                <i class="ri-swap-box-line"></i><span>Order Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="components-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+            <ul id="tables-nav" class="nav-content collapse {{ $isorderManagementActive ? 'show' : '' }}"
+                data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('orders.index') }}">
+                    <a href="{{ route('orders.index') }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', '')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'pending']) }}">
+                    <a href="{{ route('orders.index', ['status' => 'pending']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'pending'])) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Pending</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'shipped']) }}">
+                    <a href="{{ route('orders.index', ['status' => 'shipped']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'shipped'])) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Shipped</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'delivered']) }}">
+                    <a href="{{ route('orders.index', ['status' => 'delivered']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'delivered'])) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Delivered</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'cancelled']) }}">
-                        <i class="bi bi-circle"></i><span>Returns</span>
+                    <a href="{{ route('orders.index', ['status' => 'cancelled']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'cancelled'])) ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Cancelled</span>
                     </a>
                 </li>
             </ul>
-        </li><!-- End Orders Nav -->
+        </li><!-- End Order Management Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-truck-line"></i><span>Shipments</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="tables-general.html">
+                    <a href="#">
                         <i class="bi bi-circle"></i><span>Shipment History</span>
                     </a>
                 </li>
                 <li>
-                    <a href="tables-data.html">
-                        <i class="bi bi-circle"></i><span>Delivery Status</span>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Deliveries</span>
                     </a>
                 </li>
+                {{-- <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Boxicons</span>
+                    </a>
+                </li> --}}
             </ul>
-        </li><!-- End Shipment Nav -->
+        </li><!-- End Icons Nav -->
 
         <li class="nav-heading">Communication</li>
 

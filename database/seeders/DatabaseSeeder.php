@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             SupplierSeeder::class,
+            CategorySeeder::class,
             ProductSeeder::class,
             InventorySeeder::class,
             OrderSeeder::class,
@@ -29,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-         // Create sample workers
+        // Create sample workers
         Worker::create([
             'name' => 'John Doe',
             'email' => 'john@example.com',

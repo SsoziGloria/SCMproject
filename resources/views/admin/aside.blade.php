@@ -4,7 +4,6 @@
         'users',
         'admin.users.byRole',
         'admin.users.index',
-        // add more if needed
     ];
     // Check if current route matches any in the group
     $isUserManagementActive = false;
@@ -19,6 +18,7 @@
         'products.index',
         'products',
         'categories.index',
+        'categories.edit',
         // add more if needed
     ];
     // Check if current route matches any in the group
@@ -42,9 +42,21 @@
     ];
 
     $isorderManagementActive = false;
-    foreach ($productManagementRoutes as $route) {
+    foreach ($orderManagementRoutes as $route) {
         if (request()->routeIs($route)) {
-            $isproductManagementActive = true;
+            $isorderManagementActive = true;
+            break;
+        }
+    }
+
+    $analyticsRoutes = [
+        'analytics',
+    ];
+    // Check if current route matches any in the group
+    $isAnalyticsActive = false;
+    foreach ($analyticsRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isAnalyticsActive = true;
             break;
         }
     }
@@ -104,8 +116,8 @@
         </li><!-- End User Management Nav -->
 
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('products.index') ? '' : 'collapsed' }}"
-                data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ $isproductManagementActive ? '' : 'collapsed' }}" data-bs-target="#forms-nav"
+                data-bs-toggle="collapse" href="#">
                 <i class="ri-shopping-bag-2-line"></i><span>Product Management</span><i
                     class="bi bi-chevron-down ms-auto"></i>
             </a>
@@ -118,7 +130,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('categories.index') }}"
+                        class="nav-link {{ request()->routeIs('categories.index') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Categories</span>
                     </a>
                 </li>
@@ -137,46 +150,56 @@
 
         <!-- Begin Order Management Nav -->
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ request()->routeIs($orderManagementRoutes) ? '' : 'collapsed' }}"
+                data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-swap-box-line"></i><span>Order Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="tables-nav" class="nav-content collapse {{ $isorderManagementActive ? 'show' : '' }}"
+                data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('orders.index') }}">
+                    <a href="{{ route('orders.index') }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', '')) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Orders</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'pending']) }}">
+                    <a href="{{ route('orders.index', ['status' => 'pending']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'pending'])) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Pending</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'shipped']) }}">
+                    <a href="{{ route('orders.index', ['status' => 'shipped']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'shipped'])) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Shipped</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'delivered']) }}">
+                    <a href="{{ route('orders.index', ['status' => 'delivered']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'delivered'])) ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Delivered</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('orders.index', ['status' => 'cancelled']) }}">
-                        <i class="bi bi-circle"></i><span>Returns</span>
+                    <a href="{{ route('orders.index', ['status' => 'cancelled']) }}"
+                        class="nav-link {{ request()->fullUrlIs(route('orders.index', ['status' => 'cancelled'])) ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Cancelled</span>
                     </a>
                 </li>
             </ul>
         </li><!-- End Order Management Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ request()->routeIs('analytics') ? '' : 'collapsed' }}" data-bs-target="#charts-nav"
+                data-bs-toggle="collapse" href="#">
                 <i class="ri-donut-chart-line"></i><span>Analytics</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="charts-nav" class="nav-content collapse {{ $isAnalyticsActive ? 'show' : '' }}"
+                data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('analytics') }}">
-                        <i class="bi bi-circle"></i><span>Dashboard</span>
+                    <a class="nav-link {{ request()->routeIs('analytics') ? 'active' : 'collapsed' }}"
+                        href=" {{ route('analytics') }}">
+                        <i class=" bi bi-circle"></i><span>Dashboard</span>
                     </a>
                 </li>
                 {{-- <li>

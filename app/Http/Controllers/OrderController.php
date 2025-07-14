@@ -161,11 +161,13 @@ class OrderController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $validated = $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
-            'payment_status' => 'required|in:pending,paid,failed',
+        $rules = [
+            'status' => 'sometimes|required|in:pending,processing,shipped,delivered,cancelled',
+            'payment_status' => 'sometimes|required|in:pending,paid,failed',
             'notes' => 'nullable|string',
-        ]);
+        ];
+
+        $validated = $request->validate($rules);
 
         $order->update($validated);
         return redirect()->route('orders.index')->with('success', 'Order updated!');

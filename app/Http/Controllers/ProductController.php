@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Storage;
@@ -48,7 +49,8 @@ class ProductController extends Controller
     {
         $products = Product::all();
         $suppliers = Vendor::orderBy('name')->get();
-        return view('products.create', compact('products', 'suppliers'));
+        $categories = Category::orderBy('name')->get();
+        return view('products.create', compact('products', 'suppliers', 'categories'));
     }
 
     // Store a new product
@@ -104,9 +106,9 @@ class ProductController extends Controller
         } else {
             $suppliers = Vendor::where('supplier_id', auth()->user()->id)->orderBy('name')->get();
         }
-        // $categories = Category::all();
+        $categories = Category::orderBy('name')->get();
         // return view('products.edit', compact('product', 'categories'));
-        return view('products.edit', compact('product', 'suppliers'));
+        return view('products.edit', compact('product', 'suppliers', 'categories'));
     }
 
     // Update a product

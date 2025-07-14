@@ -39,9 +39,9 @@
                                     class="rounded-circle img-fluid"
                                     style="width: 150px; height: 150px; object-fit: cover; align-items: center;">
                             @else
-                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto"
+                                <div class="d-flex align-items-center justify-content-center mx-auto"
                                     style="width: 150px; height: 150px; font-size: 3rem;">
-                                    <i class="bi bi-person text-secondary"></i>
+                                    <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile" class="profile-square">
                                 </div>
                             @endif
                         </div>
@@ -226,11 +226,11 @@
                                                                                     <td>
                                                                                         <span
                                                                                             class="badge bg-{{ 
-                                                                                                                                                                                $order->status == 'pending' ? 'warning' :
+                                                                                                                                                                                                                                                                                                                                                                                        $order->status == 'pending' ? 'warning' :
                                                 ($order->status == 'processing' ? 'info' :
                                                     ($order->status == 'shipped' ? 'primary' :
                                                         ($order->status == 'delivered' ? 'success' : 'danger'))) 
-                                                                                                                                                                            }}">
+                                                                                                                                                                                                                                                                                                                                                                                    }}">
                                                                                             {{ ucfirst($order->status) }}
                                                                                         </span>
                                                                                     </td>
@@ -295,7 +295,7 @@
                                                         <td>UGX {{ number_format($product->price, 0) }}</td>
                                                         <td>{{ $product->stock ?? 0 }}</td>
                                                         <td>
-                                                            <a href="{{ route('admin.products.show', $product->id) }}"
+                                                            <a href="{{ route('products.show', $product->id) }}"
                                                                 class="btn btn-sm btn-outline-primary">
                                                                 <i class="bi bi-eye"></i>
                                                             </a>
@@ -323,11 +323,13 @@
                                 <ul class="timeline">
                                     @forelse($activities ?? [] as $activity)
                                                                 <li class="timeline-item mb-4">
-                                                                    <div class="timeline-marker bg-{{ 
-                                                                                                                                            $activity->type == 'login' ? 'success' :
+                                                                    <div
+                                                                        class="timeline-marker bg-{{ 
+                                                                                                                                                                                                                                                                                                            $activity->type == 'login' ? 'success' :
                                         ($activity->type == 'order' ? 'primary' :
                                             ($activity->type == 'profile_update' ? 'info' : 'secondary'))
-                                                                                                                                        }}"></div>
+                                                                                                                                                                                                                                                                                                        }}">
+                                                                    </div>
                                                                     <div class="timeline-content">
                                                                         <h6 class="mb-1">{{ ucfirst($activity->type) }}</h6>
                                                                         <p class="text-muted mb-0">{{ $activity->description }}</p>

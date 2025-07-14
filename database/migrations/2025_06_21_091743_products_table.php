@@ -27,6 +27,11 @@ return new class extends Migration {
                 ->on('suppliers')
                 ->nullOnDelete();
 
+            $table->foreign('category')
+                ->references('name')
+                ->on('categories')
+                ->nullOnDelete();
+
         });
     }
 

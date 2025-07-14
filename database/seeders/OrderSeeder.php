@@ -24,7 +24,7 @@ class OrderSeeder extends Seeder
 
         Order::insert([
             [
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'order_number' => 'ORD-' . date('Y') . '-' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT),
                 'user_id' => 3,
                 'total_amount' => 50000,
                 'status' => 'pending',
@@ -39,7 +39,7 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'order_number' => 'ORD-' . strtoupper(uniqid()),
+                'order_number' => 'ORD-' . date('Y') . '-' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT),
                 'user_id' => 3,
                 'total_amount' => 18000,
                 'status' => 'shipped',

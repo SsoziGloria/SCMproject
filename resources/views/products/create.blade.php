@@ -96,15 +96,11 @@
                                         <select class="form-select @error('category') is-invalid @enderror" id="category"
                                             name="category">
                                             <option value="">Select Category</option>
-                                            <option value="Dark Chocolate" {{ old('category') == 'Dark Chocolate' ? 'selected' : '' }}>Dark Chocolate</option>
-                                            <option value="Milk Chocolate" {{ old('category') == 'Milk Chocolate' ? 'selected' : '' }}>Milk Chocolate</option>
-                                            <option value="White Chocolate" {{ old('category') == 'White Chocolate' ? 'selected' : '' }}>White Chocolate</option>
-                                            <option value="Truffles" {{ old('category') == 'Truffles' ? 'selected' : '' }}>
-                                                Truffles</option>
-                                            <option value="Bars" {{ old('category') == 'Bars' ? 'selected' : '' }}>Bars
-                                            </option>
-                                            <option value="Gift Sets" {{ old('category') == 'Gift Sets' ? 'selected' : '' }}>
-                                                Gift Sets</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{ $category->name }}" {{ old('category') == $category->name ? 'selected' : '' }}>
+                                                    {{ $category->name }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                         @error('category')
                                             <div class="invalid-feedback">{{ $message }}</div>

@@ -1,16 +1,4 @@
-@php
-    if (Auth::check() && Auth::user()->role === 'admin') {
-        $layout = 'admin.app';
-    } elseif (Auth::check() && Auth::user()->role === 'retailer') {
-        $layout = 'retailer.app';
-    } elseif (Auth::check() && Auth::user()->role === 'supplier') {
-        $layout = 'supplier.app';
-    } else {
-        $layout = 'layouts.app';
-    }
-@endphp
-
-@extends($layout)
+@extends(auth()->user()->role . '.app')
 
 @section('content')
     <div class="container py-4">
@@ -19,7 +7,7 @@
                 <h2>Order Details</h2>
             </div>
             <div class="col-md-4 text-md-end">
-                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
+                <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back
                 </a>
             </div>
@@ -37,13 +25,13 @@
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Order #{{ $order->order_number }}</h5>
                             <span class="badge 
-                                                                        @if($order->status === 'pending') bg-warning
-                                                                        @elseif($order->status === 'processing') bg-info
-                                                                        @elseif($order->status === 'shipped') bg-primary
-                                                                        @elseif($order->status === 'delivered') bg-success
-                                                                        @elseif($order->status === 'cancelled') bg-danger
-                                                                            @else bg-secondary
-                                                                        @endif">
+                                                                                        @if($order->status === 'pending') bg-warning
+                                                                                        @elseif($order->status === 'processing') bg-info
+                                                                                        @elseif($order->status === 'shipped') bg-primary
+                                                                                        @elseif($order->status === 'delivered') bg-success
+                                                                                        @elseif($order->status === 'cancelled') bg-danger
+                                                                                            @else bg-secondary
+                                                                                        @endif">
                                 {{ ucfirst($order->status) }}
                             </span>
                         </div>
