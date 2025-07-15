@@ -4,12 +4,15 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Database\Seeders\Supplier;
+use App\Models\Supplier as SupplierModel;
+
 
 class SupplierSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('suppliers')->insert([
+        $suppliers = [
             [
                 'supplier_id' => 3,
                 'name' => 'Kampala Cocoa Ltd',
@@ -43,6 +46,13 @@ class SupplierSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($suppliers as $supplier) {
+            SupplierModel::firstOrCreate(
+                ['email' => $supplier['email']],
+                $supplier
+            );
+        }
     }
 }

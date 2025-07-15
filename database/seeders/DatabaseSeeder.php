@@ -5,6 +5,7 @@ use App\Models\User;// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Worker;
 
 
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
             OrderSeeder::class,
             OrderItemSeeder::class,
             VendorSeeder::class,
+            CustomerClusterSummarySeeder::class,
         ]);
         // User::factory(10)->create();
 

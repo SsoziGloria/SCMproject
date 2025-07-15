@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Category; 
 
 class CategorySeeder extends Seeder
 {
@@ -12,7 +13,7 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('categories')->insert([
+        $categories = [
             [
                 'name' => 'Dark Chocolate',
                 'description' => 'Rich, intense chocolate with high cocoa content.',
@@ -62,6 +63,16 @@ class CategorySeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-        ]);
+        ];
+        foreach ($categories as $category) {
+            Category::firstOrCreate(
+                ['name' => $category['name']], 
+                [
+                    'description' => $category['description'],
+                    'status' => $category['status'],
+                ]
+            );
+        }
+
     }
 }
