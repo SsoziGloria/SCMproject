@@ -99,50 +99,20 @@
                     </a>
                 </li>
                 <li>
-<<<<<<< Updated upstream
                     <a href="{{ route('admin.users.byRole', 'user') }}" class="nav-link
                         {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
-=======
-<<<<<<< HEAD
-                    < href="{{ route('admin.users.byRole', 'user') }}">
-                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
-=======
-                    <a href="{{ route('admin.users.byRole', 'user') }}" class="nav-link
-                        {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
->>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
->>>>>>> Stashed changes
                         <i class="bi bi-circle"></i><span>Customers</span>
                     </a>
                 </li>
                 <li>
-<<<<<<< Updated upstream
                     <a href="{{ route('admin.users.byRole', 'retailer') }}" class="nav-link
                         {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
-=======
-<<<<<<< HEAD
-                    < href="{{ route('admin.users.byRole', 'retailer') }}">
-                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
-=======
-                    <a href="{{ route('admin.users.byRole', 'retailer') }}" class="nav-link
-                        {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
->>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
->>>>>>> Stashed changes
                         <i class="bi bi-circle"></i><span>Retailers</span>
                     </a>
                 </li>
                 <li>
-<<<<<<< Updated upstream
                     <a href="{{ route('admin.users.byRole', 'supplier') }}" class="nav-link
                         {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
-=======
-<<<<<<< HEAD
-                    < href="{{ route('admin.users.byRole', 'supplier') }}">
-                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
-=======
-                    <a href="{{ route('admin.users.byRole', 'supplier') }}" class="nav-link
-                        {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
->>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
->>>>>>> Stashed changes
                         <i class="bi bi-circle"></i><span>Suppliers</span>
                     </a>
                 </li>
@@ -164,12 +134,8 @@
             <ul id="forms-nav" class="nav-content collapse {{ $isproductManagementActive ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
                 <li>
-<<<<<<< Updated upstream
                     <a href="{{ route('products.index') }}"
                         class="nav-link {{ request()->routeIs('products.index') ? 'active' : 'collapsed' }}">
-=======
-                    <a href="{{ route('products.index') }}">
->>>>>>> Stashed changes
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>

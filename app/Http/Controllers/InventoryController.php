@@ -8,14 +8,9 @@ use App\Models\Product;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Product;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
 use App\Models\Adjustment;
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 class InventoryController extends Controller
 {
@@ -24,7 +19,6 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
-<<<<<<< Updated upstream
         // Base query
         $query = Inventory::with(['product', 'supplier']);
 
@@ -84,12 +78,6 @@ class InventoryController extends Controller
         ];
 
         return view('inventory.index', compact('inventory', 'suppliers', 'stats'));
-=======
-        $inventories = Inventory::with(['product', 'supplier'])->paginate(25); // Eager load relations
-        return view('inventories.index', compact('inventories'));
-
-
->>>>>>> Stashed changes
     }
 
     /**
@@ -167,17 +155,9 @@ class InventoryController extends Controller
 
         //send notification if there's low stock or expiring soon items
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
-<<<<<<< Updated upstream
+
+
             Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification($lowStock));
-=======
-<<<<<<< HEAD
-            Notification::route('mail', env('MAIL_USERNAME'))->notify(
-                new StockAlertNotification(['lowStock' => $lowStock, 'expiringSoon' => $expiringSoon])
-            );
-=======
-            Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification($lowStock));
->>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
->>>>>>> Stashed changes
         }
         return redirect()->route('dashboard')->with('success', 'Inventory updated.');
     }
@@ -226,24 +206,10 @@ class InventoryController extends Controller
         $supplierCount = \App\Models\User::where('role', 'supplier')->count();
 
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
-<<<<<<< Updated upstream
             Notification::route('mail', 'irenemargi256@gmail.com')->notify(new StockAlertNotification($lowStock));
         }
 
         return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'expiringSoon', 'supplierCount'));
-=======
-<<<<<<< HEAD
-            Notification::route('mail', env('MAIL_USERNAME'))->notify(
-                new StockAlertNotification(['lowStock' => $lowStock, 'expiringSoon' => $expiringSoon])
-            );
-            return back()->with('success', 'Stock alert email sent!');
-=======
-            Notification::route('mail', 'irenemargi256@gmail.com')->notify(new StockAlertNotification($lowStock));
->>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
-        }
-
-        return view('dashboard.supplier', compact('inventoryCount', 'lowStock', 'expiringSoon'));
->>>>>>> Stashed changes
     }
     public function stockLevels()
     {

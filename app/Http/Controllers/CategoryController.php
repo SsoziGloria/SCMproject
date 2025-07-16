@@ -3,26 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-<<<<<<< Updated upstream
 use App\Models\Category;
 
 class CategoryController extends Controller
 {
     public function index()
-=======
-<<<<<<< HEAD
-
-class CategoryController extends Controller
-{
-    
-}
-=======
-use App\Models\Category;
-
-class CategoryController extends Controller
-{
-     public function index()
->>>>>>> Stashed changes
     {
         $categories = Category::all();
         return view('categories.index', compact('categories'));
@@ -32,12 +17,8 @@ class CategoryController extends Controller
         return view('categories.create');
     }
 
-<<<<<<< Updated upstream
     public function edit($id)
     {
-=======
-    public function edit($id){
->>>>>>> Stashed changes
         $category = Category::findOrFail($id);
         return view('categories.edit', compact('category'));
     }
@@ -46,7 +27,6 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully!');
-<<<<<<< Updated upstream
 
     }
     public function store(Request $request)
@@ -77,9 +57,3 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category updated successfully!');
     }
 }
-=======
-    
-}
-}
->>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
->>>>>>> Stashed changes

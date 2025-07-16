@@ -13,10 +13,7 @@
         </main>
         @include('layouts.footer')
     </div>
-<<<<<<< Updated upstream
     @stack('scripts')
-=======
->>>>>>> Stashed changes
     @include('layouts.scripts')
 </body>
 

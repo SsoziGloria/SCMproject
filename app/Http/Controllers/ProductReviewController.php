@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-<<<<<<< Updated upstream
 use App\Models\ProductReview;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
@@ -97,43 +96,4 @@ class ProductReviewController extends Controller
 
         return view('shop.product', compact('product', 'reviews', 'relatedProducts'));
     }
-=======
-<<<<<<< HEAD
-
-class ProductReviewController extends Controller
-{
-    //
-=======
-use App\Models\ProductReviews;
-use App\Models\Product;
-
-class ProductReviewController extends Controller
-{
-public function index()
-    {
-        $reviews = productReviews::with('product')->get();
-        return view('productReviews.index', compact('reviews'));
-    } 
-
-    public function create()
-{
-    $products = Product::all();
-    return view('productReviews.create', compact('products'));
-}
-
-public function store(Request $request){
-    
-    $validated = $request->validate([
-        'product_id' => 'required|exists:products,id',
-        'reviewer_name' => 'required|string|max:255',
-        'rating' => 'required|integer|min:1|max:5',
-        'comment' => 'nullable|string',
-    ]);
-
-    ProductReviews::create($validated);
-
-    return redirect()->route('productReviews.index')->with('success', 'Review added!');
-}
->>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
->>>>>>> Stashed changes
 }
