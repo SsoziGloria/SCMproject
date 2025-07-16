@@ -39,11 +39,11 @@
                     <div class="card-header bg-light d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Order Details</h5>
                         <span class="badge bg-{{ 
-                                                                                            $order->status === 'pending' ? 'warning' :
+                                                                                                                $order->status === 'pending' ? 'warning' :
         ($order->status === 'processing' ? 'info' :
             ($order->status === 'shipped' ? 'primary' :
                 ($order->status === 'delivered' ? 'success' : 'danger'))) 
-                                                                                        }}">
+                                                                                                            }}">
                             {{ ucfirst($order->status) }}
                         </span>
                     </div>
@@ -66,10 +66,11 @@
                                 </p>
                                 <p class="mb-2">
                                     <span class="text-muted">Payment Status:</span>
-                                    <span class="badge bg-{{ 
-                                                                                                        $order->payment_status === 'pending' ? 'warning' :
+                                    <span
+                                        class="badge bg-{{ 
+                                                                                                                            $order->payment_status === 'pending' ? 'warning' :
         ($order->payment_status === 'paid' ? 'success' : 'danger') 
-                                                                                                    }}">
+                                                                                                                        }}">
                                         {{ ucfirst($order->payment_status) }}
                                     </span>
                                 </p>
@@ -127,8 +128,8 @@
                                                 </div>
                                             </td>
                                             <td class="text-center">{{ $item->quantity }}</td>
-                                            <td class="text-end">{{ number_format($item->price, 2) }} UGX</td>
-                                            <td class="text-end">{{ number_format($item->price * $item->quantity, 2) }} UGX</td>
+                                            <td class="text-end">UGX {{ number_format($item->price, 0) }}</td>
+                                            <td class="text-end">UGX {{ number_format($item->price * $item->quantity, 0) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -136,15 +137,21 @@
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold">Subtotal</td>
                                         <td class="text-end">
-                                            {{ number_format($order->subtotal ?? $order->items->sum(function ($item) {
-        return $item->price * $item->quantity; }), 2) }}
-                                            UGX
+                                            UGX {{ number_format($order->subtotal ?? $order->items->sum(function ($item) {
+        return $item->price * $item->quantity; }), 0) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="text-end"><strong>Tax</strong></td>
+                                        <td class="text-end">
+                                            UGX {{ number_format($order->total_amount - $order->shipping_fee - $order->items->sum(function ($item) {
+        return $item->price * $item->quantity; }), 0) }}
                                         </td>
                                     </tr>
                                     @if(isset($order->shipping_fee) && $order->shipping_fee > 0)
                                         <tr>
                                             <td colspan="3" class="text-end">Shipping</td>
-                                            <td class="text-end">{{ number_format($order->shipping_fee, 2) }} UGX</td>
+                                            <td class="text-end">UGX {{ number_format($order->shipping_fee, 0) }}</td>
                                         </tr>
                                     @endif
                                     @if(isset($order->discount_amount) && $order->discount_amount > 0)
@@ -155,7 +162,7 @@
                                     @endif
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold">Total</td>
-                                        <td class="text-end fw-bold">{{ number_format($order->total_amount, 2) }} UGX</td>
+                                        <td class="text-end fw-bold">UGX {{ number_format($order->total_amount, 0) }}</td>
                                     </tr>
                                 </tfoot>
                             </table>

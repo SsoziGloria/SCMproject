@@ -25,6 +25,7 @@ use App\Http\Controllers\RetailerSalesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkforceController;
+use App\Http\Controllers\VendorController;
 use App\Exports\ProductsExport;
 use App\Helpers\LocationHelper;
 use Illuminate\Http\Request;
@@ -260,6 +261,10 @@ Route::get('/create', function () {
     return view('supplier.create');
 })->name('supplier.create');
 
+Route::middleware(['auth', 'vendor.verified'])->prefix('supplier')->name('supplier.')->group(function () {
+    Route::resource('products', \App\Http\Controllers\Supplier\ProductController::class);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Shipment Routes
@@ -296,11 +301,24 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         ->name('vendor-validation.download');
     Route::get('/vendor-validation/history', [VendorValidationController::class, 'validationHistory'])
         ->name('vendor-validation.history');
+    Route::put('/vendor-validation/{id}/status', [VendorValidationController::class, 'updateVendorStatus'])
+        ->name('vendor-validation.update-status');
 });
 
 Route::get('/user-management', [UserController::class, 'index'])->name('users')->middleware('auth');
 Route::get('/admin/users/role/{role}', [UserController::class, 'byRole'])->name('admin.users.byRole')->middleware('auth');
 
+
+/*--------------------------------------------------------------------------
+| Vendor Verification Routes
+|--------------------------------------------------------------------------*/
+
+Route::prefix('vendor')->name('vendor.')->middleware('auth')->group(function () {
+    Route::get('/verification', [VendorController::class, 'showVerificationForm'])->name('verification.form');
+    Route::post('/verification', [VendorController::class, 'storeVerification'])->name('verification.store');
+    Route::get('/verification/pending', [VendorController::class, 'showPendingStatus'])->name('verification.pending');
+    Route::get('/verification/approved', [VendorController::class, 'showApprovedStatus'])->name('verification.approved');
+});
 /*
 |--------------------------------------------------------------------------
 | Analytics Routes
@@ -361,7 +379,6 @@ Route::get('/test-mail', function () {
 |--------------------------------------------------------------------------
 */
 
-// These routes should be moved to routes/api.php
 Route::prefix('api')->name('api.')->group(function () {
     // Health check
     Route::get('/service-health/vendor-validation', function () {

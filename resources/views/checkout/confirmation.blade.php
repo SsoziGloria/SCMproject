@@ -72,7 +72,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
+                                        <td colspan="3" class="text-end"><strong>Transport + Tax:</strong></td>
                                         <td class="text-end">
                                             UGX {{ number_format($order->total_amount - $order->items->sum(function ($item) {
         return $item->price * $item->quantity; }), 0) }}

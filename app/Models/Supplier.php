@@ -14,4 +14,17 @@ class Supplier extends Model
         'address',
         'status',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the products for the supplier
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

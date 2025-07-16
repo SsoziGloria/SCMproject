@@ -1,7 +1,7 @@
 database:
   host: 127.0.0.1
   user: root
-  password:
+  password:00000000
   database: chocolate_scm
 
 demand_prediction:

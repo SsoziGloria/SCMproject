@@ -43,8 +43,7 @@ def analyze_clusters(clustered_data, features_used):
             "quantity"
         ].quantile(p / 100)
 
-    stats["customer_count"] = clustered_data.groupby(
-        "cluster")["Customer_ID"].nunique()
+    stats["customer_count"] = clustered_data.groupby("cluster")["Customer_ID"].nunique()
     return stats.sort_values("quantity_mean", ascending=False)
 
 
@@ -145,8 +144,7 @@ def main():
         segmentation = CustomerSegmentation(
             n_clusters=N_CLUSTERS, use_pca=USE_PCA, random_state=42
         )
-        segmentation.fit(
-            features[["quantity", "total_quantity", "purchase_count"]])
+        segmentation.fit(features[["quantity", "total_quantity", "purchase_count"]])
 
         # 4. Save results
         raw_features = raw_features.reset_index()  # Make Customer_ID a column
@@ -157,7 +155,7 @@ def main():
 
         # ✅ Save to MySQL using MySQLConnector
         mysql = MySQLConnector(
-            user="root", password="", host="127.0.0.1", database="chocolate_scm"
+            user="root", password="00000000", host="127.0.0.1", database="chocolate_scm"
         )
         engine = mysql.get_engine()
         create_table_if_not_exists(engine)
