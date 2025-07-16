@@ -66,10 +66,10 @@
                                                 Don't have account? <a href="{{ route('register') }}">Register | Create
                                                     an account</a>
                                             </p><br>
-                                            <p class="small mb-0">
+                                            {{-- <p class="small mb-0">
                                                 Want to supply us? <a
                                                     href="{{ route('suppliers.register.form') }}">Become a Supplier</a>
-                                            </p>
+                                            </p> --}}
                                         </div>
                                     </form>
 

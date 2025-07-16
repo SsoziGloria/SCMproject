@@ -72,4 +72,9 @@ class Product extends Model
 
         return asset('images/placeholder-image.png');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
 }

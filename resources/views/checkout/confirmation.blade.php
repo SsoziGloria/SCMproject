@@ -28,7 +28,7 @@
                                 <h6>Order Information</h6>
                                 <p class="mb-1">Order Number: {{ $order->order_number }}</p>
                                 <p class="mb-1">Date: {{ $order->created_at->format('F j, Y') }}</p>
-                                <p class="mb-1">Total: UGX {{ number_format($order->total_amount, 2) }}</p>
+                                <p class="mb-1">Total: UGX {{ number_format($order->total_amount, 0) }}</p>
                                 <p class="mb-1">Payment Method: {{ ucfirst(str_replace('_', ' ', $order->payment)) }}
                                 </p>
                                 <p class="mb-0">Status: <span class="badge bg-info">{{ ucfirst($order->status) }}</span></p>

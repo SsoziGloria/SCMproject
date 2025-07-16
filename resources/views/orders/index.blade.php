@@ -164,13 +164,13 @@
                                     <td>
                                         <span
                                             class="badge 
-                                                                                                                                                                                @if($order->status === 'pending') bg-warning
-                                                                                                                                                                                @elseif($order->status === 'processing') bg-info
-                                                                                                                                                                                @elseif($order->status === 'shipped') bg-primary
-                                                                                                                                                                                @elseif($order->status === 'delivered') bg-success
-                                                                                                                                                                                @elseif($order->status === 'cancelled') bg-danger
-                                                                                                                                                                                    @else bg-secondary
-                                                                                                                                                                                @endif">
+                                                                                                                                                                                        @if($order->status === 'pending') bg-warning
+                                                                                                                                                                                        @elseif($order->status === 'processing') bg-info
+                                                                                                                                                                                        @elseif($order->status === 'shipped') bg-primary
+                                                                                                                                                                                        @elseif($order->status === 'delivered') bg-success
+                                                                                                                                                                                        @elseif($order->status === 'cancelled') bg-danger
+                                                                                                                                                                                            @else bg-secondary
+                                                                                                                                                                                        @endif">
                                             {{ ucfirst($order->status) }}
                                         </span>
                                     </td>
@@ -178,10 +178,10 @@
                                         <div>{{ ucfirst(str_replace('_', ' ', $order->payment ?? 'N/A')) }}</div>
                                         <span
                                             class="badge 
-                                                                                                                                                                                @if($order->payment_status === 'paid') bg-success
-                                                                                                                                                                                @elseif($order->payment_status === 'pending') bg-warning
-                                                                                                                                                                                    @else bg-danger
-                                                                                                                                                                                @endif">
+                                                                                                                                                                                        @if($order->payment_status === 'paid') bg-success
+                                                                                                                                                                                        @elseif($order->payment_status === 'pending') bg-warning
+                                                                                                                                                                                            @else bg-danger
+                                                                                                                                                                                        @endif">
                                             {{ ucfirst($order->payment_status) }}
                                         </span>
                                     </td>

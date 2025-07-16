@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -241,8 +242,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         .hero h1 {
@@ -280,6 +288,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -322,7 +331,7 @@
             background: white;
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
         }
 
@@ -555,6 +564,7 @@
             font-size: 1rem;
             display: inline-block;
         }
+
         .login-btn:hover {
             background: linear-gradient(45deg, #8b4513, #d4af37);
             color: #2c1810;
@@ -562,19 +572,21 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <nav>
             <a href="#" class="logo">
-                <img src="{{ asset('assets/img/logo.png') }}" alt="ChocolateSCM Logo" style="height:55px; vertical-align:middle; margin-right:10px;">
+                <img src="{{ asset('assets/img/logo.png') }}" alt="ChocolateSCM Logo"
+                    style="height:55px; vertical-align:middle; margin-right:10px;">
                 ChocolateSCM
             </a>
-            <ul class="nav-links">
+            {{-- <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#products">Products</a></li>
                 <li><a href="#contact">Contact</a></li>
-            </ul>
+            </ul> --}}
             <div class="menu-toggle">
                 <span></span>
                 <span></span>
@@ -605,7 +617,7 @@
             <h1>CHOCOLATE SCM</h1>
             <h3>Welcome to SCM Project.</h3>
             <p>Your Supply Management Solution starts here.</p>
-            <a href="#products" class="cta-button">Discover Our Chocolates</a>
+            {{-- <a href="#products" class="cta-button">Discover Our Chocolates</a> --}}
         </div>
         <div class="slider-nav">
             <div class="slider-dot active" data-slide="0"></div>
@@ -625,7 +637,7 @@
             // Remove active class from all slides and dots
             slides.forEach(slide => slide.classList.remove('active'));
             dots.forEach(dot => dot.classList.remove('active'));
-            
+
             // Add active class to current slide and dot
             slides[index].classList.add('active');
             dots[index].classList.add('active');
@@ -674,7 +686,7 @@
         function handleSwipe() {
             const swipeThreshold = 50;
             const diff = touchStartX - touchEndX;
-            
+
             if (Math.abs(diff) > swipeThreshold) {
                 if (diff > 0) {
                     nextSlide(); // Swipe left
@@ -754,4 +766,5 @@
         });
     </script>
 </body>
+
 </html>

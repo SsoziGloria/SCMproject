@@ -154,13 +154,11 @@ class AnalyticsController extends Controller
     private function getTopProducts()
     {
         // This would need an order_items table in real implementation
-        // For now, we'll just return products with stock info
         return Product::with('supplier')
             ->orderBy('stock', 'desc')
             ->limit(10)
             ->get()
             ->map(function ($product) {
-                // You'd calculate these from actual order data
                 $product->total_sales = rand(10, 100);
                 $product->total_revenue = $product->total_sales * $product->price;
                 return $product;

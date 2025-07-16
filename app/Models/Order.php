@@ -11,20 +11,38 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
+        'order_number',
         'user_id',
+        'customer_name',
+        'email',
         'phone',
-        'total_amount',
-        'status',
-        'payment',
-        'payment_status',
+        'address',
         'shipping_address',
         'shipping_city',
+        'shipping_region',
         'shipping_country',
+        'total_amount',
+        'subtotal',
+        'shipping_fee',
+        'discount_amount',
+        'status',
+        'payment_status',
+        'payment',
         'notes',
-        'ordered_at',
-        'delivered_at',
-        'order_date'
+        'retailer_id',
+        'sales_channel',
+        'sales_channel_id',
+        'referral_source',
+        'tracking_number'
     ];
+
+    /**
+     * Get the user that placed the order.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     protected $casts = [
         'ordered_at' => 'date',
@@ -72,14 +90,6 @@ class Order extends Model
     }
 
     /**
-     * Get the user that owns the order
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
      * Get the product for this order
      */
     public function product(): BelongsTo
@@ -109,5 +119,62 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Get the retailer that processed the order.
+     */
+    public function retailer()
+    {
+        return $this->belongsTo(Retailer::class);
+    }
+
+    /**
+     * Get the sales channel for this order.
+     */
+    public function salesChannel()
+    {
+        return $this->belongsTo(SalesChannel::class);
+    }
+
+    /**
+     * Get the promotions applied to this order.
+     */
+    public function promotions()
+    {
+        return $this->belongsToMany(Promotion::class, 'order_promotions')
+            ->withPivot('discount_amount')
+            ->withTimestamps();
+    }
+
+    /**
+     * Calculate profit for this order.
+     */
+    public function getProfit()
+    {
+        $profit = 0;
+        foreach ($this->items as $item) {
+            $profit += ($item->price - ($item->unit_cost ?? 0)) * $item->quantity;
+        }
+        return $profit;
+    }
+
+    /**
+     * Calculate profit margin for this order.
+     */
+    public function getProfitMargin()
+    {
+        if ($this->subtotal > 0) {
+            return ($this->getProfit() / $this->subtotal) * 100;
+        }
+        return 0;
+    }
+
+    /**
+     * Get number of items in the order.
+     */
+    public function getItemCount()
+    {
+        return $this->items->sum('quantity');
     }
 }
