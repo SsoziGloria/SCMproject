@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
     public function __construct()
+<<<<<<< HEAD
     {
         $this->middleware('auth');
     }
@@ -111,7 +112,25 @@ class OrderController extends Controller
         return view('orders.index', compact('orders', 'stats', 'salesChannels'));
     }
 
+<<<<<<< Updated upstream
     // Show the form for creating a new order
+=======
+=======
+    {
+        $this->middleware('auth');
+    }
+
+    //list all orders for the authorized retailer
+    public function index()
+    {
+        $orders = Order::where('user_id', Auth::id())->with('product')
+            ->orderBy('order_date', 'desc')->get();
+        return view('orders.index', compact('orders'));
+    }
+
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+    //show the form for creating a new order
+>>>>>>> Stashed changes
     public function create()
     {
         $products = Product::where('stock', '>', 0)->get();
@@ -249,7 +268,17 @@ class OrderController extends Controller
         return view('orders.show', compact('order', 'profit', 'username', 'userEmail'));
     }
 
+<<<<<<< Updated upstream
     // Show the form for editing the specified order
+=======
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+    // Show the form for editing the specified resource.
+
+>>>>>>> Stashed changes
     public function edit(Order $order)
     {
         // Authorize edit permission
@@ -375,6 +404,7 @@ class OrderController extends Controller
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized action.');
         }
+<<<<<<< Updated upstream
 
         // Begin transaction
         DB::beginTransaction();
@@ -401,6 +431,58 @@ class OrderController extends Controller
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to delete order: ' . $e->getMessage()]);
         }
+=======
+        $order->delete();
+        return redirect()->route('orders.index')->with('success', 'Order deleted!');
+<<<<<<< HEAD
+=======
+    }
+
+    //FOR THE SIDE BAR
+
+    //pending orders
+    public function pending()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'pending')->with('product')->get();
+        return view('orders.pending', compact('orders'));
+    }
+
+    //orders in progress
+    public function inProgress()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'in_progress')->with('product')->get();
+        return view('orders.in_progress', compact('orders'));
+    }
+
+    //completed orders
+    public function completed()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'completed')->with('product')->get();
+        return view('orders.completed', compact('orders'));
+    }
+
+    //cancelled orders
+    public function cancelled()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'cancelled')->with('product')->get();
+        return view('orders.cancelled', compact('orders'));
+    }
+
+    public function dashboard()
+    {
+        $deliveredOrders = Order::where('user_id', Auth::id())
+            ->where('status', 'completed')
+            ->count();
+
+
+
+        return view('dashboard.retailer', compact('deliveredOrders'));
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
     }
 
     // Export orders to Excel

@@ -64,6 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function canCreateGroups(): bool
     {
         return in_array($this->role, ['admin', 'supplier']);
+<<<<<<< Updated upstream
     }
 
     public function orders()
@@ -74,5 +75,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function products()
     {
         return $this->hasMany(Product::class, 'supplier_id');
+=======
+>>>>>>> Stashed changes
     }
 }

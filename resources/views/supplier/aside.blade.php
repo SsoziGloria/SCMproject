@@ -1,5 +1,6 @@
 @php
     // List all route names for User Management group
+<<<<<<< Updated upstream
     $productManagementRoutes = [
         'products.index',
         'products',
@@ -30,6 +31,18 @@
     foreach ($orderManagementRoutes as $route) {
         if (request()->routeIs($route)) {
             $isorderManagementActive = true;
+=======
+    $userManagementRoutes = [
+        'users',
+        'admin.users.byRole',
+        // add more if needed
+    ];
+    // Check if current route matches any in the group
+    $isUserManagementActive = false;
+    foreach ($userManagementRoutes as $route) {
+        if (request()->routeIs($route) || (request()->routeIs('admin.users.byRole') && in_array(request()->route('role'), ['user', 'retailer', 'supplier', 'admin']))) {
+            $isUserManagementActive = true;
+>>>>>>> Stashed changes
             break;
         }
     }

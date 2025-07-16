@@ -4,7 +4,10 @@ use App\Http\Controllers\InventoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Http;
+=======
+>>>>>>> Stashed changes
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -27,9 +30,18 @@ use App\Http\Controllers\API\VendorValidationAPIController;
 use App\Http\Controllers\RetailerSalesController;
 use App\Helpers\LocationHelper;
 
+<<<<<<< Updated upstream
 use App\Http\Controllers\SearchController;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
+=======
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\SearchController;
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
 
 // Authentication routes
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
@@ -38,7 +50,11 @@ Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+<<<<<<< Updated upstream
 // Supplier routes
+=======
+//for mySupplier
+>>>>>>> Stashed changes
 Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
 Route::get('/supplier/approved', [SupplierController::class, 'approved'])->name('supplier.approved');
 Route::get('/supplier/requests', [SupplierController::class, 'requests'])->name('supplier.requests');
@@ -47,6 +63,7 @@ Route::get('/supplier/messages', [SupplierController::class, 'messages'])->name(
 Route::get('/supplier/register', [SupplierController::class, 'showRegisterForm'])->name('suppliers.register.form');
 Route::post('/supplier/register', [SupplierController::class, 'register'])->name('suppliers.register');
 
+<<<<<<< Updated upstream
 // Inventory routes (auth required)
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
@@ -65,6 +82,23 @@ Route::group(['middleware' => 'auth'], function () {
 Route::resource('inventories', InventoryController::class)->middleware('auth');
 
 // Dashboard routes
+=======
+Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier');
+
+
+//for reorders
+Route::get('/inventories/reorders', [InventoryController::class, 'reorders'])->name('inventories.reorders');
+
+
+//for adjustments
+Route::get('/inventories/adjustments', [InventoryController::class, 'adjustments'])->name('inventories.adjustments');
+Route::get('/inventories/adjustments/create', [InventoryController::class, 'createAdjustment'])->name('inventories.adjustments.create');
+Route::post('/inventories/adjustments', [InventoryController::class, 'storeAdjustment'])->name('inventories.adjustments.store');
+
+Route::resource('inventories', InventoryController::class)->middleware('auth');
+
+//Dashboard and Inventory routes
+>>>>>>> Stashed changes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         $role = auth()->user()->role;
@@ -88,8 +122,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('dashboard.user');
     })->name('dashboard.user');
 });
+<<<<<<< Updated upstream
 
 // Search functionality
+=======
+
+
+//Search functionality
+>>>>>>> Stashed changes
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/search/advanced', [SearchController::class, 'advanced'])->name('search.advanced');
 
@@ -131,13 +171,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::get('/admin/users/role/{role}', [UserController::class, 'byRole'])->name('admin.users.byRole');
 Route::get('/user-management', [UserController::class, 'index'])->name('users');
 
+<<<<<<< Updated upstream
 // Profile routes
+=======
+Route::get('/admin/users/role/{role}', [App\Http\Controllers\Admin\UserController::class, 'byRole'])
+    ->name('admin.users.byRole');
+
+Route::get('/user-management', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users');
+
+
+>>>>>>> Stashed changes
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 Route::delete('/profile/photo', [ProfileController::class, 'deletePhoto'])->name('profile.photo.delete');
 
 // Chat routes
+<<<<<<< Updated upstream
 Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
 
 // Email verification
@@ -159,6 +209,15 @@ Route::middleware('auth')->group(function () {
         return back()->with('status', 'verification-link-sent');
     })->middleware(['throttle:6,1'])->name('verification.send');
 });
+=======
+//Route::group(['prefix' => ''], function () {
+//    Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+//    Route::get('/chats', [App\Http\Controllers\ChatController::class, 'index'])->name('chats.index');
+//    Route::get('/chats/{id}', [App\Http\Controllers\ChatController::class, 'show'])->name('chats.show');
+//});
+Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+
+>>>>>>> Stashed changes
 
 // FAQ
 Route::get('/faq', function () {
@@ -268,6 +327,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/shipments/export', [ShipmentController::class, 'export'])->name('shipments.export');
 });
 
+<<<<<<< HEAD
 
 // Workers and workforce
 Route::resource('workers', App\Http\Controllers\WorkerController::class);
@@ -350,6 +410,7 @@ Route::prefix('api')->name('api.')->group(function () {
      */
     Route::prefix('vendor-validation')->name('vendor-validation.')->group(function () {
 
+<<<<<<< Updated upstream
         // POST /api/vendor-validation/validate
         // Handles the main document upload and validation request.
         Route::post('/validate', [VendorValidationAPIController::class, 'validateDocument'])->name('validate');
@@ -369,3 +430,83 @@ Route::prefix('api')->name('api.')->group(function () {
     });
 
 });
+=======
+// Product CRUD routes
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+=======
+Route::get('/orders/incoming', [OrderController::class, 'index'])->name('orders');
+Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'index'])->name('orders.incoming');
+Route::middleware('auth')->get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+// Route::middleware('auth')->get('/orders/incoming', [OrderController::class, 'incoming'])->name('orders.incoming');
+
+Route::middleware('auth')->group(function () {
+    // The page users see after clicking the verification link
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email'); // Create this view
+    })->name('verification.notice');
+
+    // The link clicked in the email
+    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $request->fulfill();
+        return redirect('/'); // Or redirect to /dashboard, etc.
+    })->middleware(['signed'])->name('verification.verify');
+
+    // To resend the verification link
+    Route::post('/email/verification-notification', function () {
+        $user = auth()->user();
+
+        if (!$user) {
+            abort(403, 'Not authenticated');
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect('/');
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return back()->with('status', 'verification-link-sent');
+    })->middleware(['throttle:6,1'])->name('verification.send');
+});
+
+// Route to faq page
+Route::get('/faq', function () {
+    return view('faq.pages-faq');
+})->name('faq');
+
+//Products routes
+Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
+
+//Export routes
+Route::get('/products/export', function (Request $request) {
+    $filters = $request->only(['category', 'supplier', 'stock']);
+    return Excel::download(new ProductsExport($filters), 'products.xlsx');
+})->name('products.export');
+
+// Product Catalog routes
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/product-reviews', [ProductReviewController::class, 'index'])->name('productReviews.index');
+Route::get('/product-reviews/create', [ProductReviewController::class, 'create'])->name('productReviews.create');
+Route::post('/product-reviews', [ProductReviewController::class, 'store'])->name('productReviews.store');
+Route::get('/stock-levels', [InventoryController::class, 'index'])->name('stockLevels.index');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+
+// Product CRUD routes
+
+Route::resource('products', ProductController::class);
+
+//category
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
+//for stock levels
+Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index');
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes

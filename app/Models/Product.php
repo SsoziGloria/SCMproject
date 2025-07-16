@@ -26,6 +26,7 @@ class Product extends Model
         'category',
         'supplier_id',
     ];
+<<<<<<< Updated upstream
 
     /**
      * The attributes that should be cast.
@@ -37,6 +38,10 @@ class Product extends Model
         'featured' => 'boolean',
         'stock' => 'integer',
     ];
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -50,6 +55,7 @@ class Product extends Model
     {
         return $this->hasMany(\App\Models\Inventory::class, 'product_id');
     }
+<<<<<<< Updated upstream
 
     public function isLowStock()
     {
@@ -77,4 +83,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductReview::class);
     }
+=======
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
 }
