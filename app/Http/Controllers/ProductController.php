@@ -11,6 +11,7 @@ use App\Models\Vendor;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
+
 class ProductController extends Controller
 {
     public function index(Request $request)
@@ -90,10 +91,10 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
-    // Show a single product.
     public function show($id)
     {
         $product = Product::with('category')->findOrFail($id);
+
         return view('products.show', compact('product'));
     }
 
@@ -182,6 +183,7 @@ class ProductController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Invalid action.']);
     }
+
 
     public function updateStock(Request $request, Product $product)
     {

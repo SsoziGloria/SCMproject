@@ -37,7 +37,7 @@
     --bs-danger: #dc3545;
     --bs-light: #f8f9fa;
     --bs-dark: #212529;
-    --bs-primary-rgb: 13, 110, 253;
+    --bs-primary-rgb: 212, 125, 13;
     --bs-secondary-rgb: 108, 117, 125;
     --bs-success-rgb: 25, 135, 84;
     --bs-info-rgb: 13, 202, 240;
@@ -3271,8 +3271,8 @@ fieldset:disabled .btn {
 .btn-primary.disabled,
 .btn-primary:disabled {
     color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd
+    background-color: #e09035;
+    border-color: #e09035
 }
 
 .btn-secondary {
@@ -3711,19 +3711,19 @@ fieldset:disabled .btn {
 }
 
 .btn-outline-info {
-    color: #0dcaf0;
-    border-color: #0dcaf0
+    color: #d98323;
+    border-color: #d98323
 }
 
 .btn-outline-info:hover {
-    color: #000;
-    background-color: #0dcaf0;
-    border-color: #0dcaf0
+    color: #fff;
+    background-color: #f0962f;
+    border-color: #f0962f
 }
 
 .btn-check:focus+.btn-outline-info,
 .btn-outline-info:focus {
-    box-shadow: 0 0 0 .25rem rgba(13, 202, 240, .5)
+    box-shadow: 0 0 0 .25rem rgba(240, 168, 13, 0.5)
 }
 
 .btn-check:active+.btn-outline-info,

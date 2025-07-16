@@ -111,7 +111,8 @@ class OrderController extends Controller
         return view('orders.index', compact('orders', 'stats', 'salesChannels'));
     }
 
-    // Show the form for creating a new order
+
+    //show the form for creating a new order
     public function create()
     {
         $products = Product::where('stock', '>', 0)->get();
@@ -249,7 +250,10 @@ class OrderController extends Controller
         return view('orders.show', compact('order', 'profit', 'username', 'userEmail'));
     }
 
-    // Show the form for editing the specified order
+
+
+    // Show the form for editing the specified resource.
+
     public function edit(Order $order)
     {
         // Authorize edit permission
@@ -401,6 +405,54 @@ class OrderController extends Controller
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to delete order: ' . $e->getMessage()]);
         }
+
+        $order->delete();
+        return redirect()->route('orders.index')->with('success', 'Order deleted!');
+    }
+
+    //FOR THE SIDE BAR
+
+    //pending orders
+    public function pending()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'pending')->with('product')->get();
+        return view('orders.pending', compact('orders'));
+    }
+
+    //orders in progress
+    public function inProgress()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'in_progress')->with('product')->get();
+        return view('orders.in_progress', compact('orders'));
+    }
+
+    //completed orders
+    public function completed()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'completed')->with('product')->get();
+        return view('orders.completed', compact('orders'));
+    }
+
+    //cancelled orders
+    public function cancelled()
+    {
+        $orders = Order::where('user_id', Auth::id())
+            ->where('status', 'cancelled')->with('product')->get();
+        return view('orders.cancelled', compact('orders'));
+    }
+
+    public function dashboard()
+    {
+        $deliveredOrders = Order::where('user_id', Auth::id())
+            ->where('status', 'completed')
+            ->count();
+
+
+
+        return view('dashboard.retailer', compact('deliveredOrders'));
     }
 
     // Export orders to Excel

@@ -6,6 +6,7 @@ from sklearn.preprocessing import RobustScaler
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score, davies_bouldin_score
 
+
 class CustomerSegmentation:
     def __init__(self, n_clusters=4, use_pca=False, random_state=42):
         self.n_clusters = n_clusters
@@ -19,22 +20,24 @@ class CustomerSegmentation:
     def fit(self, data):
         """Fit the model to the data."""
         self.scaled_data = self.scaler.fit_transform(data)
-        
+
         if self.use_pca:
             self.scaled_data = self.pca.fit_transform(self.scaled_data)
-            
+
         self.model = KMeans(
             n_clusters=self.n_clusters,
             random_state=self.random_state
         )
         self.model.fit(self.scaled_data)
         self.fitted = True
-        
+
         # Calculate metrics
         labels = self.model.labels_
         print(f"\nClustering Metrics:")
-        print(f"Silhouette Score: {silhouette_score(self.scaled_data, labels):.3f}")
-        print(f"Davies-Bouldin Index: {davies_bouldin_score(self.scaled_data, labels):.3f}")
+        print(
+            f"Silhouette Score: {silhouette_score(self.scaled_data, labels):.3f}")
+        print(
+            f"Davies-Bouldin Index: {davies_bouldin_score(self.scaled_data, labels):.3f}")
 
     def predict(self, data):
         """Predict clusters for new data."""
@@ -61,7 +64,7 @@ class CustomerSegmentation:
         """Prepare data for frontend visualization."""
         if not self.fitted:
             raise RuntimeError("Model not fitted yet.")
-            
+
         return {
             'cluster_centers': self.get_cluster_centers().tolist(),
             'features': original_features.columns.tolist(),

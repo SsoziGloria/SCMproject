@@ -392,13 +392,6 @@
                         }
                     });
             });
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Copy address to shipping_address hidden field when address changes
-            document.getElementById('address').addEventListener('input', function () {
-                document.getElementById('shipping_address').value = this.value;
-            });
 
             const creditCardDetails = document.getElementById('credit-card-details');
             const bankTransferInstructions = document.getElementById('bank-transfer-instructions');

@@ -58,12 +58,12 @@
                 data-bs-parent="#sidebar-nav">
                 <li>
                     <a class="nav-link {{ request()->routeIs('products.index') ? 'active' : 'collapsed' }}"
-                        href="{{ route('products.index') }}">
+                        href="{{ route('supplier.products.index') }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('supplier.products.create') }}">
                         <i class="bi bi-circle"></i><span>Add New Product</span>
                     </a>
                 </li>

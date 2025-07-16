@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
 use App\Models\Adjustment;
 
-
 class InventoryController extends Controller
 {
     /**
@@ -156,6 +155,8 @@ class InventoryController extends Controller
 
         //send notification if there's low stock or expiring soon items
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
+
+
             Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification($lowStock));
         }
         return redirect()->route('dashboard')->with('success', 'Inventory updated.');

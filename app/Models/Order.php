@@ -35,21 +35,25 @@ class Order extends Model
         'referral_source',
         'tracking_number'
     ];
-
-    /**
-     * Get the user that placed the order.
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
     protected $casts = [
         'ordered_at' => 'date',
         'delivered_at' => 'date',
         'order_date' => 'datetime',
         'total_amount' => 'decimal:0'
     ];
+
+    public function inventory()
+    {
+        return $this->belongsTo(Inventory::class, 'product_id', );
+    }
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
+    }
+    public function supplier()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'supplier_id');
+    }
 
     /**
      * Boot the model and automatically generate order number

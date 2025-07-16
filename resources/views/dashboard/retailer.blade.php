@@ -16,84 +16,84 @@
             <!-- Left side columns -->
             <div class="col-lg-8">
                 <div class="row">
-
                     <!-- Pending Orders Card -->
                     <div class="col-xxl-4 col-md-6">
-                        <div class="card info-card retailer-card">
-
-                            <div class="card border-info shadow-sm">
-                                <div class="card-body text-start">
-                                    <h5 class="card-title">Pending Orders</h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle bg-info text-white mb-2 d-inline-flex align-items-center justify-content-center"
-                                            style="width:40px; height:40px;">
-                                            <i class="bi bi-hourglass-split"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6 class="fw-bold">{{ $pendingOrders ?? 0 }}</h6>
-                                            <a href="#" class="btn btn-sm btn-outline-info mt-2">View</a>
-
-                                        </div>
+                        <div class="card border-info shadow-sm">
+                            <div class="card-body text-start">
+                                <h5 class="card-title">Pending Orders</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle bg-info text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                        style="width:40px; height:40px;">
+                                        <i class="bi bi-hourglass-split"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6 class="fw-bold">{{ $pendingOrders ?? 0 }}</h6>
+                                        <a href="{{ route('orders.pending') }}" class="btn btn-sm btn-outline-info mt-2">View</a>
                                     </div>
                                 </div>
-
-                            </div>
-                        </div><!-- End PendingOrders Card -->
-
-
-                        <!-- Returns Card -->
-                        <div class="col-xxl-4 col-xl-12">
-
-                            <div class="card info-card returns-card">
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Returns </h5>
-
-                                    <div class="d-flex align-items-center">
-                                        <div class="card-icon rounded-circle bg-warning text-white mb-2 d-inline-flex align-items-center justify-content-center"
-                                            style="width:40px; height:40px;">
-                                            <i class="bi bi-arrow-counterclockwise"></i>
-                                        </div>
-                                        <div class="ps-3">
-                                            <h6 class="fw-bold">{{ $returns ?? 0 }}</h6>
-                                            <a href="#" class="btn btn-sm btn-outline-warning mt-2">View</a>
-
-                                        </div>
-                                    </div>
+                                <div class="mt-3">
+                                    <h6>{{ $inventoryCount ?? 0 }}</h6>
+                                    <span class="text-muted small pt-2 ps-1">items in stock</span>
                                 </div>
                             </div>
-
-                        </div><!-- End Returns Card -->
-
-                        <!-- delivered orders Card -->
-                        <div class="col-xxl-4 col-xl-12">
-
-                            <div class="card info-card supplierMessage-card">
-
-                                <div class="card-body">
-                                    <h5 class="card-title">Delivered Orders </h5>
-
-                                    <div class="d-flex align-items-center">
-
-                                        <div class="card-icon rounded-circle bg-success text-white mb-2 d-inline-flex align-items-center justify-content-center"
-                                            style="width:40px; height:40px;">
-                                            <i class="bi bi-truck"></i>
-                                        </div>
-                                        <div class="ps-3">
-
-                                            <h6 class="fw-bold">{{ $deliveredOrders ?? 0 }}</h6>
-                                            <a href="#" class="btn btn-sm btn-outline-success mt-2">View</a>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
+                    </div><!-- End PendingOrders Card -->
 
-                    </div><!-- End Right side columns -->
+                    <!-- Returns Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card returns-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Returns</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle bg-warning text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                        style="width:40px; height:40px;">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6 class="fw-bold">{{ $returns ?? 0 }}</h6>
+                                        <a href="{{ route('orders.cancelled') }}" class="btn btn-sm btn-outline-warning mt-2">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Returns Card -->
 
+                    <!-- Low Stock Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card low-stock-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Low Stock</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ $lowStock->count() ?? 0 }}</h6>
+                                        <span class="text-muted small pt-2 ps-1">items low</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Low Stock Card -->
+
+                    <!-- Delivered Orders Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card supplierMessage-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Delivered Orders</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle bg-success text-white mb-2 d-inline-flex align-items-center justify-content-center"
+                                        style="width:40px; height:40px;">
+                                        <i class="bi bi-truck"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6 class="fw-bold">{{ $deliveredOrders ?? 0 }}</h6>
+                                        <a href="{{ route('orders.completed') }}" class="btn btn-sm btn-outline-success mt-2">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Delivered Orders Card -->
                 </div>
             </div><!-- End Left side columns -->
 
@@ -106,7 +106,9 @@
                         <div class="activity">
                             @foreach($recentActivity as $activity)
                                 <div class="activity-item d-flex">
-                                    <div class="activite-label">{{ $activity->time_ago }}</div>
+                                    <div class="activite-label">
+                                        {{ $activity->time_ago }}
+                                    </div>
                                     <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
                                     <div class="activity-content">
                                         {{ $activity->description }}
@@ -130,7 +132,7 @@
         </div>
 
         <!-- ML Combined Chart Section -->
-        <div class="card">
+        <div class="card mt-4">
             <div class="card-body">
                 <h5 class="card-title text-center" style="color: #4B49AC; font-weight: bold;">
                     📊 Customer Segments & Demand Forecast
@@ -140,7 +142,7 @@
                     <canvas id="combinedChart" height="400"></canvas>
                 </div>
 
-                {{--
+                {{-- Chart.js script commented out for now
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
@@ -206,10 +208,8 @@
                         });
                     });
                 </script> --}}
-
             </div>
-        </div>
-        <!-- End ML Combined Chart Section -->
+        </div><!-- End ML Combined Chart Section -->
 
         <!-- Customer Segments Table -->
         <div class="card mt-4">
@@ -242,22 +242,26 @@
                 </div>
             </div>
         </div>
+
         <!-- Cluster Descriptions -->
         <div class="mt-3">
             <h6><strong>Cluster Descriptions and Insights from Customer Segments:</strong></h6>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>Cluster 0:</strong> Low spenders with infrequent purchases</li>
-                <li class="list-group-item"><strong>Cluster 1:</strong> Medium spenders with moderate frequency</li>
-                <li class="list-group-item"><strong>Cluster 2:</strong> High-value loyal customers with regular purchases
+                <li class="list-group-item">
+                    <strong>Cluster 0:</strong> Low spenders with infrequent purchases
                 </li>
-                <li class="list-group-item"><strong>Cluster 3:</strong> New customers with uncertain behavior</li>
+                <li class="list-group-item">
+                    <strong>Cluster 1:</strong> Medium spenders with moderate frequency
+                </li>
+                <li class="list-group-item">
+                    <strong>Cluster 2:</strong> High-value loyal customers with regular purchases
+                </li>
+                <li class="list-group-item">
+                    <strong>Cluster 3:</strong> New customers with uncertain behavior
+                </li>
             </ul>
         </div>
         <br>
-
-
-        <!-- End Customer Segments Table -->
-
 
         <!-- Demand Predictions Table -->
         <div class="card mt-4">
@@ -272,22 +276,18 @@
                                 <th>Predicted Quantity</th>
                             </tr>
                         </thead>
-                        {{-- <tbody>
-                            @foreach($predictions as $pred)
+                        <tbody>
+                            {{-- @foreach($predictions as $pred)
                             <tr>
                                 <td>{{ $pred->product_id }}</td>
                                 <td>{{ $pred->prediction_date }}</td>
                                 <td>{{ $pred->predicted_quantity }}</td>
                             </tr>
-                            @endforeach
-                        </tbody> --}}
+                            @endforeach --}}
+                        </tbody>
                     </table>
                 </div>
             </div>
-        </div>
-
-        <!-- End Demand Predictions Table -->
-
+        </div><!-- End Demand Predictions Table -->
     </section>
-
 @endsection

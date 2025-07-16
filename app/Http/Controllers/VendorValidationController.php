@@ -239,12 +239,6 @@ class VendorValidationController extends Controller
         }
     }
 
-    public function showValidationForm()
-    {
-        $vendors = Vendor::orderBy('name')->get();
-        return view('vendor.vendor-validation-form', compact('vendors'));
-    }
-
     public function validationHistory()
     {
         $validations = VendorValidation::with('vendor')
@@ -254,7 +248,7 @@ class VendorValidationController extends Controller
         return view('vendor.validation-history', compact('validations'));
     }
 
-    public function downloadValidationDocument($id)
+    public function downloadValidationDocument1($id)
     {
         $validation = VendorValidation::findOrFail($id);
 
@@ -267,5 +261,62 @@ class VendorValidationController extends Controller
             $validation->file_path,
             $validation->original_filename
         );
+    }
+
+    public function showValidationForm(Request $request)
+    {
+
+        $vendors = Vendor::orderBy('name')->get();
+        // Check if a vendor_id is provided
+        $vendorId = $request->query('vendor_id');
+        $vendor = null;
+
+        if ($vendorId) {
+            $vendor = Vendor::findOrFail($vendorId);
+        }
+
+        // Get pending vendors that need validation
+        $pendingVendors = Vendor::where('validation_status', 'Pending')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('vendor.vendor-validation-form', compact('vendor', 'pendingVendors', 'vendors'));
+    }
+
+    //Add this method to download and validate documents
+    public function downloadValidationDocument($id)
+    {
+        $vendor = Vendor::findOrFail($id);
+
+        if (!$vendor->pdf_path || !Storage::disk('public')->exists($vendor->pdf_path)) {
+            return back()->with('error', 'Document not found.');
+        }
+
+        return Storage::disk('public')->download($vendor->pdf_path, basename($vendor->pdf_path));
+    }
+
+    // Add a method to update vendor status after admin validation
+    public function updateVendorStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Approved,Rejected',
+            'message' => 'nullable|string|max:500',
+        ]);
+
+        $vendor = Vendor::findOrFail($id);
+        $vendor->validation_status = $request->status;
+        $vendor->validation_message = $request->message;
+        $vendor->save();
+
+        // If vendor is approved, update supplier status if applicable
+        if ($request->status === 'Approved' && $vendor->supplier_id) {
+            $supplier = Supplier::where('user_id', $vendor->supplier_id)->first();
+            if ($supplier) {
+                $supplier->status = 'active';
+                $supplier->save();
+            }
+        }
+
+        return back()->with('success', "Vendor status updated to {$request->status}");
     }
 }

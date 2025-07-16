@@ -22,15 +22,28 @@ return new class extends Migration {
             $table->date('expiration_date')->nullable();
             $table->timestamps();
 
-            $table->foreign('supplier_id')
+            // Foreign Key
+
+            $table->foreign('product_id', 'inventory_product_fk')
+                ->references('id')
+                ->on('products')
+                ->onDelete('cascade');
+
+            $table->foreign('supplier_id', 'inventory_supplier_fk')
                 ->references('id')
                 ->on('suppliers')
-                ->nullOnDelete();
+                ->onDelete('set null');
         });
     }
 
     public function down(): void
     {
+        Schema::table('inventories', function (Blueprint $table) {
+            $table->dropForeign('inventory_product_fk');
+            $table->dropForeign('inventory_supplier_fk');
+        });
         Schema::dropIfExists('inventories');
+
+
     }
 };

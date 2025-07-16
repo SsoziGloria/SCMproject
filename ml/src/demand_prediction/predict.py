@@ -31,7 +31,7 @@ def run_forecast_all_products(csv_path, look_back=30, forecast_days=7, epochs=30
     full_df = pd.read_csv(csv_path)
     products = full_df["product"].unique()  # Get list of unique products
 
-    all_forecasts = []  #  collect results for all products
+    all_forecasts = []  # collect results for all products
 
     for product in products:
         print(f"\nForecasting for product: {product}")

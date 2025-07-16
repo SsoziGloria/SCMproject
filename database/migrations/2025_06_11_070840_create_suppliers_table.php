@@ -20,8 +20,13 @@ return new class extends Migration {
             $table->string('company')->nullable();
             $table->string('status')->default('active'); // e.g. active, inactive
             $table->timestamps();
+        });
 
-            $table->foreign('supplier_id')->references('id')->on('users')->cascadeOnDelete();
+            Schema::table('suppliers', function (Blueprint $table) {
+        $table->foreign('supplier_id')
+            ->references('id')
+            ->on('users')
+            ->onDelete('cascade');
         });
     }
 

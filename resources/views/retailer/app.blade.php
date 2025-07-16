@@ -3,6 +3,10 @@
 @include('layouts.head')
 @stack('styles')
 
+@include('layouts.header')
+
+@include('retailer.aside')
+
 <body>
     @include('layouts.header')
 
