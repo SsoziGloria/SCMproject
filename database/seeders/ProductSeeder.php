@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Product;
 
 class ProductSeeder extends Seeder
 {
@@ -22,7 +23,7 @@ class ProductSeeder extends Seeder
             ['name' => 'Supplier Two', 'password' => bcrypt('password'), 'role' => 'supplier']
         );
 
-        DB::table('products')->insert([
+        $products = [
             [
                 'product_id' => 'CHOC-DARK-70',
                 'name' => 'Dark Chocolate Bar 70%',
@@ -127,6 +128,12 @@ class ProductSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-        ]);
+        ];
+         foreach ($products as $product) {
+        Product::firstOrCreate(
+            ['product_id' => $product['product_id']], 
+            $product
+        );
+    }
     }
 }

@@ -4,7 +4,15 @@
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0"><i class="bi bi-box-seam"></i> All Products</h2>
+<<<<<<< Updated upstream
         <a href="{{ route('products.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Product</a>
+=======
+<<<<<<< HEAD
+        <a href="#" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Product</a>
+=======
+        <a href="{{ route('products.create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add Product</a>
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
     </div>
     <div class="card shadow-sm border-primary">
         <div class="card-body p-0">
@@ -38,11 +46,27 @@
                             </span>
                         </td>
                         <td>
+<<<<<<< Updated upstream
+                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-outline-info" class="btn btn-sm btn-outline-info">View</a><br>
+=======
+<<<<<<< HEAD
+                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-outline-info" class="btn btn-sm btn-outline-info">View</a>
+>>>>>>> Stashed changes
+
+                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-outline-warning" class="btn btn-sm btn-outline-warning">Edit</a><br>
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
+<<<<<<< Updated upstream
+                            @csrf
+=======
+                            @csr
+=======
                             <a href="{{ route('products.show', $product->id) }}" class="btn btn-sm btn-outline-info" class="btn btn-sm btn-outline-info">View</a><br>
 
                             <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm btn-outline-warning" class="btn btn-sm btn-outline-warning">Edit</a><br>
                             <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
                             @csrf
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this product?')">Delete</button>
                             </form>

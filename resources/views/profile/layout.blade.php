@@ -277,7 +277,11 @@
                                 </div>
 
 
+<<<<<<< Updated upstream
                                 {{-- <div class="tab-pane fade pt-3" id="profile-settings">
+=======
+                                <div class="tab-pane fade pt-3" id="profile-settings">
+>>>>>>> Stashed changes
 
                                     <!-- Settings Form -->
                                     <form>

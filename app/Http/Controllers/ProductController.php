@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+<<<<<<< Updated upstream
 use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,9 @@ use App\Models\Vendor;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
 class ProductController extends Controller
 {
     public function index(Request $request)
@@ -46,11 +50,57 @@ class ProductController extends Controller
     //}
 
     public function create()
+<<<<<<< Updated upstream
     {
         $products = Product::all();
         $suppliers = Vendor::orderBy('name')->get();
         $categories = Category::orderBy('name')->get();
         return view('products.create', compact('products', 'suppliers', 'categories'));
+=======
+{
+      return view('products.create');
+=======
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
+class ProductController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Product::with(['supplier', 'inventories']);
+
+        // Apply filters
+        if ($request->category)
+            $query->where('category', $request->category);
+        if ($request->supplier)
+            $query->where('supplier_id', $request->supplier);
+        if ($request->stock === 'low-stock')
+            $query->where('stock', '<=', 10);
+
+        $products = $query->paginate(20);
+
+        return view('products.all-products', [
+            'products' => $products,
+            'totalProducts' => Product::count(),
+            'activeProducts' => Product::where('stock', '>', 0)->count(),
+            'lowStockCount' => Product::where('stock', '<=', 10)->count(),
+            'categoriesCount' => Product::whereNotNull('category')->distinct('category')->count(),
+            'totalInventoryValue' => Product::sum(DB::raw('price * stock')),
+            'categories' => Product::whereNotNull('category')->distinct()->pluck('category'),
+            'suppliers' => User::where('role', 'supplier')->get()
+        ]);
+    }
+
+    //public function index()
+    //{
+    //    $products = Product::with('category')->get();; 
+    //    return view('products.index', compact('products'));
+    //}
+    public function create()
+    {
+        return view('products.create');
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
     }
 
     // Store a new product
@@ -90,10 +140,22 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+    // Show a single product
+    public function show($id){
+      $product = Product::with('category')->findOrFail($id);
+=======
+>>>>>>> Stashed changes
     // Show a single product.
     public function show($id)
     {
         $product = Product::with('category')->findOrFail($id);
+<<<<<<< Updated upstream
+=======
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
         return view('products.show', compact('product'));
     }
 
@@ -183,11 +245,15 @@ class ProductController extends Controller
         return response()->json(['success' => false, 'message' => 'Invalid action.']);
     }
 
+<<<<<<< Updated upstream
     public function updateStock(Request $request, Product $product)
     {
         $request->validate([
             'stock' => 'required|integer|min:0',
         ]);
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
 
         $product->stock = $request->stock;
         $product->save();
@@ -203,4 +269,15 @@ class ProductController extends Controller
         return redirect()->back()->with('success', 'Featured status updated.');
     }
 
+<<<<<<< Updated upstream
 }
+=======
+}
+
+
+
+
+=======
+}
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes

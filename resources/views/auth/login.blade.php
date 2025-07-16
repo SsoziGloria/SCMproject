@@ -66,10 +66,17 @@
                                                 Don't have account? <a href="{{ route('register') }}">Register | Create
                                                     an account</a>
                                             </p><br>
+<<<<<<< Updated upstream
                                             {{-- <p class="small mb-0">
                                                 Want to supply us? <a
                                                     href="{{ route('suppliers.register.form') }}">Become a Supplier</a>
                                             </p> --}}
+=======
+                                            <p class="small mb-0">
+                                                Want to supply us? <a
+                                                    href="{{ route('suppliers.register.form') }}">Become a Supplier</a>
+                                            </p>
+>>>>>>> Stashed changes
                                         </div>
                                     </form>
 

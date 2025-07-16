@@ -50,6 +50,7 @@
                                         <td>
                                             <span
                                                 class="badge 
+<<<<<<< Updated upstream
                                                                                                                                                                                                                         @if($order->status === 'pending') bg-warning
                                                                                                                                                                                                                         @elseif($order->status === 'processing') bg-info
                                                                                                                                                                                                                         @elseif($order->status === 'shipped') bg-primary
@@ -57,6 +58,15 @@
                                                                                                                                                                                                                         @elseif($order->status === 'cancelled') bg-danger
                                                                                                                                                                                                                             @else bg-secondary
                                                                                                                                                                                                                         @endif">
+=======
+                                                                                                                                                                                                @if($order->status === 'pending') bg-warning
+                                                                                                                                                                                                @elseif($order->status === 'processing') bg-info
+                                                                                                                                                                                                @elseif($order->status === 'shipped') bg-primary
+                                                                                                                                                                                                @elseif($order->status === 'delivered') bg-success
+                                                                                                                                                                                                @elseif($order->status === 'cancelled') bg-danger
+                                                                                                                                                                                                    @else bg-secondary
+                                                                                                                                                                                                @endif">
+>>>>>>> Stashed changes
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>

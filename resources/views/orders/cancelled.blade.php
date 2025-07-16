@@ -7,7 +7,15 @@
 
 @include('orders._order_table', ['orders' => $orders])
 @if($orders->isEmpty())
+<<<<<<< Updated upstream
     <p>No returned orders.</p>
+=======
+<<<<<<< HEAD
+    <p>No pending orders.</p>
+=======
+    <p>No returned orders.</p>
+>>>>>>> d2dab711646aed7182ab7947b22aab29e487a426
+>>>>>>> Stashed changes
 @else
 <table class="table">
     <thead>

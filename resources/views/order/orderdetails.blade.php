@@ -20,6 +20,7 @@
                     <p><strong>Supplier:</strong> {{ $order->supplier->name ?? 'N/A' }}</p>
                     <p><strong>Total Amount:</strong> UGX{{ number_format($order->total_amount, 0) }}</p>
                     <p><strong>Status:</strong>
+<<<<<<< Updated upstream
                         <span
                             class="badge 
                                                                                                                             @if($order->status === 'pending') bg-warning
@@ -29,6 +30,16 @@
                                                                                                                             @elseif($order->status === 'cancelled') bg-danger
                                                                                                                                 @else bg-secondary
                                                                                                                             @endif">
+=======
+                        <span class="badge 
+                                                                                            @if($order->status === 'pending') bg-warning
+                                                                                            @elseif($order->status === 'processing') bg-info
+                                                                                            @elseif($order->status === 'shipped') bg-primary
+                                                                                            @elseif($order->status === 'delivered') bg-success
+                                                                                            @elseif($order->status === 'cancelled') bg-danger
+                                                                                                @else bg-secondary
+                                                                                            @endif">
+>>>>>>> Stashed changes
                             {{ ucfirst($order->status) }}
                         </span>
                     </p>
@@ -41,7 +52,11 @@
                 </div>
             </div>
             {{-- Add more details or related items here if needed --}}
+<<<<<<< Updated upstream
             <a href="{{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
+=======
+            <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+>>>>>>> Stashed changes
         @else
                 <div class="alert alert-danger">Order not found.</div>
             </div>
