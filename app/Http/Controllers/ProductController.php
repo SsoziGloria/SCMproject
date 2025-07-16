@@ -9,7 +9,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -32,9 +32,9 @@ class ProductController extends Controller
             'totalProducts' => Product::count(),
             'activeProducts' => Product::where('stock', '>', 0)->count(),
             'lowStockCount' => Product::where('stock', '<=', 10)->count(),
-            'categoriesCount' => Product::whereNotNull('category')->distinct('category')->count(),
+            'categoriesCount' => Category::has('products')->count(),
             'totalInventoryValue' => Product::sum(DB::raw('price * stock')),
-            'categories' => Product::whereNotNull('category')->distinct()->pluck('category'),
+            'categories' => Category::withCount('products')->get(),
             'suppliers' => User::where('role', 'supplier')->get()
         ]);
     }
@@ -75,10 +75,10 @@ class ProductController extends Controller
         // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $filename = uniqid('product_') . '.' . $image->getClientOriginalExtension();
+            $filename = uniqid('product_') . ' .jpg';
 
-            $resized = Image::read($image)
-                ->toJpeg(90);
+            $resized = Image::make($image)
+                ->encode('jpg', 90);
 
             Storage::disk('public')->put('product/' . $filename, $resized);
 
