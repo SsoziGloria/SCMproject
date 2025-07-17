@@ -9,10 +9,10 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0 text-gray-800">Inventory Management</h1>
             <div>
-                <a href="{{ route('inventory.create') }}" class="btn btn-primary">
+                <a href="{{ route('inventories.create') }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle me-1"></i> Add New Stock
                 </a>
-                <a href="{{ route('inventory.export') }}" class="btn btn-outline-success ms-2">
+                <a href="{{ route('inventories.export') }}" class="btn btn-outline-success ms-2">
                     <i class="bi bi-file-earmark-excel me-1"></i> Export
                 </a>
             </div>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="card-footer bg-transparent border-0 d-flex align-items-center justify-content-between px-3">
                         <a class="small text-warning fw-semibold text-decoration-none"
-                            href="{{ route('inventory.index', ['status' => 'low_stock']) }}">View Details</a>
+                            href="{{ route('inventories.index', ['status' => 'low_stock']) }}">View Details</a>
                         <i class="bi bi-chevron-right text-warning"></i>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="card-footer bg-transparent border-0 d-flex align-items-center justify-content-between px-3">
                         <a class="small text-danger fw-semibold text-decoration-none"
-                            href="{{ route('inventory.index', ['expiration' => 'soon']) }}">View Details</a>
+                            href="{{ route('inventories.index', ['expiration' => 'soon']) }}">View Details</a>
                         <i class="bi bi-chevron-right text-danger"></i>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                 <!-- Filters -->
                 <div class="row mb-3">
                     <div class="col-md-12">
-                        <form action="{{ route('inventory.index') }}" method="GET" class="row g-3">
+                        <form action="{{ route('inventories.index') }}" method="GET" class="row g-3">
                             <div class="col-md-3">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" name="search" value="{{ request('search') }}"
@@ -154,7 +154,7 @@
                             </div>
 
                             <div class="col-md-1">
-                                <a href="{{ route('inventory.index') }}"
+                                <a href="{{ route('inventories.index') }}"
                                     class="btn btn-sm btn-outline-secondary w-100">Reset</a>
                             </div>
                         </form>
@@ -237,14 +237,15 @@
                                             </button>
                                             <ul class="dropdown-menu">
                                                 <li><a class="dropdown-item"
-                                                        href="{{ route('inventory.edit', $item->id) }}">Edit Stock</a></li>
+                                                        href="{{ route('inventories.edit', $item->id) }}">Edit Stock</a></li>
                                                 <li><a class="dropdown-item"
-                                                        href="{{ route('inventory.history', $item->id) }}">View History</a></li>
+                                                        href="{{ route('inventories.history', $item->id) }}">View History</a>
+                                                </li>
                                                 <li>
                                                     <hr class="dropdown-divider">
                                                 </li>
                                                 <li>
-                                                    <form action="{{ route('inventory.update-status', $item->id) }}"
+                                                    <form action="{{ route('inventories.update-status', $item->id) }}"
                                                         method="POST" class="d-inline">
                                                         @csrf
                                                         @method('PUT')
@@ -266,7 +267,7 @@
                                                 style="max-width: 200px;">
                                             <h5 class="mt-3">No inventory items found</h5>
                                             <p class="text-muted">Add your first inventory item to get started</p>
-                                            <a href="{{ route('inventory.create') }}" class="btn btn-primary mt-2">
+                                            <a href="{{ route('inventories.create') }}" class="btn btn-primary mt-2">
                                                 <i class="bi bi-plus-circle me-1"></i> Add New Stock
                                             </a>
                                         </div>

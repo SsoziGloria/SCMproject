@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
 use App\Models\Adjustment;
+use App\Models\InventoryAdjustment;
 
 class InventoryController extends Controller
 {
@@ -155,8 +156,6 @@ class InventoryController extends Controller
 
         //send notification if there's low stock or expiring soon items
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
-
-
             Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification($lowStock));
         }
         return redirect()->route('dashboard')->with('success', 'Inventory updated.');
@@ -165,8 +164,21 @@ class InventoryController extends Controller
     public function destroy($id)
     {
         $inventory = Inventory::findOrFail($id);
+
+        // Create a record of this deletion in inventory adjustments
+        InventoryAdjustment::create([
+            'inventory_id' => $inventory->id,
+            'adjustment_type' => 'removal',
+            'quantity_change' => $inventory->quantity,
+            'reason' => 'Inventory record deleted',
+            'user_id' => auth()->id(),
+            'user_name' => auth()->user()->name,
+        ]);
+
         $inventory->delete();
-        return redirect()->route('inventories.index')->with('success', 'Inventory deleted.');
+
+        return redirect()->route('inventories.index')
+            ->with('success', 'Inventory record deleted successfully.');
     }
 
     public function dashboard()
@@ -213,14 +225,29 @@ class InventoryController extends Controller
     }
     public function stockLevels()
     {
-        $products = Product::with('category')->get();
-        return view('stockLevels.index', compact('products'));
+        $lowStock = Inventory::where('quantity', '<=', 10)->count();
+        $criticalStock = Inventory::where('quantity', '<=', 5)->count();
+        $outOfStock = Inventory::where('quantity', '=', 0)->count();
+
+        $inventorySummary = Inventory::selectRaw('
+            COUNT(*) as total_records,
+            SUM(CASE WHEN quantity <= 5 THEN 1 ELSE 0 END) as critical,
+            SUM(CASE WHEN quantity > 5 AND quantity <= 10 THEN 1 ELSE 0 END) as low,
+            SUM(CASE WHEN quantity > 10 THEN 1 ELSE 0 END) as adequate,
+            SUM(CASE WHEN quantity = 0 THEN 1 ELSE 0 END) as out_of_stock
+        ')
+            ->first();
+
+        return view('stockLevels.index', compact('lowStock', 'criticalStock', 'outOfStock', 'inventorySummary'));
     }
 
     public function reorders()
     {
-        // Show inventories that are low in stock
-        $reorders = Inventory::where('quantity', '<', 10)->get();
+        $reorders = Inventory::with('supplier')
+            ->where('quantity', '<=', 10)
+            ->orderBy('quantity', 'asc')
+            ->get();
+
         return view('inventories.reorders', compact('reorders'));
     }
 
@@ -232,7 +259,71 @@ class InventoryController extends Controller
     }
     public function createAdjustment()
     {
-        $inventories = Inventory::all();
+        $inventories = Inventory::orderBy('product_name')
+            ->get();
+
         return view('inventories.adjustments_create', compact('inventories'));
+    }
+
+    public function storeAdjustment(Request $request)
+    {
+        $validated = $request->validate([
+            'inventory_id' => 'required|exists:inventories,id',
+            'adjustment_type' => 'required|in:increase,decrease,correction,damage,expiry',
+            'quantity_change' => 'required|integer|min:1',
+            'reason' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+
+        $inventory = Inventory::findOrFail($validated['inventory_id']);
+
+        // Calculate new quantity based on adjustment type
+        $oldQuantity = $inventory->quantity;
+        $newQuantity = $oldQuantity;
+
+        switch ($validated['adjustment_type']) {
+            case 'increase':
+                $newQuantity = $oldQuantity + $validated['quantity_change'];
+                break;
+            case 'decrease':
+            case 'damage':
+            case 'expiry':
+                $newQuantity = $oldQuantity - $validated['quantity_change'];
+                if ($newQuantity < 0) {
+                    return back()->withErrors(['quantity_change' => 'Cannot decrease more than the current quantity.'])->withInput();
+                }
+                break;
+            case 'correction':
+                $newQuantity = $validated['quantity_change'];
+                break;
+        }
+
+        // Create adjustment record
+        $adjustment = InventoryAdjustment::create([
+            'inventory_id' => $validated['inventory_id'],
+            'adjustment_type' => $validated['adjustment_type'],
+            'quantity_change' => $validated['adjustment_type'] === 'correction'
+                ? abs($newQuantity - $oldQuantity)
+                : $validated['quantity_change'],
+            'reason' => $validated['reason'],
+            'notes' => $validated['notes'],
+            'user_id' => auth()->id(),
+            'user_name' => auth()->user()->name,
+        ]);
+
+        // Update inventory quantity
+        $inventory->quantity = $newQuantity;
+
+        // Update status based on adjustment type if needed
+        if ($validated['adjustment_type'] === 'damage') {
+            $inventory->status = 'damaged';
+        } elseif ($validated['adjustment_type'] === 'expiry') {
+            $inventory->status = 'expired';
+        }
+
+        $inventory->save();
+
+        return redirect()->route('inventories.adjustments')
+            ->with('success', 'Inventory adjustment recorded successfully.');
     }
 }

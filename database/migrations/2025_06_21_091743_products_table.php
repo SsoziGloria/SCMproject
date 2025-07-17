@@ -17,22 +17,21 @@ return new class extends Migration {
             $table->string('image')->nullable(); // Path to product image
             $table->boolean('featured')->default(false); // For special listing
             $table->unsignedInteger('stock')->default(0);
-
-            $table->unsignedBigInteger('category_id')->nullable();
+            $table->string('category')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable(); // Foreign key if needed
             $table->timestamps(); // created_at and updated_at
         });
-            // Indexes and foreign keys
-            Schema::table('products', function (Blueprint $table) {
-        $table->foreign('supplier_id')
-            ->references('id')
-            ->on('suppliers')
-            ->onDelete('set null');
-            
-        $table->foreign('category_id')
-            ->references('id')
-            ->on('categories')
-            ->onDelete('set null');
+        // Indexes and foreign keys
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreign('supplier_id')
+                ->references('id')
+                ->on('suppliers')
+                ->onDelete('set null');
+
+            $table->foreign('category')
+                ->references('name')
+                ->on('categories')
+                ->onDelete('set null');
 
         });
     }

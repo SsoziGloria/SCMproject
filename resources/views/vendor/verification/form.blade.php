@@ -132,8 +132,7 @@
                             <h5 class="mt-4 mb-3 border-bottom pb-2">Documentation</h5>
 
                             <div class="mb-4">
-                                <label for="verification_document" class="form-label">Business Registration
-                                    Certificate*</label>
+                                <label for="verification_document" class="form-label">Validation Form*</label>
                                 <input type="file" class="form-control" id="verification_document"
                                     name="verification_document" accept=".pdf" required>
                                 <div class="form-text">Please upload your validation documents in PDF format.

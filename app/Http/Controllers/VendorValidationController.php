@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Vendor;
 use App\Models\VendorValidation;
 use Exception;
+use App\Models\Supplier;
 
 class VendorValidationController extends Controller
 {
@@ -44,6 +45,7 @@ class VendorValidationController extends Controller
 
             // Return response based on validation result
             if ($validationResult['success'] && $validationResult['valid']) {
+                Vendor::where('vendor_id', $vendorId)->update(['validation_status' => 'Approved']);
                 return response()->json([
                     'success' => true,
                     'message' => 'Document validation successful',
@@ -52,6 +54,7 @@ class VendorValidationController extends Controller
                     'validation_results' => $validationResult['validationResults'] ?? []
                 ], 200);
             } else {
+                Vendor::where('vendor_id', $vendorId)->update(['validation_status' => 'Rejected']);
                 return response()->json([
                     'success' => false,
                     'message' => $validationResult['message'] ?? 'Document validation failed',
@@ -303,14 +306,17 @@ class VendorValidationController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
+        $vendor = VendorValidation::findOrFail($id);
+        $vendor->validation_message = $request->message;
+        $vendor->save();
+
         $vendor = Vendor::findOrFail($id);
         $vendor->validation_status = $request->status;
-        $vendor->validation_message = $request->message;
         $vendor->save();
 
         // If vendor is approved, update supplier status if applicable
         if ($request->status === 'Approved' && $vendor->supplier_id) {
-            $supplier = Supplier::where('user_id', $vendor->supplier_id)->first();
+            $supplier = Supplier::where('supplier_id', $vendor->supplier_id)->first();
             if ($supplier) {
                 $supplier->status = 'active';
                 $supplier->save();

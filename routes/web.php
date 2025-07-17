@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\InventoryAdjustmentController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\VendorValidationController;
 use App\Http\Controllers\API\VendorValidationAPIController;
+use App\Http\Controllers\API\VendorValidationProxyController;
 use App\Http\Controllers\RetailerSalesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WorkerController;
@@ -144,20 +146,40 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::group(['middleware' => 'auth', 'prefix' => 'inventory'], function () {
+    // Basic inventory CRUD
     Route::get('/', [InventoryController::class, 'index'])->name('inventories.index');
     Route::get('/create', [InventoryController::class, 'create'])->name('inventories.create');
     Route::post('/', [InventoryController::class, 'store'])->name('inventories.store');
-    Route::get('/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventory.edit');
-    Route::put('/{inventory}', [InventoryController::class, 'update'])->name('inventory.update');
-    Route::put('/{inventory}/status', [InventoryController::class, 'updateStatus'])->name('inventory.update-status');
-    Route::get('/{inventory}/history', [InventoryController::class, 'history'])->name('inventory.history');
-    Route::get('/export', [InventoryController::class, 'export'])->name('inventory.export');
+    Route::get('/{inventory}/edit', [InventoryController::class, 'edit'])->name('inventories.edit');
+    Route::put('/{inventory}', [InventoryController::class, 'update'])->name('inventories.update');
+    Route::delete('/{inventory}', [InventoryController::class, 'destroy'])->name('inventories.destroy');
+
+    // Additional inventory functionality
+    Route::put('/{inventory}/status', [InventoryController::class, 'updateStatus'])->name('inventories.update-status');
+    Route::get('/{inventory}/history', [InventoryController::class, 'history'])->name('inventories.history');
+    Route::get('/export', [InventoryController::class, 'export'])->name('inventories.export');
+
+    // Low stock and reorders
     Route::get('/reorders', [InventoryController::class, 'reorders'])->name('inventories.reorders');
+
+    // Inventory adjustments
     Route::get('/adjustments', [InventoryController::class, 'adjustments'])->name('inventories.adjustments');
     Route::get('/adjustments/create', [InventoryController::class, 'createAdjustment'])->name('inventories.adjustments.create');
     Route::post('/adjustments', [InventoryController::class, 'storeAdjustment'])->name('inventories.adjustments.store');
 });
 
+// Inventory Adjustments
+Route::group(['middleware' => 'auth', 'prefix' => 'inventory/adjustments'], function () {
+    Route::get('/', [InventoryAdjustmentController::class, 'index'])->name('inventories.adjustments');
+    Route::get('/create', [InventoryAdjustmentController::class, 'create'])->name('inventories.adjustments.create');
+    Route::post('/', [InventoryAdjustmentController::class, 'store'])->name('inventories.adjustments.store');
+    Route::get('/{adjustment}', [InventoryAdjustmentController::class, 'show'])->name('inventories.adjustments.show');
+    Route::get('/report', [InventoryAdjustmentController::class, 'report'])->name('inventories.adjustments.report');
+    Route::get('/export', [InventoryAdjustmentController::class, 'export'])->name('inventories.adjustments.export');
+    Route::get('/analytics', [InventoryAdjustmentController::class, 'analytics'])->name('inventories.adjustments.analytics');
+});
+
+// Stock alerts and levels
 Route::get('/check-stock-alert', [InventoryController::class, 'checkStockAlert'])->name('check.stock.alert')->middleware('auth');
 Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('stockLevels.index')->middleware('auth');
 
@@ -195,7 +217,7 @@ Route::get('/products/export', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'vendor.verified'])->group(function () {
     Route::resource('orders', OrderController::class);
     Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
     Route::get('/orders/in-progress', [OrderController::class, 'inProgress'])->name('orders.inProgress');
@@ -398,6 +420,8 @@ Route::prefix('api')->name('api.')->group(function () {
         Route::get('/vendor/{vendorId}/history', [VendorValidationAPIController::class, 'history'])->name('history');
         Route::get('/validation/{id}', [VendorValidationAPIController::class, 'show'])->name('show');
         Route::post('/validation/{id}/revalidate', [VendorValidationAPIController::class, 'revalidate'])->name('revalidate');
+        Route::post('/validate-existing/{vendorId}', [VendorValidationProxyController::class, 'validateExistingDocument'])
+            ->name('validate-existing');
     });
 
     // Analytics API endpoints

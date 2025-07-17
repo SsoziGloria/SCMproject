@@ -255,19 +255,29 @@ class AdminUserController extends Controller
     /**
      * Toggle user active status.
      */
-    public function toggleStatus(User $user)
+    public function toggleStatus(Request $request, $id)
     {
-        // Prevent deactivating yourself
-        if ($user->id === auth()->id()) {
-            return back()->with('error', 'You cannot deactivate your own account.');
+        $user = User::findOrFail($id);
+
+        // Prevent deactivating your own account
+        if (auth()->id() == $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You cannot change your own status'
+            ], 403);
         }
 
-        $user->is_active = !$user->is_active;
+        // Update status
+        $user->is_active = $request->is_active;
         $user->save();
 
-        $status = $user->is_active ? 'activated' : 'deactivated';
-
-        return back()->with('success', "User {$status} successfully.");
+        return response()->json([
+            'success' => true,
+            'message' => $user->is_active ?
+                "{$user->name} has been activated successfully." :
+                "{$user->name} has been deactivated successfully.",
+            'status' => $user->is_active
+        ]);
     }
 
     /**

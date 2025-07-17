@@ -25,12 +25,14 @@ class OrderItemSeeder extends Seeder
             'product_id' => $products[0]->id,
             'quantity' => 3,
             'price' => $products[0]->price,
+            'subtotal' => $products[0]->price * 3,
         ]);
         OrderItem::create([
             'order_id' => $orders[0]->id,
             'product_id' => $products[1]->id,
             'quantity' => 1,
             'price' => $products[1]->price,
+            'subtotal' => $products[1]->price,
         ]);
 
         // Second order: 1 item
@@ -39,6 +41,7 @@ class OrderItemSeeder extends Seeder
             'product_id' => $products[1]->id,
             'quantity' => 5,
             'price' => $products[1]->price,
+            'subtotal' => $products[1]->price * 5,
         ]);
     }
 }

@@ -91,10 +91,12 @@ class VendorController extends Controller
             $supplierExists = Supplier::where('supplier_id', Auth::id())->exists();
             if (!$supplierExists) {
                 Supplier::create([
-                    'user_id' => Auth::id(),
+                    'supplier_id' => Auth::id(),
                     'name' => Auth::user()->name,
                     'email' => $validated['email'],
                     'phone' => $validated['phone'],
+                    'address' => $validated['address'],
+                    'company' => $validated['company_name'],
                     'status' => 'pending'
                 ]);
             }

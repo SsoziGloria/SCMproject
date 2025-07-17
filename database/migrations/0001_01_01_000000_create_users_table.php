@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->string('instagram', 50)->nullable();
             $table->string('linkedin', 50)->nullable();
             $table->enum('certification_status', ['pending', 'approved', 'rejected'])->nullable();
+            $table->unsignedBigInteger('is_active')->default(1);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
