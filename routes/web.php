@@ -232,12 +232,12 @@ Route::middleware(['auth', 'vendor.verified'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-// Shop routes - no auth required
+// Shop routes
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/product/{id}', [ShopController::class, 'show'])->name('shop.product');
 Route::post('/shop/product/{id}/review', [ShopController::class, 'storeReview'])->name('shop.product.review');
 
-// Cart routes - no auth required
+// Cart routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
@@ -305,7 +305,7 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     // User management
     Route::resource('users', AdminUserController::class);
     Route::post('/users/{user}/reset-password', [AdminUserController::class, 'resetPassword'])->name('users.reset-password');
@@ -325,9 +325,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         ->name('vendor-validation.history');
     Route::put('/vendor-validation/{id}/status', [VendorValidationController::class, 'updateVendorStatus'])
         ->name('vendor-validation.update-status');
+
+    // User management
+    Route::get('/user-management', [UserController::class, 'index'])->name('users');
+    Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
+    Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
 });
 
-Route::get('/user-management', [UserController::class, 'index'])->name('users')->middleware('auth');
 Route::get('/admin/users/role/{role}', [UserController::class, 'byRole'])->name('admin.users.byRole')->middleware('auth');
 
 
@@ -335,7 +339,7 @@ Route::get('/admin/users/role/{role}', [UserController::class, 'byRole'])->name(
 | Vendor Verification Routes
 |--------------------------------------------------------------------------*/
 
-Route::prefix('vendor')->name('vendor.')->middleware('auth')->group(function () {
+Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'role:admin,retailer,supplier'])->group(function () {
     Route::get('/verification', [VendorController::class, 'showVerificationForm'])->name('verification.form');
     Route::post('/verification', [VendorController::class, 'storeVerification'])->name('verification.store');
     Route::get('/verification/pending', [VendorController::class, 'showPendingStatus'])->name('verification.pending');
@@ -347,7 +351,7 @@ Route::prefix('vendor')->name('vendor.')->middleware('auth')->group(function () 
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:admin,retailer'])->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/analytics/revenue', [AnalyticsController::class, 'revenueDetails'])->name('analytics.revenue');
     Route::get('/analytics/products', [AnalyticsController::class, 'productAnalytics'])->name('analytics.products');

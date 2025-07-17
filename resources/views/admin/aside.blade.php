@@ -201,6 +201,31 @@
         </li><!-- End Order Management Nav -->
 
         <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+                <i class="ri-truck-line"></i><span>Workforce Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ route('workers.index') }}">
+                        <i class="bi bi-circle"></i><span>Workers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('workforce.index') }}">
+                        <i class="bi bi-circle"></i><span>Workforce</span>
+                    </a>
+                </li>
+                {{-- <li>
+                    <a href="#">
+                        <i class="bi bi-circle"></i><span>Boxicons</span>
+                    </a>
+                </li> --}}
+            </ul>
+        </li><!-- End Icons Nav -->
+
+        <li class="nav-heading">Stats</li>
+
+        <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('analytics') ? '' : 'collapsed' }}" data-bs-target="#charts-nav"
                 data-bs-toggle="collapse" href="#">
                 <i class="ri-donut-chart-line"></i><span>Analytics</span><i class="bi bi-chevron-down ms-auto"></i>
