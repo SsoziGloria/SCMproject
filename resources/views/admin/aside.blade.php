@@ -59,6 +59,11 @@
         }
     }
 
+    $vManagementRoutes = [
+        'admin.vendor-validation',
+        'admin.vendor-validation.history',
+    ];
+
     $analyticsRoutes = [
         'analytics',
     ];
@@ -77,53 +82,12 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('dashboard') ? '' : 'collapsed' }}"
+            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? '' : 'collapsed' }}"
                 href="{{ route('dashboard') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
         </li><!-- End Dashboard Nav -->
-
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs($userManagementRoutes) ? '' : 'collapsed' }}"
-                data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"
-                class="{{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
-                <i class="ri-user-3-line"></i><span>User Management</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="components-nav" class="nav-content collapse {{ $isUserManagementActive ? 'show' : '' }} "
-                data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{ route('admin.users.index') }}"
-                        class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>All Users</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.users.byRole', 'user') }}" class="nav-link
-                        {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Customers</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.users.byRole', 'retailer') }}" class="nav-link
-                        {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Retailers</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.users.byRole', 'supplier') }}" class="nav-link
-                        {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Suppliers</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.users.byRole', 'admin') }}"
-                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'admin')) ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Admins</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End User Management Nav -->
 
         <li class="nav-item">
             <a class="nav-link {{ $isproductManagementActive ? '' : 'collapsed' }}" data-bs-target="#forms-nav"
@@ -270,6 +234,55 @@
         </li><!-- End Chat Page Nav -->
 
         <li class="nav-heading">Account</li>
+
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs($userManagementRoutes) ? '' : 'collapsed' }}"
+                data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"
+                class="{{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
+                <i class="ri-user-3-line"></i><span>User Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav" class="nav-content collapse {{ $isUserManagementActive ? 'show' : '' }} "
+                data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ route('admin.users.index') }}"
+                        class="nav-link {{ request()->routeIs('admin.users.index') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>All Users</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.users.byRole', 'user') }}" class="nav-link
+                        {{ request()->fullUrlIs(route('admin.users.byRole', 'user')) ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.users.byRole', 'retailer') }}" class="nav-link
+                        {{ request()->fullUrlIs(route('admin.users.byRole', 'retailer')) ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Retailers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.users.byRole', 'supplier') }}" class="nav-link
+                        {{ request()->fullUrlIs(route('admin.users.byRole', 'supplier')) ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Suppliers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.users.byRole', 'admin') }}"
+                        class="nav-link {{ request()->fullUrlIs(route('admin.users.byRole', 'admin')) ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Admins</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End User Management Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs($vManagementRoutes) ? '' : 'collapsed' }}"
+                href="{{ route('admin.vendor-validation') }}">
+                <i class="bi bi-shield-check"></i>
+                <span>Vendor Validation</span>
+            </a>
+        </li><!-- End Vendor Validation Nav -->
 
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('profile.show') ? '' : 'collapsed' }}"

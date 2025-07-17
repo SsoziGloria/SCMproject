@@ -20,7 +20,8 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <h4 class="mb-1">Good {{ now()->format('A') === 'AM' ? 'morning' : 'afternoon' }}, {{ Auth::user()->name }}!</h4>
+                                <h4 class="mb-1">Good {{ now()->format('A') === 'AM' ? 'morning' : 'afternoon' }},
+                                    {{ Auth::user()->name }}!</h4>
                                 <p class="text-muted mb-0">Here's what's happening with your chocolate orders today.</p>
                             </div>
                             <div class="flex-shrink-0">
@@ -60,7 +61,8 @@
                                 <i class="bi bi-truck text-warning"></i>
                             </div>
                             <div class="ps-3">
-                                <h6 class="text-warning">{{ Auth::user()->orders->where('status', 'shipped')->count() }}</h6>
+                                <h6 class="text-warning">{{ Auth::user()->orders->where('status', 'shipped')->count() }}
+                                </h6>
                                 <span class="text-muted small">Shipments on the way</span>
                             </div>
                         </div>
@@ -77,7 +79,8 @@
                                 <i class="bi bi-check-circle text-success"></i>
                             </div>
                             <div class="ps-3">
-                                <h6 class="text-success">{{ Auth::user()->orders->where('status', 'delivered')->count() }}</h6>
+                                <h6 class="text-success">{{ Auth::user()->orders->where('status', 'delivered')->count() }}
+                                </h6>
                                 <span class="text-muted small">This month</span>
                             </div>
                         </div>
@@ -118,8 +121,8 @@
                                                     <div class="d-flex align-items-center">
                                                         @php $product = $order->items->first()->product @endphp
                                                         @if($product && $product->image)
-                                                            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                                                class="rounded me-2" width="32" height="32">
+                                                            <img src="{{ asset('storage/' . $product->image) }}"
+                                                                alt="{{ $product->name }}" class="rounded me-2" width="32" height="32">
                                                         @else
                                                             <div class="bg-light rounded me-2" style="width:32px;height:32px;"></div>
                                                         @endif
@@ -154,7 +157,8 @@
                                             </td>
                                             <td>{{ $order->created_at->format('M d, Y') }}</td>
                                             <td>
-                                                <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-outline-primary">
+                                                <a href="{{ route('orders.show', $order->id) }}"
+                                                    class="btn btn-sm btn-outline-primary">
                                                     View
                                                 </a>
                                             </td>
@@ -165,7 +169,8 @@
                                                 <div class="text-muted">
                                                     <i class="bi bi-cart-x fs-2"></i>
                                                     <p class="mt-2">No orders yet</p>
-                                                    <a href="{{ route('shop.index') }}" class="btn btn-sm btn-primary mt-1">Start Shopping</a>
+                                                    <a href="{{ route('shop.index') }}"
+                                                        class="btn btn-sm btn-primary mt-1">Start Shopping</a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -176,7 +181,7 @@
                     </div>
                 </div>
 
-                <!-- Order Tracking -->
+                {{-- <!-- Order Tracking -->
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Track Your Shipment</h5>
@@ -196,8 +201,33 @@
                             <div class="col-md-6">
                                 <div class="alert alert-info">
                                     <i class="bi bi-info-circle me-2"></i>
-                                    <strong>Need help?</strong> Contact our support team for assistance with tracking your orders.
+                                    <strong>Need help?</strong> Contact our support team for assistance with tracking your
+                                    orders.
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
+
+                <!-- Support Contact -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Need Help?</h5>
+                        <p class="text-muted">Our customer service team is here to help you with any questions about your
+                            orders.</p>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <i class="bi bi-telephone text-primary fs-4"></i>
+                                    <h6 class="mt-2">Call Us</h6>
+                                    <p class="text-muted small">{{ config('app.support_phone', '+256-778-123-456') }}</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <i class="bi bi-envelope text-primary fs-4"></i>
+                                <h6 class="mt-2">Email Us</h6>
+                                <p class="text-muted small">{{ config('app.support_email', 'support@chocolatechain.com') }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -220,9 +250,9 @@
                             <a href="{{ route('shop.index') }}" class="btn btn-outline-primary">
                                 <i class="bi bi-grid-3x3-gap me-2"></i>Browse Catalog
                             </a>
-                            <a href="#" class="btn btn-outline-secondary">
+                            {{-- <a href="#" class="btn btn-outline-secondary">
                                 <i class="bi bi-headset me-2"></i>Get Support
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                 </div>
@@ -237,11 +267,11 @@
                                     ->orderBy('updated_at', 'desc')
                                     ->take(4)
                                     ->get()
-                                    ->map(function($order) {
+                                    ->map(function ($order) {
                                         $timePassed = $order->updated_at->diffForHumans();
                                         $message = '';
                                         $badgeClass = '';
-                                        
+
                                         if ($order->status == 'delivered') {
                                             $message = "Your order <strong>{$order->order_number}</strong> has been delivered!";
                                             $badgeClass = 'text-success';
@@ -255,7 +285,7 @@
                                             $message = "Thank you for placing order <strong>{$order->order_number}</strong>";
                                             $badgeClass = 'text-warning';
                                         }
-                                        
+
                                         return [
                                             'time' => $timePassed,
                                             'message' => $message,
@@ -263,11 +293,12 @@
                                         ];
                                     });
                             @endphp
-                            
+
                             @forelse($updates as $update)
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">{{ $update['time'] }}</div>
-                                    <i class='bi bi-circle-fill activity-badge {{ $update['badgeClass'] }} align-self-start'></i>
+                                    <i
+                                        class='bi bi-circle-fill activity-badge {{ $update['badgeClass'] }} align-self-start'></i>
                                     <div class="activity-content">
                                         {!! $update['message'] !!}
                                     </div>
@@ -277,7 +308,7 @@
                                     <p class="text-muted">No recent updates</p>
                                 </div>
                             @endforelse
-                            
+
                             @if($updates->isEmpty())
                                 <div class="activity-item d-flex">
                                     <div class="activite-label">Now</div>
@@ -287,28 +318,6 @@
                                     </div>
                                 </div>
                             @endif
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Support Contact -->
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Need Help?</h5>
-                        <p class="text-muted">Our customer service team is here to help you with any questions about your orders.</p>
-                        <div class="row text-center">
-                            <div class="col-6">
-                                <div class="border-end">
-                                    <i class="bi bi-telephone text-primary fs-4"></i>
-                                    <h6 class="mt-2">Call Us</h6>
-                                    <p class="text-muted small">{{ config('app.support_phone', '+256-778-123-456') }}</p>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <i class="bi bi-envelope text-primary fs-4"></i>
-                                <h6 class="mt-2">Email Us</h6>
-                                <p class="text-muted small">{{ config('app.support_email', 'support@chocolatechain.com') }}</p>
-                            </div>
                         </div>
                     </div>
                 </div>
