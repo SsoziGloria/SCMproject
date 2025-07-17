@@ -32,6 +32,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Note: For global middleware that runs on every request, you would use:
         // $middleware->web(append: [ ... ]);
         // $middleware->api(append: [ ... ]);
+        $middleware->web(append: [
+            \App\Http\Middleware\EnsureUserIsActive::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // ...

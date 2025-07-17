@@ -9,8 +9,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
-
+use Intervention\Image\Laravel\Facades\Image;
 
 class ProductController extends Controller
 {
@@ -35,7 +34,7 @@ class ProductController extends Controller
             'lowStockCount' => Product::where('stock', '<=', 10)->count(),
             'categoriesCount' => Category::has('products')->count(),
             'totalInventoryValue' => Product::sum(DB::raw('price * stock')),
-            'categories' => Category::withCount('products')->get(),
+            'categories' => Category::pluck('name'),
             'suppliers' => User::where('role', 'supplier')->get()
         ]);
     }

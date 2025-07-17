@@ -1,12 +1,16 @@
 @php
-    // List all route names for User Management group
     $productManagementRoutes = [
         'products.index',
         'products',
         'categories.index',
-        // add more if needed
+        'categories.edit',
+        'productReviews.index',
+        'productReviews.create',
+        'productReviews.edit',
+        'supplier.products.create',
+        'inventories.create',
     ];
-    // Check if current route matches any in the group
+
     $isproductManagementActive = false;
     foreach ($productManagementRoutes as $route) {
         if (request()->routeIs($route)) {
@@ -48,33 +52,29 @@
         </li><!-- End Dashboard Nav -->
 
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs($productManagementRoutes) ? '' : 'collapsed' }}"
-                data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"
-                class="{{ request()->fullUrlIs(route('products.index', '')) ? 'collapsed' : 'collapsed' }}">
+            <a class="nav-link {{ $isproductManagementActive ? '' : 'collapsed' }}" data-bs-target="#forms-nav"
+                data-bs-toggle="collapse" href="#">
                 <i class="ri-shopping-bag-2-line"></i><span>Product Management</span><i
                     class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="forms-nav" class="nav-content collapse {{ $isproductManagementActive ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-link {{ request()->routeIs('products.index') ? 'active' : 'collapsed' }}"
-                        href="{{ route('supplier.products.index') }}">
+                    <a href="{{ route('products.index') }}"
+                        class="nav-link {{ request()->routeIs('products.index') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('supplier.products.create') }}">
+                    <a href="{{ route('supplier.products.create') }}"
+                        class="nav-link {{ request()->routeIs('supplier.products.create') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Add New Product</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('inventories.create') }}">
+                    <a href="{{ route('inventories.create') }}"
+                        class="nav-link {{ request()->routeIs('inventories.create') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Add Inventory</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bi bi-circle"></i><span>Edit Product</span>
                     </a>
                 </li>
             </ul>
