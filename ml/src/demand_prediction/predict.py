@@ -1,6 +1,7 @@
 import os
 import sys
 from datetime import timedelta
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -75,9 +76,9 @@ def run_forecast_all_products(csv_path, look_back=30, forecast_days=7, epochs=30
         forecast = scaler.inverse_transform(
             np.array(forecast_scaled).reshape(-1, 1)
         ).flatten()
-        last_date = df_daily["date"].max()
-        dates = [last_date + timedelta(days=i + 1)
-                 for i in range(forecast_days)]
+        last_date = datetime.today()
+        dates = [(last_date + timedelta(days=i + 1)).strftime('%Y-%m-%d') 
+                for i in range(forecast_days)]
 
         forecast_df = pd.DataFrame(
             {

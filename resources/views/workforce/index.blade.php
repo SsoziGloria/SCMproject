@@ -1,35 +1,34 @@
 @extends('layout')
+
+@section('title', 'Assigned Tasks')
+
 @section('content')
-<h2>Workforce Assignments</h2>
-<div style="margin-bottom: 20px;">
-    <a href="{{ route('workforce.create') }}" class="btn btn-primary" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-right: 10px;">Assign Worker</a>
-    <a href="{{ route('workers.index') }}" class="btn btn-secondary" style="background-color: #6c757d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Manage Workers</a>
-</div>
-
-<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <thead>
-        <tr>
-            <th>Worker Name</th>
-            <th>Location</th>
-            <th>Task</th>
-            <th>Assigned Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($assignments as $assignment)
-            <tr>
-                <td>{{ $assignment->worker->name ?? 'N/A' }}</td>
-                <td>{{ $assignment->location }}</td>
-                <td>{{ $assignment->task }}</td>
-                <td>{{ $assignment->assigned_date }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">📋 Assigned Tasks</h2>
+        <div>
+            <a href="{{ route('workforce.history') }}" class="btn btn-outline-secondary">History</a>
+            <a href="{{ route('workforce.unassigned') }}" class="btn btn-outline-warning">Unassigned</a>
+        </div>
     </div>
-@endif
-@endsection 
+
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Worker</th>
+                <th>Location</th>
+                <th>Task</th>
+                <th>Assigned Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($assignments as $assignment)
+                <tr>
+                    <td>{{ $assignment->worker->name }}</td>
+                    <td>{{ $assignment->location }}</td>
+                    <td>{{ $assignment->task }}</td>
+                    <td>{{ $assignment->assigned_date }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+@endsection

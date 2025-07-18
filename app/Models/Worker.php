@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Workforce;
 
 class Worker extends Model
 {
@@ -15,6 +16,12 @@ class Worker extends Model
         'phone',
         'position',
     ];
+
+
+    public function workforce()
+{
+    return $this->hasMany(Workforce::class);
+}
 
     public function assignments()
     {

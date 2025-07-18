@@ -164,6 +164,7 @@
             </ul>
         </li><!-- End Order Management Nav -->
 
+        <!--Workforce Management-->
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-truck-line"></i><span>Workforce Management</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -176,9 +177,22 @@
                 </li>
                 <li>
                     <a href="{{ route('workforce.index') }}">
-                        <i class="bi bi-circle"></i><span>Workforce</span>
+                        <i class="bi bi-circle"></i><span>Assigned Tasks</span>
                     </a>
                 </li>
+                 <li>
+                    <a href="{{ route('workforce.history') }}">
+                        <i class="bi bi-circle"></i><span>Task History</span>
+                    </a>
+                </li>
+                 <li>
+                    <a href="{{ route('workforce.unassigned') }}">
+                        <i class="bi bi-circle"></i><span>Unassigned Workers</span>
+                    </a>
+                </li>
+                
+
+
                 {{-- <li>
                     <a href="#">
                         <i class="bi bi-circle"></i><span>Boxicons</span>

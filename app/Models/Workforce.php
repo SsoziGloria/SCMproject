@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Worker;
 
 class Workforce extends Model
 {
@@ -18,6 +19,6 @@ class Workforce extends Model
 
     public function worker()
     {
-        return $this->belongsTo('App\Models\Worker', 'worker_id');
+        return $this->belongsTo(Worker ::class);
     }
 }

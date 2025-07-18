@@ -366,8 +366,15 @@ Route::middleware(['auth', 'role:admin,retailer'])->group(function () {
 */
 
 Route::middleware('auth')->group(function () {
+    
+// Custom routes for workforce
+Route::get('/workforce/history', [WorkforceController::class, 'history'])->name('workforce.history');
+    Route::get('/workforce/unassigned', [WorkforceController::class, 'unassigned'])->name('workforce.unassigned');
+    Route::get('/workforce/optimize', [WorkforceController::class, 'optimize'])->name('workforce.optimize');
+
     Route::resource('workers', WorkerController::class);
     Route::resource('workforce', WorkforceController::class);
+
 });
 
 /*
