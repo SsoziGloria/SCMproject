@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(auth()->user()->role . '.app')
 
 @section('content')
     @include('dashboard')

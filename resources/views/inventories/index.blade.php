@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(auth()->user()->role . '.app')
 
 @section('content')
     <h2 style="text-align: center; margin-bottom: 20px; font-weight: bold;">Current Stock</h2>
@@ -24,7 +24,7 @@
                     <td>{{ $inventory->location }}</td>
                     <td>{{ $inventory->expiration_date }}</td>
                     <td>
-                    <a href="{{ route('inventories.show', $inventory->id) }}" class="btn btn-info btn-sm">View</a>
+                        <a href="{{ route('inventories.show', $inventory->id) }}" class="btn btn-info btn-sm">View</a>
                     </td>
                 </tr>
             @empty

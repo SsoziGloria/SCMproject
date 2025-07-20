@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends(auth()->user()->role . '.app')
 
 @section('content')
     <h2 class="text-2xl font-semibold text-gray-800 tracking-wide mb-4 border-b pb-2">

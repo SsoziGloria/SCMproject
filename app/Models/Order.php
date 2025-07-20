@@ -181,4 +181,9 @@ class Order extends Model
     {
         return $this->items->sum('quantity');
     }
+
+    public function statusHistory()
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
 }

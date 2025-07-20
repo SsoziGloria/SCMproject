@@ -26,7 +26,7 @@ class EnsureVendorVerified
         $user = Auth::user();
 
         // Check if user role requires verification
-        if ($user->role === 'supplier' || $user->role === 'retailer') {
+        if ($user->role === 'supplier' || $user->role === 'retaile') {
             // Check if vendor is verified
             $vendor = Vendor::where('supplier_id', $user->id)
                 ->where('validation_status', 'Approved')

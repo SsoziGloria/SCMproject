@@ -17,6 +17,7 @@ class InventoryAdjustment extends Model
         'notes',
         'user_id',
         'user_name',
+        'status_history_id'
     ];
 
     /**
@@ -33,5 +34,10 @@ class InventoryAdjustment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function statusHistory()
+    {
+        return $this->belongsTo(OrderStatusHistory::class, 'status_history_id');
     }
 }

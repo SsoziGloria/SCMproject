@@ -226,6 +226,14 @@ Route::middleware(['auth', 'vendor.verified'])->group(function () {
     Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
 });
 
+Route::patch('/orders/{order}/ship', [OrderController::class, 'markAsShipped'])->name('orders.mark-as-shipped');
+Route::patch('/orders/{order}/deliver', [OrderController::class, 'markAsDelivered'])->name('orders.mark-as-delivered');
+Route::patch('/orders/{order}/ship-items', [OrderController::class, 'shipItems'])->name('orders.ship-items');
+Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+
+Route::get('/orders/{order}/history', [OrderController::class, 'history'])->name('orders.history');
+
 /*
 |--------------------------------------------------------------------------
 | Shop, Cart & Checkout Routes
@@ -366,9 +374,9 @@ Route::middleware(['auth', 'role:admin,retailer'])->group(function () {
 */
 
 Route::middleware('auth')->group(function () {
-    
-// Custom routes for workforce
-Route::get('/workforce/history', [WorkforceController::class, 'history'])->name('workforce.history');
+
+    // Custom routes for workforce
+    Route::get('/workforce/history', [WorkforceController::class, 'history'])->name('workforce.history');
     Route::get('/workforce/unassigned', [WorkforceController::class, 'unassigned'])->name('workforce.unassigned');
     Route::get('/workforce/optimize', [WorkforceController::class, 'optimize'])->name('workforce.optimize');
 

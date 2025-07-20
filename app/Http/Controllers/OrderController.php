@@ -14,6 +14,10 @@ use App\Exports\OrderExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\OrderStatusHistory;
+use Illuminate\Support\Facades\Log;
+use App\Models\InventoryAdjustment;
+
 
 class OrderController extends Controller
 {
@@ -247,7 +251,42 @@ class OrderController extends Controller
         $username = $order->user ? $order->user->name : 'Guest';
         $userEmail = $order->user ? $order->user->email : null;
 
-        return view('orders.show', compact('order', 'profit', 'username', 'userEmail'));
+        $allItemsInStock = true;
+
+        foreach ($order->items as $item) {
+            // Sum available inventory for this product
+            $availableQuantity = Inventory::where('product_id', $item->product_id)
+                ->where('status', 'available')
+                ->where('quantity', '>', 0)
+                ->sum('quantity');
+
+            // If needed quantity exceeds available quantity
+            if ($availableQuantity < $item->quantity - ($item->quantity_shipped ?? 0)) {
+                $allItemsInStock = false;
+                break;
+            }
+        }
+
+        // Get inventory status for each item for display
+        $itemInventoryStatus = [];
+        foreach ($order->items as $item) {
+            $availableQuantity = Inventory::where('product_id', $item->product_id)
+                ->where('status', 'available')
+                ->where('quantity', '>', 0)
+                ->sum('quantity');
+
+            $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
+
+            $itemInventoryStatus[$item->id] = [
+                'available' => $availableQuantity,
+                'needed' => $neededQuantity,
+                'sufficient' => $availableQuantity >= $neededQuantity,
+                'status_class' => $availableQuantity >= $neededQuantity ? 'success' :
+                    ($availableQuantity > 0 ? 'warning' : 'danger')
+            ];
+        }
+
+        return view('orders.show', compact('order', 'profit', 'username', 'userEmail', 'allItemsInStock'));
     }
 
 
@@ -495,8 +534,8 @@ class OrderController extends Controller
         }
 
         // Retailer can view their store's orders
-        if ($user->role === 'retailer' && $user->retailer) {
-            if ($order->retailer_id === $user->retailer->id) {
+        if ($user->role === 'retailer') {
+            if ($order->sales_channel === 'online') {
                 return true;
             }
         }
@@ -530,9 +569,9 @@ class OrderController extends Controller
         }
 
         // Retailer can edit their store's orders if not delivered/cancelled
-        if ($user->role === 'retailer' && $user->retailer) {
+        if ($user->role === 'retailer') {
             if (
-                $order->retailer_id === $user->retailer->id &&
+                $order->sales_channel === 'online' &&
                 !in_array($order->status, ['delivered', 'cancelled'])
             ) {
                 return true;
@@ -545,14 +584,378 @@ class OrderController extends Controller
     // Update order status only
     public function updateStatus(Request $request, Order $order)
     {
-        $validated = $request->validate([
+        $request->validate([
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
         ]);
 
-        $order->update([
-            'status' => $validated['status']
+        $oldStatus = $order->status;
+        $newStatus = $request->status;
+
+        if ($oldStatus === $newStatus) {
+            return redirect()->back()->with('info', 'Order status is already ' . ucfirst($newStatus));
+        }
+
+        // Begin transaction
+        DB::beginTransaction();
+
+        try {
+            // Record order status history
+            $statusHistory = OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'status' => $newStatus,
+                'user_id' => auth()->id(),
+                'user_name' => auth()->user()->name,
+                'notes' => $request->status_notes ?? 'Status updated from ' . $oldStatus . ' to ' . $newStatus
+            ]);
+
+            // Handle inventory changes for shipped/delivered status
+            if (in_array($newStatus, ['shipped', 'delivered']) && !in_array($oldStatus, ['shipped', 'delivered'])) {
+                // Check if there's enough inventory
+                foreach ($order->items as $item) {
+                    $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
+
+                    if ($neededQuantity <= 0) {
+                        continue; // Skip if already fully shipped
+                    }
+
+                    $availableQuantity = Inventory::where('product_id', $item->product_id)
+                        ->where('status', 'available')
+                        ->where('quantity', '>', 0)
+                        ->sum('quantity');
+
+                    if ($availableQuantity < $neededQuantity) {
+                        throw new \Exception("Insufficient inventory for {$item->product_name}. Needed: {$neededQuantity}, Available: {$availableQuantity}");
+                    }
+                }
+
+                // Process inventory reductions
+                foreach ($order->items as $item) {
+                    $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
+
+                    if ($neededQuantity > 0) {
+                        $this->reduceInventoryForItem($item->product_id, $neededQuantity, $order, $statusHistory);
+
+                        // Update shipped quantity
+                        $item->quantity_shipped = $item->quantity;
+                        $item->save();
+                    }
+                }
+
+                // Set shipped_at date
+                if ($newStatus === 'shipped' && !$order->shipped_at) {
+                    $order->shipped_at = now();
+                }
+
+                // Set delivered_at date
+                if ($newStatus === 'delivered') {
+                    $order->delivered_at = now();
+                }
+            }
+
+            // Handle inventory restoration for cancelled orders
+            if ($newStatus === 'cancelled' && in_array($oldStatus, ['shipped', 'delivered'])) {
+                // Only restore inventory if it's an admin action and they specifically request it
+                if (auth()->user()->role === 'admin' && $request->has('restore_inventory')) {
+                    foreach ($order->items as $item) {
+                        if ($item->quantity_shipped > 0) {
+                            $this->restoreInventoryForItem($item->product_id, $item->quantity_shipped, $order, $statusHistory);
+
+                            // Reset shipped quantity
+                            $item->quantity_shipped = 0;
+                            $item->save();
+                        }
+                    }
+                }
+            }
+
+            // Update order status
+            $order->status = $newStatus;
+            $order->save();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', "Order status updated to " . ucfirst($newStatus));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Error updating order status: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update order status: ' . $e->getMessage());
+        }
+    }
+
+    public function markAsShipped(Order $order)
+    {
+        $oldStatus = $order->status;
+
+        // Check if there's enough inventory for all items
+        $insufficientItems = collect();
+
+        foreach ($order->items as $item) {
+            $available = Inventory::where('product_id', $item->product_id)
+                ->where('status', 'available')
+                ->sum('quantity');
+
+            if ($available < $item->quantity - ($item->quantity_shipped ?? 0)) {
+                $insufficientItems->push([
+                    'product_name' => $item->product_name,
+                    'needed' => $item->quantity - ($item->quantity_shipped ?? 0),
+                    'available' => $available
+                ]);
+            }
+        }
+
+        if ($insufficientItems->count() > 0) {
+            return redirect()->back()->with(
+                'error',
+                'Cannot ship order due to insufficient inventory for ' .
+                $insufficientItems->pluck('product_name')->join(', ')
+            );
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Update order status
+            $order->status = 'shipped';
+            $order->delivered_at = now();
+            $order->save();
+
+            // Record order status change
+            $statusHistory = OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'status' => 'shipped',
+                'user_id' => auth()->id(),
+                'notes' => 'Order marked as shipped'
+            ]);
+
+            // Update inventory for all items
+            foreach ($order->items as $item) {
+                if ($item->quantity_shipped < $item->quantity) {
+                    $this->reduceInventoryForItem($item->product_id, $item->quantity - $item->quantity_shipped, $order, $statusHistory);
+
+                    // Update shipped quantity
+                    $item->quantity_shipped = $item->quantity;
+                    $item->save();
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('orders.show', $order)
+                ->with('success', 'Order marked as shipped and inventory updated.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Error marking order as shipped: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update order status: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Mark order as delivered
+     */
+    public function markAsDelivered(Order $order)
+    {
+        $oldStatus = $order->status;
+
+        if ($oldStatus !== 'shipped') {
+            return redirect()->back()->with('error', 'Only shipped orders can be marked as delivered.');
+        }
+
+        $order->status = 'delivered';
+        $order->delivered_at = now();
+        $order->save();
+
+        // Record status change
+        OrderStatusHistory::create([
+            'order_id' => $order->id,
+            'status' => 'delivered',
+            'user_id' => auth()->id(),
+            'notes' => 'Order marked as delivered'
         ]);
 
-        return redirect()->back()->with('success', 'Order status updated successfully!');
+        return redirect()->route('orders.show', $order)
+            ->with('success', 'Order marked as delivered.');
+    }
+
+    /**
+     * Ship specific items in an order
+     */
+    public function shipItems(Request $request, Order $order)
+    {
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.order_item_id' => 'required|exists:order_items,id',
+            'items.*.quantity_shipped' => 'required|integer|min:1',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // Record order status history
+            $statusHistory = OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'status' => $order->status,
+                'user_id' => auth()->id(),
+                'notes' => 'Partial shipment processed'
+            ]);
+
+            foreach ($request->items as $shippedItem) {
+                $orderItem = $order->items()->findOrFail($shippedItem['order_item_id']);
+
+                $remainingToShip = $orderItem->quantity - ($orderItem->quantity_shipped ?? 0);
+
+                // Ensure not shipping more than remaining
+                if ($shippedItem['quantity_shipped'] > $remainingToShip) {
+                    throw new \Exception("Cannot ship more than the remaining quantity for {$orderItem->product_name}");
+                }
+
+                // Update shipped quantity
+                $orderItem->quantity_shipped = ($orderItem->quantity_shipped ?? 0) + $shippedItem['quantity_shipped'];
+                $orderItem->save();
+
+                // Reduce inventory
+                $this->reduceInventoryForItem($orderItem->product_id, $shippedItem['quantity_shipped'], $order, $statusHistory);
+            }
+
+            // Check if all items are now shipped
+            $allShipped = $order->items()
+                ->whereRaw('quantity > COALESCE(quantity_shipped, 0)')
+                ->count() === 0;
+
+            if ($allShipped && $order->status !== 'shipped') {
+                $order->status = 'shipped';
+                $order->delivered_at = now();
+                $order->save();
+
+                // Record status change
+                OrderStatusHistory::create([
+                    'order_id' => $order->id,
+                    'status' => 'shipped',
+                    'user_id' => auth()->id(),
+                    'notes' => 'All items shipped'
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('orders.show', $order)
+                ->with('success', 'Items marked as shipped and inventory updated');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Error processing partial shipment: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to process shipment: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Helper method to reduce inventory for a product
+     */
+    private function reduceInventoryForItem($productId, $quantity, $order, $statusHistory = null)
+    {
+        // Get available inventory items, prioritizing those expiring soonest
+        $inventoryItems = Inventory::where('product_id', $productId)
+            ->where('status', 'available')
+            ->where('quantity', '>', 0)
+            ->orderBy('expiration_date')
+            ->get();
+
+        $remainingToReduce = $quantity;
+
+        foreach ($inventoryItems as $inventory) {
+            if ($remainingToReduce <= 0)
+                break;
+
+            $reduceAmount = min($inventory->quantity, $remainingToReduce);
+            $remainingToReduce -= $reduceAmount;
+
+            // Create adjustment record
+            $adjustment = InventoryAdjustment::create([
+                'inventory_id' => $inventory->id,
+                'adjustment_type' => 'decrease',
+                'quantity_change' => -$reduceAmount,
+                'reason' => "Order shipment: {$order->order_number}",
+                'notes' => "Automatic reduction for order item",
+                'user_id' => auth()->id(),
+                'user_name' => auth()->user()->name ?? 'System',
+                'status_history_id' => $statusHistory ? $statusHistory->id : null
+            ]);
+
+            $inventory->quantity -= $reduceAmount;
+
+            if ($inventory->quantity <= 0) {
+                $inventory->status = 'depleted';
+            }
+
+            $inventory->save();
+        }
+
+        if ($remainingToReduce > 0) {
+            throw new \Exception("Insufficient inventory for product ID {$productId}");
+        }
+    }
+
+    private function restoreInventoryForItem($productId, $quantity, $order, $statusHistory = null)
+    {
+        // Find the original inventory item or create one if needed
+        $inventory = Inventory::where('product_id', $productId)
+            ->where(function ($query) {
+                $query->where('status', 'available')
+                    ->orWhere('status', 'depleted');
+            })
+            ->orderBy('updated_at', 'desc')
+            ->first();
+
+        if (!$inventory) {
+            // Create new inventory record if none exists
+            $product = Product::findOrFail($productId);
+            $inventory = Inventory::create([
+                'product_id' => $productId,
+                'product_name' => $product->name,
+                'quantity' => 0,
+                'status' => 'available',
+                'location' => 'Returned stock',
+            ]);
+        }
+
+        // Record inventory adjustment
+        $adjustment = InventoryAdjustment::create([
+            'inventory_id' => $inventory->id,
+            'adjustment_type' => 'increase',
+            'quantity_change' => $quantity,
+            'reason' => "Order cancelled: {$order->order_number}",
+            'notes' => "Automatic adjustment - stock restored for cancelled order",
+            'user_id' => auth()->id(),
+            'user_name' => auth()->user()->name ?? 'System',
+            'status_history_id' => $statusHistory ? $statusHistory->id : null
+        ]);
+
+        // Update inventory
+        $inventory->quantity += $quantity;
+
+        // If inventory was depleted, mark as available again
+        if ($inventory->status === 'depleted') {
+            $inventory->status = 'available';
+        }
+
+        $inventory->save();
+
+        return $adjustment;
+    }
+
+    public function history(Order $order)
+    {
+        // Authorize view permission
+        $this->authorizeView($order);
+
+        $statusHistory = $order->statusHistory()
+            ->with(['user', 'inventoryAdjustments.inventory'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('orders.history', compact('order', 'statusHistory'));
     }
 }

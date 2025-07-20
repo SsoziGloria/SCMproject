@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
 use App\Models\Adjustment;
 use App\Models\InventoryAdjustment;
+use App\Models\Order;
 
 class InventoryController extends Controller
 {
@@ -64,10 +65,8 @@ class InventoryController extends Controller
                 ->orderBy('expiration_date', 'asc');
         }
 
-        // Get inventory with pagination
         $inventory = $query->paginate(15);
 
-        // Get all suppliers for filter dropdown
         $suppliers = Supplier::where('status', 'active')->get();
 
         // Stats for dashboard cards
@@ -78,7 +77,40 @@ class InventoryController extends Controller
             'expiring_soon_count' => Inventory::expiringSoon()->count(),
         ];
 
-        return view('inventory.index', compact('inventory', 'suppliers', 'stats'));
+        $pendingOrders = Order::whereIn('status', ['pending', 'processing'])
+            ->with('items')
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($order) {
+                $order->status_color = match ($order->status) {
+                    'pending' => 'warning',
+                    'processing' => 'info',
+                    default => 'secondary'
+                };
+
+                $tooltipContent = '';
+                foreach ($order->items as $item) {
+                    $available = Inventory::where('product_id', $item->product_id)
+                        ->where('status', 'available')
+                        ->sum('quantity');
+
+                    $tooltipContent .= "<div class='mb-2'><strong>{$item->product_name}</strong><br>";
+                    $tooltipContent .= "Ordered: {$item->quantity}<br>";
+                    $tooltipContent .= "Available: {$available}</div>";
+                }
+
+                $order->products_tooltip = $tooltipContent;
+
+                return $order;
+            });
+
+        $recentAdjustments = InventoryAdjustment::with('inventory')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('inventory.index', compact('inventory', 'suppliers', 'stats', 'pendingOrders', 'recentAdjustments'));
     }
 
     /**

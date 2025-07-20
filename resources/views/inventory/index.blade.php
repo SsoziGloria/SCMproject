@@ -84,6 +84,133 @@
             </div>
         </div>
 
+        <!-- Pending Orders Affecting Inventory -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">Pending Orders Affecting Inventory</h6>
+                    </div>
+                    <div class="card-body">
+                        @if($pendingOrders->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Order #</th>
+                                            <th>Customer</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Products</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pendingOrders as $order)
+                                            <tr>
+                                                <td>{{ $order->order_number }}</td>
+                                                <td>{{ $order->customer_name }}</td>
+                                                <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                                <td>
+                                                    <span class="badge bg-{{ $order->status_color }}">
+                                                        {{ ucfirst($order->status) }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="popover"
+                                                        data-bs-html="true" data-bs-trigger="focus" data-bs-title="Order Items"
+                                                        data-bs-content="{{ $order->products_tooltip }}">
+                                                        {{ $order->items->count() }} items
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('orders.show', $order->id) }}"
+                                                        class="btn btn-sm btn-outline-secondary">
+                                                        View
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-3">
+                                <p class="mb-0 text-muted">No pending orders affecting inventory</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Inventory Adjustments -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Recent Inventory Adjustments</h6>
+                        <a href="{{ route('inventories.adjustments') }}" class="btn btn-sm btn-outline-primary">
+                            View All
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        @if($recentAdjustments->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Product</th>
+                                            <th>Type</th>
+                                            <th>Change</th>
+                                            <th>Reason</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($recentAdjustments as $adjustment)
+                                            <tr>
+                                                <td>{{ $adjustment->created_at->format('M d, H:i') }}</td>
+                                                <td>{{ $adjustment->inventory->product_name }}</td>
+                                                <td>
+                                                    @php
+                                                        $typeClass = match ($adjustment->adjustment_type) {
+                                                            'increase' => 'success',
+                                                            'decrease' => 'danger',
+                                                            'correction' => 'info',
+                                                            'damage' => 'dark',
+                                                            'expiry' => 'secondary',
+                                                            default => 'primary'
+                                                        };
+                                                    @endphp
+                                                    <span class="badge bg-{{ $typeClass }}">
+                                                        {{ ucfirst($adjustment->adjustment_type) }}
+                                                    </span>
+                                                </td>
+                                                <td
+                                                    class="{{ $adjustment->quantity_change >= 0 ? 'text-success' : 'text-danger' }}">
+                                                    {{ $adjustment->quantity_change >= 0 ? '+' : '' }}{{ $adjustment->quantity_change }}
+                                                </td>
+                                                <td>
+                                                    <span class="text-truncate d-inline-block" style="max-width: 150px;">
+                                                        {{ $adjustment->reason }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-3">
+                                <p class="mb-0 text-muted">No recent inventory adjustments</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card shadow mb-4">
             <div class="card-header py-3 bg-light">
                 <h6 class="m-0 font-weight-bold">Inventory List</h6>
