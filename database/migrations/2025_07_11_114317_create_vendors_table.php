@@ -33,6 +33,7 @@ return new class extends Migration {
             $table->date('visit_date')->nullable();
             $table->string('pdf_path')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->unsignedBigInteger('retailer_id')->nullable();
             $table->timestamps();
 
             $table->foreign('supplier_id')->references('id')->on('users')->cascadeOnDelete();
@@ -47,5 +48,3 @@ return new class extends Migration {
         Schema::dropIfExists('vendors');
     }
 };
-
-

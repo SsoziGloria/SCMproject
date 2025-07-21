@@ -1,80 +1,81 @@
 @php
-    // List all route names for User Management group
-    $userManagementRoutes = [
-        'users',
-        'admin.users.byRole',
-        'admin.users.index',
-    ];
-    // Check if current route matches any in the group
-    $isUserManagementActive = false;
-    foreach ($userManagementRoutes as $route) {
-        if (request()->routeIs($route) || (request()->routeIs('admin.users.byRole') && in_array(request()->route('role'), ['user', 'retailer', 'supplier', 'admin']))) {
-            $isUserManagementActive = true;
-            break;
-        }
-    }
+// List all route names for User Management group
+$userManagementRoutes = [
+'users',
+'admin.users.byRole',
+'admin.users.index',
+];
+// Check if current route matches any in the group
+$isUserManagementActive = false;
+foreach ($userManagementRoutes as $route) {
+if (request()->routeIs($route) || (request()->routeIs('admin.users.byRole') && in_array(request()->route('role'),
+['user', 'retailer', 'supplier', 'admin']))) {
+$isUserManagementActive = true;
+break;
+}
+}
 
-    $productManagementRoutes = [
-        'products.index',
-        'products',
-        'categories.index',
-        'categories.edit',
-        'productReviews.index',
-        'productReviews.create',
-        'productReviews.edit',
-        // add more if needed
-    ];
+$productManagementRoutes = [
+'products.index',
+'products',
+'categories.index',
+'categories.edit',
+'productReviews.index',
+'productReviews.create',
+'productReviews.edit',
+// add more if needed
+];
 
-    $productReviewRoutes = [
-        'productReviews.index',
-        'productReviews.create',
-        'productReviews.edit',
-    ];
+$productReviewRoutes = [
+'productReviews.index',
+'productReviews.create',
+'productReviews.edit',
+];
 
-    // Check if current route matches any in the group
-    $isproductManagementActive = false;
-    foreach ($productManagementRoutes as $route) {
-        if (request()->routeIs($route)) {
-            $isproductManagementActive = true;
-            break;
-        }
-    }
+// Check if current route matches any in the group
+$isproductManagementActive = false;
+foreach ($productManagementRoutes as $route) {
+if (request()->routeIs($route)) {
+$isproductManagementActive = true;
+break;
+}
+}
 
-    $orderManagementRoutes = [
-        'orders.incoming',
-        'orders.details',
-        'orders.reject',
-        'orders.index',
-        'orders.pending',
-        'orders',
-        'orders.show',
-        'orders.edit',
-    ];
+$orderManagementRoutes = [
+'orders.incoming',
+'orders.details',
+'orders.reject',
+'orders.index',
+'orders.pending',
+'orders',
+'orders.show',
+'orders.edit',
+];
 
-    $isorderManagementActive = false;
-    foreach ($orderManagementRoutes as $route) {
-        if (request()->routeIs($route)) {
-            $isorderManagementActive = true;
-            break;
-        }
-    }
+$isorderManagementActive = false;
+foreach ($orderManagementRoutes as $route) {
+if (request()->routeIs($route)) {
+$isorderManagementActive = true;
+break;
+}
+}
 
-    $vManagementRoutes = [
-        'admin.vendor-validation',
-        'admin.vendor-validation.history',
-    ];
+$vManagementRoutes = [
+'admin.vendor-validation',
+'admin.vendor-validation.history',
+];
 
-    $analyticsRoutes = [
-        'analytics',
-    ];
-    // Check if current route matches any in the group
-    $isAnalyticsActive = false;
-    foreach ($analyticsRoutes as $route) {
-        if (request()->routeIs($route)) {
-            $isAnalyticsActive = true;
-            break;
-        }
-    }
+$analyticsRoutes = [
+'analytics',
+];
+// Check if current route matches any in the group
+$isAnalyticsActive = false;
+foreach ($analyticsRoutes as $route) {
+if (request()->routeIs($route)) {
+$isAnalyticsActive = true;
+break;
+}
+}
 @endphp
 
 <aside id="sidebar" class="sidebar">
@@ -180,17 +181,17 @@
                         <i class="bi bi-circle"></i><span>Assigned Tasks</span>
                     </a>
                 </li>
-                 <li>
+                <li>
                     <a href="{{ route('workforce.history') }}">
                         <i class="bi bi-circle"></i><span>Task History</span>
                     </a>
                 </li>
-                 <li>
+                <li>
                     <a href="{{ route('workforce.unassigned') }}">
                         <i class="bi bi-circle"></i><span>Unassigned Workers</span>
                     </a>
                 </li>
-                
+
 
 
                 {{-- <li>

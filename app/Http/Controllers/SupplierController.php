@@ -5,13 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Models\Inventory;
+use App\Models\Product;
 
 class SupplierController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $supplier = Supplier::where('supplier_id', auth()->id())->first();
+
+        $query = Product::where('supplier_id', $supplier->id);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('product_id', 'like', "%{$search}%");
+            });
+        }
+
+        $query->orderBy('created_at', 'desc');
+
+        $products = $query->with(['category'])->paginate(10);
+
         $suppliers = Supplier::all();
-        return view('suppliers.index', compact('suppliers'));
+
+        return view('supplier.products.index', compact('products', 'suppliers'));
     }
     public function dashboard()
     {
@@ -19,7 +38,6 @@ class SupplierController extends Controller
 
 
         return view('dashboard', compact('inventoryCount'));
-
     }
 
     public function approved()

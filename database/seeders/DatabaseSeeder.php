@@ -1,12 +1,16 @@
 <?php
+
 namespace Database\Seeders;
-use App\Models\User;// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\User; // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Worker;
 
 
 
 use Illuminate\Database\Seeder;
+use PHPUnit\Event\Telemetry\System;
+use Workbench\App\Models\Admin;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,7 +20,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            SystemUserSeeder::class,
             UserSeeder::class,
+            AdminConversationSeeder::class,
             SupplierSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
@@ -52,11 +58,5 @@ class DatabaseSeeder extends Seeder
             'phone' => '555-123-4567',
             'position' => 'Manager'
         ]);
-
-
     }
 }
-
-
-
-

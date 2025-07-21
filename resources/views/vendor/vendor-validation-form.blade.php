@@ -1,314 +1,334 @@
 @extends('admin.app')
 
 @section('content')
-    <div class="container-fluid py-4">
-        <!-- Page Title -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <h1 class="h3 mb-0 text-gray-800">Vendor Document Validation</h1>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Vendor Validation</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="col-md-6 text-end">
-                <a href="{{ route('admin.vendor-validation.history') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-clock-history"></i> View History
-                </a>
-            </div>
+<div class="container-fluid py-4">
+    <!-- Page Title -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1 class="h3 mb-0 text-gray-800">Vendor Document Validation</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Vendor Validation</li>
+                </ol>
+            </nav>
         </div>
+        <div class="col-md-6 text-end">
+            <a href="{{ route('admin.vendor-validation.history') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-clock-history"></i> View History
+            </a>
+        </div>
+    </div>
 
-        <!-- Service Health Card -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold">Validation Service Status</h6>
-                <button class="btn btn-sm btn-outline-primary" onclick="checkHealth()">
-                    <i class="bi bi-arrow-clockwise"></i> Check Service Health
-                </button>
-            </div>
-            <div class="card-body">
-                <div id="health-status">
-                    <div class="d-flex align-items-center">
-                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        Checking service status...
+    <!-- Service Health Card -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold">Validation Service Status</h6>
+            <button class="btn btn-sm btn-outline-primary" onclick="checkHealth()">
+                <i class="bi bi-arrow-clockwise"></i> Check Service Health
+            </button>
+        </div>
+        <div class="card-body">
+            <div id="health-status">
+                <div class="d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
+                    Checking service status...
                 </div>
             </div>
         </div>
+    </div>
 
+    <div class="row">
         <!-- Pending vendors list -->
-        <div class="col-md-5">
-            <div class="card shadow-sm mb-4">
+        <div class="col-lg-6 col-12 mb-4">
+            <div class="card shadow-sm">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Pending Verifications</h5>
                 </div>
                 <div class="list-group list-group-flush">
                     @forelse($pendingVendors as $pendingVendor)
-                        <a href="{{ route('admin.vendor-validation', ['vendor_id' => $pendingVendor->vendor_id]) }}"
-                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-1">{{ $pendingVendor->company_name }}</h6>
-                                <p class="text-muted small mb-0">{{ $pendingVendor->name }} · {{ $pendingVendor->email }}</p>
-                            </div>
-                            <span class="badge bg-warning text-dark">Pending</span>
-                        </a>
-                    @empty
-                        <div class="list-group-item text-center py-4">
-                            <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
-                            <p class="mb-0 mt-2">No pending verifications</p>
+                    <a href="{{ route('admin.vendor-validation', ['vendor_id' => $pendingVendor->vendor_id]) }}"
+                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">{{ $pendingVendor->company_name }}</h6>
+                            <p class="text-muted small mb-0">{{ $pendingVendor->name }} · {{ $pendingVendor->email }}
+                            </p>
                         </div>
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    </a>
+                    @empty
+                    <div class="list-group-item text-center py-4">
+                        <i class="bi bi-check-circle" style="font-size: 2rem;"></i>
+                        <p class="mb-0 mt-2">No pending verifications</p>
+                    </div>
                     @endforelse
                 </div>
             </div>
         </div>
 
-        <!-- Vendor validation form -->
-        <div class="col-md-7">
-            @if($vendor)
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Validate: {{ $vendor->company_name }}</h5>
+        <!-- Supplier Settings Card -->
+        <div class="col-lg-6 col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Supplier Settings</h5>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <p class="mb-3 text-muted text-center">
+                        Manage supplier configuration and preferences.
+                    </p>
+                    <a href="{{ route('admin.settings.index') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-gear"></i> Go to Supplier Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor validation form -->
+    <div class="col-12 mb-4">
+        @if($vendor)
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Validate: {{ $vendor->company_name }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <br>
+                    <h4>Vendor Information</h4>
+                    <table class="table table-sm">
+                        <tr>
+                            <th width="30%">Company Name</th>
+                            <td>{{ $vendor->company_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Contact Person</th>
+                            <td>{{ $vendor->contact_person }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ $vendor->email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone</th>
+                            <td>{{ $vendor->phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address</th>
+                            <td>{{ $vendor->address }}</td>
+                        </tr>
+                        <tr>
+                            <th>Country</th>
+                            <td>{{ $vendor->country }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="mb-4">
+                    <h6>Document</h6>
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <i class="bi bi-file-earmark-pdf" style="font-size: 2rem;"></i>
+                        </div>
+                        <div class="ms-3 flex-grow-1">
+                            <p class="mb-1">{{ basename($vendor->pdf_path) }}</p>
+                        </div>
+                        <div>
+                            <a href="{{ \App\Http\Controllers\VendorValidationController::getDocumentUrl($vendor) }}"
+                                class="btn btn-sm btn-primary">
+                                <i class="bi bi-download"></i> Download
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation interface -->
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <h6>API Validation</h6>
+
+                        <!-- Validation form for Java API integration -->
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary" id="validateBtn" data-vendor-id="{{ $vendor->vendor_id }}>
+                                <i class=" bi bi-check2-circle"></i> Validate Document
+                            </button>
+                        </div>
+
+                        <!-- Validation results will be shown here -->
+                        <div id="validation-results" class="mt-3 d-none">
+                            <div class="alert alert-info">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <span class="ms-2">Processing document...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manual validation form -->
+                <form action="{{ route('admin.vendor-validation.update-status-m', $vendor->vendor_id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <h6>Manual Validation</h6>
+
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <div class="d-flex">
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="status" id="status-approved"
+                                    value="Approved" required>
+                                <label class="form-check-label" for="status-approved">
+                                    Approve
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="status" id="status-rejected"
+                                    value="Rejected" required>
+                                <label class="form-check-label" for="status-rejected">
+                                    Reject
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message (Optional)</label>
+                        <textarea class="form-control" id="message" name="message" rows="2"></textarea>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-success">Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @else
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-arrow-up-circle" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Select a vendor from the list</h5>
+                <p class="text-muted">Choose a pending vendor to validate their documents</p>
+            </div>
+        </div>
+        @endif
+    </div>
+
+    <div class="row">
+
+        <!-- Manual Validation Toggle Button -->
+        <div class="col-12 mb-3">
+            <button type="button" class="btn btn-outline-info" id="manualValidationBtn">
+                <i class="bi bi-pencil-square"></i> Manual Validation
+            </button>
+        </div>
+
+        <!-- Manual Validation Cards (initially hidden) -->
+        <div id="manualValidationCards" class="row d-none">
+            <!-- Validation Form Card -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold">Upload Document</h6>
                     </div>
                     <div class="card-body">
-                        <div class="mb-4">
-                            <br>
-                            <h4>Vendor Information</h4>
-                            <table class="table table-sm">
-                                <tr>
-                                    <th width="30%">Company Name</th>
-                                    <td>{{ $vendor->company_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Contact Person</th>
-                                    <td>{{ $vendor->contact_person }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email</th>
-                                    <td>{{ $vendor->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Phone</th>
-                                    <td>{{ $vendor->phone }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Address</th>
-                                    <td>{{ $vendor->address }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Country</th>
-                                    <td>{{ $vendor->country }}</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <div class="mb-4">
-                            <h6>Document</h6>
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <i class="bi bi-file-earmark-pdf" style="font-size: 2rem;"></i>
-                                </div>
-                                <div class="ms-3 flex-grow-1">
-                                    <p class="mb-1">{{ basename($vendor->pdf_path) }}</p>
-                                </div>
-                                <div>
-                                    <a href="{{ route('admin.vendor-validation.download', $vendor->vendor_id) }}"
-                                        class="btn btn-sm btn-primary">
-                                        <i class="bi bi-download"></i> Download
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Validation interface -->
-                        <div class="card bg-light mb-4">
-                            <div class="card-body">
-                                <h6>API Validation</h6>
-
-                                <!-- Validation form for Java API integration -->
-                                <div class="d-grid gap-2">
-                                    <button type="button" class="btn btn-primary" id="validateBtn">
-                                        <i class="bi bi-check2-circle"></i> Validate Document
-                                    </button>
-                                </div>
-
-                                <!-- Validation results will be shown here -->
-                                <div id="validation-results" class="mt-3 d-none">
-                                    <div class="alert alert-info">
-                                        <div class="spinner-border spinner-border-sm" role="status">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                        <span class="ms-2">Processing document...</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Manual validation form -->
-                        <form action="{{ route('admin.vendor-validation.update-status', $vendor->vendor_id) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-                            <h6>Manual Validation</h6>
-
+                        <form id="validation-form" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label class="form-label">Status</label>
-                                <div class="d-flex">
-                                    <div class="form-check me-4">
-                                        <input class="form-check-input" type="radio" name="status" id="status-approved"
-                                            value="Approved" required>
-                                        <label class="form-check-label" for="status-approved">
-                                            Approve
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status" id="status-rejected"
-                                            value="Rejected" required>
-                                        <label class="form-check-label" for="status-rejected">
-                                            Reject
-                                        </label>
-                                    </div>
-                                </div>
+                                <label for="vendor_id" class="form-label">Select Vendor</label>
+                                <select class="form-select" id="vendor_id" name="vendor_id" required>
+                                    <option value="">Select a vendor...</option>
+                                    @foreach($vendors as $vendor)
+                                    <option value="{{ $vendor->vendor_id }}">{{ $vendor->name }} ({{ $vendor->email }})
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
-
                             <div class="mb-3">
-                                <label for="message" class="form-label">Message (Optional)</label>
-                                <textarea class="form-control" id="message" name="message" rows="2"></textarea>
+                                <label for="file" class="form-label">Upload PDF Document</label>
+                                <input class="form-control" type="file" id="file" name="file" accept=".pdf" required>
+                                <div class="form-text">Only PDF files are accepted. Maximum size: 10MB</div>
                             </div>
-
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-success">Update Status</button>
+                            <div class="d-grid">
+                                <button type="submit" id='submit-button' class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Validate Document
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
-            @else
-                <div class="card shadow-sm">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-arrow-left-circle" style="font-size: 3rem;"></i>
-                        <h5 class="mt-3">Select a vendor from the list</h5>
-                        <p class="text-muted">Choose a pending vendor to validate their documents</p>
+            </div>
+            <!-- Results Card -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold">Validation Results</h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="result">
+                            <p class="text-center text-muted py-5">
+                                <i class="bi bi-file-earmark-text" style="font-size: 3rem;"></i>
+                                <br><br>
+                                Submit a document to see validation results
+                            </p>
+                        </div>
                     </div>
                 </div>
-            @endif
+            </div>
         </div>
 
-        <div class="row">
-
-            <!-- Manual Validation Toggle Button -->
-            <div class="col-12 mb-3">
-                <button type="button" class="btn btn-outline-info" id="manualValidationBtn">
-                    <i class="bi bi-pencil-square"></i> Manual Validation
-                </button>
-            </div>
-
-            <!-- Manual Validation Cards (initially hidden) -->
-            <div id="manualValidationCards" class="row d-none">
-                <!-- Validation Form Card -->
-                <div class="col-lg-6">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold">Upload Document</h6>
-                        </div>
-                        <div class="card-body">
-                            <form id="validation-form" enctype="multipart/form-data">
-                                <div class="mb-3">
-                                    <label for="vendor_id" class="form-label">Select Vendor</label>
-                                    <select class="form-select" id="vendor_id" name="vendor_id" required>
-                                        <option value="">Select a vendor...</option>
-                                        @foreach($vendors as $vendor)
-                                            <option value="{{ $vendor->vendor_id }}">{{ $vendor->name }} ({{ $vendor->email }})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="file" class="form-label">Upload PDF Document</label>
-                                    <input class="form-control" type="file" id="file" name="file" accept=".pdf" required>
-                                    <div class="form-text">Only PDF files are accepted. Maximum size: 10MB</div>
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" id='submit-button' class="btn btn-primary">
-                                        <i class="bi bi-check-circle"></i> Validate Document
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <!-- Results Card -->
-                <div class="col-lg-6">
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold">Validation Results</h6>
-                        </div>
-                        <div class="card-body">
-                            <div id="result">
-                                <p class="text-center text-muted py-5">
-                                    <i class="bi bi-file-earmark-text" style="font-size: 3rem;"></i>
-                                    <br><br>
-                                    Submit a document to see validation results
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
                     const manualBtn = document.getElementById('manualValidationBtn');
                     const manualCards = document.getElementById('manualValidationCards');
                     manualBtn.addEventListener('click', function () {
                         manualCards.classList.toggle('d-none');
                     });
                 });
-            </script>
-        </div>
+        </script>
+    </div>
 
-        <!-- Validation History Card -->
-        <div class="card shadow-sm">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold">Recent Validation History</h6>
-            </div>
-            <div class="card-body">
-                <div id="validation-history">
-                    <p class="text-center text-muted py-5">
-                        Select a vendor to view validation history
-                    </p>
-                </div>
+    <!-- Validation History Card -->
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold">Recent Validation History</h6>
+        </div>
+        <div class="card-body">
+            <div id="validation-history">
+                <p class="text-center text-muted py-5">
+                    Select a vendor to view validation history
+                </p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Validation Details Modal -->
-    <div class="modal fade" id="validationDetailsModal" tabindex="-1" aria-labelledby="validationDetailsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="validationDetailsModalLabel">Validation Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="validation-details-content">
-                    <!-- Details will be loaded here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="download-document-btn">Download Document</button>
-                </div>
+<!-- Validation Details Modal -->
+<div class="modal fade" id="validationDetailsModal" tabindex="-1" aria-labelledby="validationDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="validationDetailsModalLabel">Validation Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="validation-details-content">
+                <!-- Details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="download-document-btn">Download Document</button>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script>
-        // Set up axios defaults
+<script>
+    // Set up axios defaults
         axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         const vendorSelect = document.getElementById('vendor_id');
@@ -664,106 +684,77 @@
         document.addEventListener('DOMContentLoaded', function () {
             checkHealth();
         });
-    </script>
+</script>
 @endpush
 
 @if($vendor)
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const validateBtn = document.getElementById('validateBtn');
-            const resultsDiv = document.getElementById('validation-results');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const validateBtn = document.getElementById('validateBtn');
 
-            // Replace your existing validateBtn click handler
-            validateBtn.addEventListener('click', async function () {
-                // Show loading state
-                resultsDiv.classList.remove('d-none');
-                resultsDiv.innerHTML = `
-                                        <div class="alert alert-info">
-                                            <div class="spinner-border spinner-border-sm" role="status"></div>
-                                            <span class="ms-2">Processing document...</span>
-                                        </div>
-                                    `;
-                validateBtn.disabled = true;
+    if (!validateBtn) {
+        return;
+    }
 
-                try {
-                    // Call the new endpoint that handles everything server-side
-                    const response = await axios.post(
-                        '{{ route("api.vendor-validation.validate-existing", $vendor->vendor_id) }}',
-                        {}, // No need to send any data
-                        {
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            }
-                        }
-                    );
+    validateBtn.addEventListener('click', async function () {
+        // --- THIS IS THE NEW LOGIC ---
+        // 1. Get the vendor ID directly from our new data attribute.
+        const vendorId = this.getAttribute('data-vendor-id');
 
-                    // Process the response
-                    const data = response.data;
+        // 2. Build the URL dynamically using the ID we just got.
+        const url = `/api/vendor-validation/validate-existing-document/${vendorId}`;
+        // --- END OF NEW LOGIC ---
 
-                    // Display results
-                    let resultsHTML = '';
+        const resultsDiv = document.getElementById('validation-results');
+        resultsDiv.classList.remove('d-none');
+        resultsDiv.innerHTML = `<div class="alert alert-info">...</div>`;
+        validateBtn.disabled = true;
 
-                    if (data.valid) {
-                        resultsHTML = `
-    <div class="alert alert-success">
-    <i class="bi bi-check-circle-fill me-2"></i> ${data.message || 'Document is valid'}
-    </div>
-    `;
-                        // Auto-select approved radio
-                        document.getElementById('status-approved').checked = true;
-                    } else {
-                        resultsHTML = `
-    <div class="alert alert-danger">
-    <i class="bi bi-x-circle-fill me-2"></i> ${data.message || 'Document is invalid'}
-    </div>
-    `;
-                        // Auto-select rejected radio
-                        document.getElementById('status-rejected').checked = true;
-                    }
+        try {
+            // 3. Use our new, dynamically built URL.
+            const response = await axios.post(url);
 
-                    // Add validation details if present
-                    if (data.validationResults) {
-                        resultsHTML += '<div class="mt-3"><h6>Validation Details</h6><ul class="list-group">';
+            // ... (The rest of your success/error handling code remains the same) ...
+            // ... (display results, update history, etc.) ...
+            const data = response.data;
+            let resultsHTML = '';
+            
+            if (data.valid) {
+                resultsHTML = `<div class="alert alert-success"><i class="bi bi-check-circle-fill me-2"></i> ${data.message || 'Document is valid'}</div>`;
+                document.getElementById('status-approved').checked = true;
+            } else {
+                resultsHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle-fill me-2"></i> ${data.message || 'Document is invalid'}</div>`;
+                document.getElementById('status-rejected').checked = true;
+            }
 
-                        for (const [key, value] of Object.entries(data.validationResults)) {
-                            const icon = value ? 'check-circle-fill text-success' : 'x-circle-fill text-danger';
-                            const label = formatCheckName(key);
-
-                            resultsHTML += `
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-    ${label}
-    <i class="bi bi-${icon}"></i>
-    </li>
-    `;
-                        }
-
-                        resultsHTML += '</ul></div>';
-                    }
-
-                    resultsDiv.innerHTML = resultsHTML;
-
-                    // Update validation history if that function exists
-                    if (typeof loadValidationHistory === 'function') {
-                        loadValidationHistory('{{ $vendor->vendor_id }}');
-                    }
-
-                } catch (error) {
-                    console.error('Validation error:', error);
-
-                    resultsDiv.innerHTML = `
-    <div class="alert alert-danger">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    Error validating document: ${error.response?.data?.message || error.message || 'Unknown error'}
-    </div>
-    `;
-                } finally {
-                    validateBtn.disabled = false;
+            if (data.validationResults) {
+                resultsHTML += '<div class="mt-3"><h6>Validation Details</h6><ul class="list-group">';
+                for (const [key, value] of Object.entries(data.validationResults)) {
+                    const icon = value ? 'check-circle-fill text-success' : 'x-circle-fill text-danger';
+                    resultsHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${formatCheckName(key)}<i class="bi bi-${icon}"></i></li>`;
                 }
-            });
+                resultsHTML += '</ul></div>';
+            }
+            
+            resultsDiv.innerHTML = resultsHTML;
+
+            if (typeof loadValidationHistory === 'function') {
+                loadValidationHistory(vendorId);
+            }
+
+
+        } catch (error) {
+            console.error('Validation API Error:', error);
+            const errorMessage = error.response?.data?.message || 'An unknown error occurred. Check the browser console (F12).';
+            resultsDiv.innerHTML = `<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i> ${errorMessage}</div>`;
+        } finally {
+            validateBtn.disabled = false;
         }
-    </script>
+    });
+});
+</script>
 @endif
+
 
 {{-- Add Toast Notification --}}
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">

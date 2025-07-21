@@ -9,25 +9,25 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Laravel\Facades\Image;
+use App\Models\Supplier;
 
 class ProductController extends Controller
 {
+    private $supplier;
+
     public function __construct()
     {
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
-            if (Auth::user()->role !== 'supplier') {
-                abort(403, 'Unauthorized action.');
-            }
+            $this->supplier = Supplier::where('supplier_id', Auth::id())->firstOrFail();
             return $next($request);
         });
     }
 
     public function index(Request $request)
     {
-        $query = Product::with('category')->where('supplier_id', Auth::id());
+        $query = Product::with('category')->where('supplier_id', $this->supplier->id);
 
-        // Handle search
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
@@ -61,13 +61,12 @@ class ProductController extends Controller
             'featured' => 'nullable|boolean',
         ]);
 
-        // Always set the supplier_id to the currently logged-in supplier
-        $validated['supplier_id'] = Auth::id();
+        $supplier = Supplier::where('supplier_id', Auth::id())->firstOrFail();
 
-        // Handle featured checkbox
+        $validated['supplier_id'] = $this->supplier->id;
+
         $validated['featured'] = $request->has('featured') ? 1 : 0;
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = uniqid('product_') . '.' . $image->getClientOriginalExtension();
@@ -86,7 +85,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = Product::where('supplier_id', Auth::id())->findOrFail($id);
+        $product = Product::where('supplier_id', $this->supplier->id)->findOrFail($id);
         $categories = Category::orderBy('name')->get();
 
         return view('supplier.products.edit', compact('product', 'categories'));
@@ -94,7 +93,7 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $product = Product::where('supplier_id', Auth::id())->findOrFail($id);
+        $product = Product::where('supplier_id', $this->supplier->id)->findOrFail($id);
 
         $validated = $request->validate([
             'product_id' => 'required|string|max:50|unique:products,product_id,' . $product->id,
@@ -108,10 +107,8 @@ class ProductController extends Controller
             'featured' => 'nullable|boolean',
         ]);
 
-        // Handle featured checkbox
         $validated['featured'] = $request->has('featured') ? 1 : 0;
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             // Delete old image if it exists
             if ($product->image && Storage::disk('public')->exists($product->image)) {
@@ -127,7 +124,6 @@ class ProductController extends Controller
             $validated['image'] = 'product/' . $filename;
         }
 
-        // Handle image removal checkbox
         if ($request->has('remove_image') && $product->image) {
             Storage::disk('public')->delete($product->image);
             $validated['image'] = null;
@@ -141,7 +137,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::where('supplier_id', Auth::id())->findOrFail($id);
+        $product = Product::where('supplier_id', $this->supplier->id)->findOrFail($id);
 
         // Delete the product image if it exists
         if ($product->image && Storage::disk('public')->exists($product->image)) {

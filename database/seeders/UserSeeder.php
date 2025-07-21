@@ -12,61 +12,71 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = 
+        $users =
             [
-                
-            [
-                'name' => 'Customer',
-                'email' => 'customer@c',
-                'password' => Hash::make('pppppp'),
-                'role' => 'user',
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Retailer',
-                'email' => 'retailer@r',
-                'password' => Hash::make('pppppp'),
-                'role' => 'retailer',
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Supplier',
-                'email' => 'supplier@s',
-                'password' => Hash::make('pppppp'),
-                'role' => 'supplier',
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
 
-            [
-                'name' => 'Supplier2',
-                'email' => 'supplier2@s',
-                'password' => Hash::make('pppppp'),
-                'role' => 'supplier',
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Admin',
-                'email' => 'admin@a',
-                'password' => Hash::make('pppppp'),
-                'role' => 'admin',
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ];
+                [
+                    'name' => 'Customer',
+                    'email' => 'customer@c',
+                    'password' => Hash::make('pppppp'),
+                    'role' => 'user',
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'name' => 'Retailer',
+                    'email' => 'retailer@r',
+                    'password' => Hash::make('pppppp'),
+                    'role' => 'retailer',
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'name' => 'Retailer',
+                    'email' => 'retailer2@r',
+                    'password' => Hash::make('pppppp'),
+                    'role' => 'retailer',
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'name' => 'Supplier',
+                    'email' => 'supplier@s',
+                    'password' => Hash::make('pppppp'),
+                    'role' => 'supplier',
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+
+                [
+                    'name' => 'Supplier2',
+                    'email' => 'supplier2@s',
+                    'password' => Hash::make('pppppp'),
+                    'role' => 'supplier',
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'name' => 'Admin',
+                    'email' => 'admin@a',
+                    'password' => Hash::make('pppppp'),
+                    'role' => 'admin',
+                    'email_verified_at' => now(),
+                    'remember_token' => Str::random(10),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            ];
 
         foreach ($users as $user) {
             User::firstOrCreate(
@@ -76,4 +86,3 @@ class UserSeeder extends Seeder
         }
     }
 }
-

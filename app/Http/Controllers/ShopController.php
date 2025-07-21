@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductReview;
 use Illuminate\Http\Request;
+use App\Models\Setting;
+use App\Models\User;
+use App\Models\Supplier;
+use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
 
 class ShopController extends Controller
 {
@@ -13,62 +18,35 @@ class ShopController extends Controller
      */
     public function index(Request $request)
     {
-        // Get featured products if no search is active
+        $baseQuery = $this->getVisibleProductsQuery();
+
+
         $featured = null;
-        if (!$request->filled('search') && !$request->filled('category')) {
-            $featured = Product::where('featured', true)
+        if (!$request->anyFilled(['search', 'category', 'sort']) && !$request->has('page')) {
+            $featured = (clone $baseQuery)
+                ->where('featured', true)
                 ->where('stock', '>', 0)
                 ->take(4)
                 ->get();
         }
 
-        // Build product query
-        $query = Product::query();
+        $productsQuery = (clone $baseQuery);
 
-        // Apply search if provided
-        if ($request->filled('search')) {
+        $productsQuery->when($request->filled('search'), function ($q) use ($request) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('ingredients', 'like', "%{$search}%");
-            });
-        }
+            return $q->where(fn($subQ) => $subQ->where('name', 'like', "%{$search}%")->orWhere('description', 'like', "%{$search}%"));
+        });
 
-        // Filter by category if provided
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
+        $productsQuery->when($request->filled('category'), fn($q) => $q->where('category', $request->category));
 
-        // Apply sorting
-        if ($request->filled('sort')) {
-            switch ($request->sort) {
-                case 'price_asc':
-                    $query->orderBy('price', 'asc');
-                    break;
-                case 'price_desc':
-                    $query->orderBy('price', 'desc');
-                    break;
-                case 'name_asc':
-                    $query->orderBy('name', 'asc');
-                    break;
-                case 'name_desc':
-                    $query->orderBy('name', 'desc');
-                    break;
-                default:
-                    $query->orderBy('created_at', 'desc');
-            }
-        } else {
-            $query->orderBy('created_at', 'desc');
-        }
+        $this->applySorting($productsQuery, $request->input('sort', 'default'));
 
-        // Paginate results
-        $products = $query->paginate(12);
+        $products = $productsQuery->paginate(12)->withQueryString();
 
-        // Get unique categories for filter dropdown
-        $categories = Product::distinct()->whereNotNull('category')->pluck('category');
+        $categories = Category::orderBy('name')->pluck('name', 'id');
+        $suppliers = Supplier::whereHas('user', fn($q) => $q->where('is_active', true))->orderBy('name')->get();
 
-        return view('shop.index', compact('products', 'featured', 'categories'));
+        return view('shop.index', compact('products', 'featured', 'categories', 'suppliers'));
     }
 
     /**
@@ -76,23 +54,13 @@ class ShopController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with('supplier')->findOrFail($id);
+        $product = $this->getVisibleProductsQuery()->with('supplier', 'category')->findOrFail($id);
 
-        // Get reviews
-        $reviews = ProductReview::where('product_id', $id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $reviews = ProductReview::where('product_id', $id)->latest()->get();
 
-        // Get related products (same category or from same supplier)
-        $relatedProducts = Product::where('id', '!=', $id)
-            ->where(function ($query) use ($product) {
-                if ($product->category) {
-                    $query->where('category', $product->category);
-                }
-                if ($product->supplier_id) {
-                    $query->orWhere('supplier_id', $product->supplier_id);
-                }
-            })
+        $relatedProducts = $this->getVisibleProductsQuery()
+            ->where('id', '!=', $id)
+            ->where('category', $product->category)
             ->take(4)
             ->get();
 
@@ -118,5 +86,53 @@ class ShopController extends Controller
         ]);
 
         return back()->with('success', 'Thank you for your review!');
+    }
+
+    /**
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    private function getVisibleProductsQuery(): Builder
+    {
+        $showAllSupplierProducts = (bool) Setting::get('show_supplier_products', true);
+
+        if (!$showAllSupplierProducts) {
+            return Product::query()->whereNull('supplier_id');
+        }
+
+        $visibleSuppliers = Supplier::whereHas('user', function ($query) {
+            $query->where('is_active', true); // The user account must be active.
+        })->get();
+
+        $visibleSupplierIds = $visibleSuppliers->filter(function ($supplier) {
+            return Setting::get('show_supplier_products', true, $supplier->supplier_id);
+        })->pluck('id');
+
+        return Product::query()->where(function ($query) use ($visibleSupplierIds) {
+            $query->whereNull('supplier_id')
+                ->orWhereIn('supplier_id', $visibleSupplierIds);
+        });
+    }
+
+    /**
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $sortOption
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    private function applySorting(Builder $query, string $sortOption): Builder
+    {
+        switch ($sortOption) {
+            case 'price_asc':
+                return $query->orderBy('price', 'asc');
+            case 'price_desc':
+                return $query->orderBy('price', 'desc');
+            case 'name_asc':
+                return $query->orderBy('name', 'asc');
+            case 'name_desc':
+                return $query->orderBy('name', 'desc');
+            default:
+                return $query->latest();
+        }
     }
 }

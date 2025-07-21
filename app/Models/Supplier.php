@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Supplier extends Model
 {
     protected $fillable = [
+        'supplier_id',
         'name',
         'email',
         'phone',
@@ -17,7 +18,7 @@ class Supplier extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'supplier_id');
     }
 
     /**

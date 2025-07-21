@@ -10,22 +10,44 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
+use App\Models\Supplier;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['supplier', 'inventories']);
+        $query = Product::with(['supplier', 'category']);
 
-        // Apply filters
-        if ($request->category)
-            $query->where('category', $request->category);
-        if ($request->supplier)
-            $query->where('supplier_id', $request->supplier);
-        if ($request->stock === 'low-stock')
-            $query->where('stock', '<=', 10);
 
-        $products = $query->paginate(20);
+        $query->when($request->filled('search'), function ($q) use ($request) {
+            $search = $request->input('search');
+            return $q->where(function ($subQ) use ($search) {
+                $subQ->where('name', 'like', "%{$search}%")
+                    ->orWhere('product_id', 'like', "%{$search}%");
+            });
+        });
+
+        $query->when($request->filled('category'), function ($q) use ($request) {
+            return $q->where('category', $request->category);
+        });
+
+        $query->when($request->filled('supplier'), function ($q) use ($request) {
+            return $q->where('supplier_id', $request->supplier);
+        });
+
+        $query->when($request->filled('stock'), function ($q) use ($request) {
+            if ($request->stock === 'in-stock') {
+                return $q->where('stock', '>', 10);
+            }
+            if ($request->stock === 'low-stock') {
+                return $q->where('stock', '>', 0)->where('stock', '<=', 10);
+            }
+            if ($request->stock === 'out-of-stock') {
+                return $q->where('stock', '=', 0);
+            }
+        });
+
+        $products = $query->paginate(20)->withQueryString();
 
         return view('products.all-products', [
             'products' => $products,
@@ -34,8 +56,8 @@ class ProductController extends Controller
             'lowStockCount' => Product::where('stock', '<=', 10)->count(),
             'categoriesCount' => Category::has('products')->count(),
             'totalInventoryValue' => Product::sum(DB::raw('price * stock')),
-            'categories' => Category::pluck('name'),
-            'suppliers' => User::where('role', 'supplier')->get()
+            'categories' => Category::orderBy('name')->get(),
+            'suppliers' => Supplier::orderBy('name')->get()
         ]);
     }
 
@@ -48,7 +70,7 @@ class ProductController extends Controller
     public function create()
     {
         $products = Product::all();
-        $suppliers = Vendor::orderBy('name')->get();
+        $suppliers = Supplier::orderBy('name')->get();
         $categories = Category::orderBy('name')->get();
         return view('products.create', compact('products', 'suppliers', 'categories'));
     }
@@ -203,5 +225,4 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Featured status updated.');
     }
-
 }

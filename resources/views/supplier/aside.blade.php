@@ -1,42 +1,42 @@
 @php
-    $productManagementRoutes = [
-        'products.index',
-        'products',
-        'categories.index',
-        'categories.edit',
-        'productReviews.index',
-        'productReviews.create',
-        'productReviews.edit',
-        'supplier.products.create',
-        'inventories.create',
-    ];
+$productManagementRoutes = [
+'products.index',
+'supplier.products.index',
+'categories.index',
+'categories.edit',
+'productReviews.index',
+'productReviews.create',
+'productReviews.edit',
+'supplier.products.create',
+'inventories.create',
+];
 
-    $isproductManagementActive = false;
-    foreach ($productManagementRoutes as $route) {
-        if (request()->routeIs($route)) {
-            $isproductManagementActive = true;
-            break;
-        }
-    }
+$isproductManagementActive = false;
+foreach ($productManagementRoutes as $route) {
+if (request()->routeIs($route)) {
+$isproductManagementActive = true;
+break;
+}
+}
 
-    $orderManagementRoutes = [
-        'orders.incoming',
-        'orders.details',
-        'orders.reject',
-        'orders.index',
-        'orders.pending',
-        'orders',
-        'orders.show',
-        'orders.edit',
-    ];
+$orderManagementRoutes = [
+'orders.incoming',
+'orders.details',
+'orders.reject',
+'orders.index',
+'orders.pending',
+'orders',
+'orders.show',
+'orders.edit',
+];
 
-    $isorderManagementActive = false;
-    foreach ($orderManagementRoutes as $route) {
-        if (request()->routeIs($route)) {
-            $isorderManagementActive = true;
-            break;
-        }
-    }
+$isorderManagementActive = false;
+foreach ($orderManagementRoutes as $route) {
+if (request()->routeIs($route)) {
+$isorderManagementActive = true;
+break;
+}
+}
 @endphp
 
 <aside id="sidebar" class="sidebar">
@@ -60,9 +60,9 @@
             <ul id="forms-nav" class="nav-content collapse {{ $isproductManagementActive ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('products.index') }}"
-                        class="nav-link {{ request()->routeIs('products.index') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>All Products</span>
+                    <a href="{{ route('supplier.products.index') }}"
+                        class="nav-link {{ request()->routeIs('supplier.products.index') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>My Products</span>
                     </a>
                 </li>
                 <li>

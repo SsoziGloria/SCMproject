@@ -1,5 +1,4 @@
 <?php
-// filepath: /Users/user/chocolate-scm/routes/web.php
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InventoryController;
@@ -189,7 +188,7 @@ Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:admin, retailer'])->group(function () {
     // Product routes
     Route::resource('products', ProductController::class);
     Route::put('products/{product}/stock', [ProductController::class, 'updateStock'])->name('products.update-stock');
@@ -331,15 +330,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
         ->name('vendor-validation.download');
     Route::get('/vendor-validation/history', [VendorValidationController::class, 'validationHistory'])
         ->name('vendor-validation.history');
-    Route::put('/vendor-validation/{id}/status', [VendorValidationController::class, 'updateVendorStatus'])
+    Route::put('/vendor-validation/{id}/status/api', [VendorValidationController::class, 'updateVendorStatus'])
         ->name('vendor-validation.update-status');
+    Route::put('/vendor-validation/{id}/status/manual', [VendorValidationController::class, 'updateVendorStatusManual'])
+        ->name('vendor-validation.update-status-m');
 
     // User management
     Route::get('/user-management', [UserController::class, 'index'])->name('users');
     Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
 });
-
+Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('admin.settings.index');
+Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('admin.settings.update');
+Route::post('/settings/toggle-supplier-products', [App\Http\Controllers\Admin\SettingController::class, 'toggleSupplierProducts'])->name('admin.settings.toggle-supplier-products');
 Route::get('/admin/users/role/{role}', [UserController::class, 'byRole'])->name('admin.users.byRole')->middleware('auth');
 
 
@@ -382,7 +385,6 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('workers', WorkerController::class);
     Route::resource('workforce', WorkforceController::class);
-
 });
 
 /*
@@ -416,8 +418,6 @@ Route::get('/test-mail', function () {
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-| Move these to routes/api.php instead of having them in web.php
-|--------------------------------------------------------------------------
 */
 
 Route::prefix('api')->name('api.')->group(function () {
@@ -441,6 +441,8 @@ Route::prefix('api')->name('api.')->group(function () {
         Route::post('/validation/{id}/revalidate', [VendorValidationAPIController::class, 'revalidate'])->name('revalidate');
         Route::post('/validate-existing/{vendorId}', [VendorValidationProxyController::class, 'validateExistingDocument'])
             ->name('validate-existing');
+        Route::post('/validate-existing-document/{vendor}', [VendorValidationAPIController::class, 'validateExistingDocument'])
+            ->name('validate-existing-document');
     });
 
     // Analytics API endpoints

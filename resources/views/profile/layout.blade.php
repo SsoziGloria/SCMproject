@@ -3,11 +3,11 @@
 @php $user = auth()->user(); @endphp
 
 @if ($user->role === 'user')
-    @include('user.head')
-    @include('user.header')
+@include('user.head')
+@include('user.header')
 @else
-    @include('layouts.head')
-    @include('layouts.header')
+@include('layouts.head')
+@include('layouts.header')
 @endif
 
 <body>
@@ -27,22 +27,22 @@
                         <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
                             @if(auth()->user()->profile_photo)
-                                <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile"
-                                    class="profile-square">
+                            <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile"
+                                class="profile-square">
                             @else
-                                <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile" class="profile-square">
+                            <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile" class="profile-square">
                             @endif
                             <h2>{{ auth()->user()->name }}</h2>
                             <h3>@auth @if(auth()->user()->role === 'admin')
-                                    <span>Admin</span>
+                                <span>Admin</span>
                                 @elseif(auth()->user()->role === 'supplier')
-                                        <span>Supplier</span>
-                                    @elseif(auth()->user()->role === 'retailer')
-                                        <span>Retailer</span>
-                                    @else
-                                        <span>Customer</span>
-                                    @endif
-                            @endauth
+                                <span>Supplier</span>
+                                @elseif(auth()->user()->role === 'retailer')
+                                <span>Retailer</span>
+                                @else
+                                <span>Customer</span>
+                                @endif
+                                @endauth
                             </h3>
                             <div class="social-links mt-2">
                                 <a href="{{ $user->twitter ?? '#'}}" class="twitter"><i class="bi bi-twitter"></i></a>
@@ -63,11 +63,11 @@
                     <div class="card">
                         <div class="card-body pt-3">
                             @if(session('success'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    {{ session('success') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
                             @endif
                             <!-- Bordered Tabs -->
                             <ul class="nav nav-tabs nav-tabs-bordered">
@@ -107,10 +107,12 @@
                                         <div class="col-lg-9 col-md-8">{{ $user->name }}</div>
                                     </div>
 
+                                    @if($user->role !== 'user')
                                     <div class="row">
                                         <div class="col-lg-3 col-md-4 label">Country</div>
                                         <div class="col-lg-9 col-md-8">{{ $user->country }}</div>
                                     </div>
+                                    @endif
 
                                     <div class="row">
                                         <div class="col-lg-3 col-md-4 label">Phone</div>
@@ -122,27 +124,27 @@
                                         <div class="col-lg-9 col-md-8">{{ $user->email }}</div>
                                     </div>
                                     @if (!($user->role === 'user' && $user->hasVerifiedEmail()))
-                                        @if ($user->hasVerifiedEmail())
-                                            <div class="row">
-                                                <div class="col-lg-3 col-md-4 label">Certification Status</div>
-                                                <div class="col-lg-9 col-md-8">{{ $user->certification_status }}</div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-lg-3 col-md-4 label">Verified</div>
-                                            </div>
-                                        @else
-                                            <form method="POST" action="{{ route('verification.send') }}">
-                                                @csrf
-                                                <button type="submit" class="btn btn-primary w-100">
-                                                    Resend Verification Email
-                                                </button>
-                                            </form>
-                                        @endif
+                                    @if ($user->hasVerifiedEmail())
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-4 label">Certification Status</div>
+                                        <div class="col-lg-9 col-md-8">{{ $user->certification_status }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-4 label">Verified</div>
+                                    </div>
+                                    @else
+                                    <form method="POST" action="{{ route('verification.send') }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            Resend Verification Email
+                                        </button>
+                                    </form>
+                                    @endif
 
                                     @elseif ($user->role === 'user' && $user->hasVerifiedEmail())
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-4 label">Verified</div>
-                                        </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-4 label">Verified</div>
+                                    </div>
                                     @endif
 
 
@@ -161,11 +163,11 @@
 
                                             <div class="col-md-8 col-lg-9">
                                                 @if(auth()->user()->profile_photo)
-                                                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
-                                                        alt="Profile" class="profile-square" id="profile-preview">
+                                                <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                                                    alt="Profile" class="profile-square" id="profile-preview">
                                                 @else
-                                                    <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile"
-                                                        class="profile-square">
+                                                <img src="{{ asset('assets/img/profile-img.jpg') }}" alt="Profile"
+                                                    class="profile-square">
                                                 @endif
                                                 <div class="pt-2">
                                                     <label for="profile_photo" class="btn btn-primary btn-sm"
@@ -187,6 +189,7 @@
                                             </div>
                                         </div>
 
+                                        @if($user->role !== 'user')
                                         <div class="row mb-3">
                                             <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
                                             <div class="col-md-8 col-lg-9">
@@ -200,15 +203,18 @@
                                                 class="col-md-4 col-lg-3 col-form-label">Country</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="country" type="text" class="form-control" id="Country"
-                                                    value="{{ old('country', $user->country) }}">
+                                                    value="{{ old('country', $user->country) }}"
+                                                    placeholder="eg. Uganda">
                                             </div>
                                         </div>
+                                        @endif
 
                                         <div class="row mb-3">
                                             <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="phone" type="text" class="form-control" id="Phone"
-                                                    value="{{ old('phone', $user->phone) }}">
+                                                    value="{{ old('phone', $user->phone) }}"
+                                                    placeholder="eg. 0700100100">
                                             </div>
                                         </div>
 
@@ -220,6 +226,7 @@
                                             </div>
                                         </div>
 
+                                        @if($user->role !== 'user')
                                         <div class="row mb-3">
                                             <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">Twitter
                                                 Profile</label>
@@ -255,6 +262,7 @@
                                                     value="{{ old('linkedin', $user->linkedin) }}">
                                             </div>
                                         </div>
+                                        @endif
 
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -263,22 +271,32 @@
 
 
                                     @if(auth()->user()->profile_photo)
-                                        <form method="POST" action="{{ route('profile.photo.delete') }}"
-                                            style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm mt-2"
-                                                title="Remove my profile image"
-                                                onclick="return confirm('Remove profile image?')">
-                                                <i class="bi bi-trash"></i> Remove Profile Photo
-                                            </button>
-                                        </form>
+                                    <form method="POST" action="{{ route('profile.photo.delete') }}"
+                                        style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm mt-2"
+                                            title="Remove my profile image"
+                                            onclick="return confirm('Remove profile image?')">
+                                            <i class="bi bi-trash"></i> Remove Profile Photo
+                                        </button>
+                                    </form>
                                     @endif
                                 </div>
 
 
-                                {{-- <div class="tab-pane fade pt-3" id="profile-settings">
+                                <div class="tab-pane fade pt-3" id="profile-settings">
 
+                                    @if($user->role === 'admin')
+                                    <div class="alert alert-info">
+                                        <strong>Admin Settings:</strong> Here you can manage advanced profile settings
+                                        and administrative preferences.
+                                    </div>
+                                    <!-- Admin-specific settings using session -->
+                                    @else
+                                    @endif
+
+                                    {{--
                                     <!-- Settings Form -->
                                     <form>
 
@@ -319,9 +337,9 @@
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary">Save Changes</button>
                                         </div>
-                                    </form><!-- End settings Form -->
+                                    </form><!-- End settings Form --> --}}
 
-                                </div> --}}
+                                </div>
 
                                 <div class="tab-pane fade pt-3" id="profile-change-password">
                                     <!-- Change Password Form -->
@@ -354,13 +372,13 @@
                                             </div>
                                         </div>
                                         @if ($errors->any())
-                                            <div class="alert alert-danger">
-                                                <ul class="mb-0">
-                                                    @foreach ($errors->all() as $error)
-                                                        <li>{{ $error }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                         @endif
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary">Change

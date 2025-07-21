@@ -6,8 +6,9 @@ use App\Models\Vendor;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use App\Models\User;
+use Namu\WireChat\Models\Conversation;
 
 class VendorController extends Controller
 {
@@ -57,37 +58,42 @@ class VendorController extends Controller
         ]);
 
         // Store PDF document
-        $pdfPath = null;
+        $fileName = null;
         if ($request->hasFile('verification_document')) {
+            $disk = config('vendor_validation.storage_disk', 'vendor_docs');
+
             $fileName = 'vendor_' . Auth::id() . '_' . time() . '.pdf';
-            $pdfPath = $request->file('verification_document')->storeAs(
-                'vendor_documents',
+
+            $request->file('verification_document')->storeAs(
+                '/',
                 $fileName,
-                'public'
+                $disk
             );
         }
 
         // Create vendor record
-        Vendor::create([
-            'name' => Auth::user()->name,
-            'email' => $validated['email'],
-            'company_name' => $validated['company_name'],
-            'contact_person' => $validated['contact_person'],
-            'phone' => $validated['phone'],
-            'address' => $validated['address'],
-            'country' => $validated['country'],
-            'bank_name' => $validated['bank_name'],
-            'account_number' => $validated['account_number'],
-            'monthly_revenue' => null,
-            'revenue' => null,
-            'certification' => null,
-            'pdf_path' => $pdfPath,
-            'supplier_id' => Auth::id(),
-            'visit_date' => Carbon::now()->addDays(rand(2, 7)),
-        ]);
-
-        // If user is supplier but not in suppliers table, create record there too
         if (Auth::user()->role === 'supplier') {
+            $vendor = Vendor::updateOrCreate(
+                ['supplier_id' => Auth::id()],
+                [
+                    'name' => Auth::user()->name,
+                    'email' => $validated['email'],
+                    'company_name' => $validated['company_name'],
+                    'contact_person' => $validated['contact_person'],
+                    'phone' => $validated['phone'],
+                    'address' => $validated['address'],
+                    'country' => $validated['country'],
+                    'bank_name' => $validated['bank_name'],
+                    'account_number' => $validated['account_number'],
+                    'monthly_revenue' => null,
+                    'revenue' => null,
+                    'certification' => null,
+                    'pdf_path' => $fileName,
+                    'validation_status' => 'Pending',
+                    'visit_date' => Carbon::now()->addDays(rand(2, 7)),
+                ]
+            );
+
             $supplierExists = Supplier::where('supplier_id', Auth::id())->exists();
             if (!$supplierExists) {
                 Supplier::create([
@@ -100,6 +106,33 @@ class VendorController extends Controller
                     'status' => 'pending'
                 ]);
             }
+        } else {
+            $vendor = Vendor::create([
+                'name' => Auth::user()->name,
+                'email' => $validated['email'],
+                'company_name' => $validated['company_name'],
+                'contact_person' => $validated['contact_person'],
+                'phone' => $validated['phone'],
+                'address' => $validated['address'],
+                'country' => $validated['country'],
+                'bank_name' => $validated['bank_name'],
+                'account_number' => null,
+                'monthly_revenue' => null,
+                'revenue' => null,
+                'certification' => null,
+                'pdf_path' => $fileName,
+                'retailer_id' => Auth::id(),
+                'visit_date' => Carbon::now()->addDays(rand(2, 7)),
+            ]);
+        }
+
+        $systemUser = User::where('email', 'system@chocolatescm')->first();
+        $adminConversation = Conversation::where('id', '1')->first();
+
+        if ($systemUser && $adminConversation) {
+            $conversation = $systemUser->conversations()->first();
+
+            $message = $systemUser->sendMessageTo($adminConversation, "A new vendor application has been submitted: '{$vendor->name}'. Please review for approval.");
         }
 
         // Send to external validation service if needed
@@ -113,7 +146,7 @@ class VendorController extends Controller
     /**
      * Show pending verification status
      */
-    public function showPendingStatus(Vendor $vendor = null)
+    public function showPendingStatus(Vendor $vendor)
     {
         if (!$vendor) {
             $vendor = Vendor::where('supplier_id', Auth::id())->first();
@@ -129,7 +162,7 @@ class VendorController extends Controller
     /**
      * Show approved verification status
      */
-    public function showApprovedStatus(Vendor $vendor = null)
+    public function showApprovedStatus(Vendor $vendor)
     {
         if (!$vendor) {
             $vendor = Vendor::where('supplier_id', Auth::id())->first();
