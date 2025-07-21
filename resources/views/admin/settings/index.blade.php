@@ -65,7 +65,7 @@ use App\Models\Setting;
                         <div class="list-group-item">
                             <form action="{{ route('admin.settings.toggle-supplier-products') }}" method="POST">
                                 @csrf
-                                <input type="hidden" name="supplier_id" value="{{ $supplier->id }}">
+                                <input type="hidden" name="supplier_id" value="{{ $supplier->supplier_id }}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h6 class="mb-1">{{ $supplier->name }}</h6>
@@ -80,14 +80,15 @@ use App\Models\Setting;
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <span
-                                            class="me-3 badge bg-{{ $supplierSettings[$supplier->id]['visible'] ? 'success' : 'danger' }}">
-                                            {{ $supplierSettings[$supplier->id]['visible'] ? 'Visible' : 'Hidden' }}
+                                            class="me-3 badge bg-{{ $supplierSettings[$supplier->supplier_id]['visible'] ? 'success' : 'danger' }}">
+                                            {{ $supplierSettings[$supplier->supplier_id]['visible'] ? 'Visible' :
+                                            'Hidden' }}
                                         </span>
                                         <button type="submit"
-                                            class="btn btn-sm btn-{{ $supplierSettings[$supplier->id]['visible'] ? 'warning' : 'success' }}">
+                                            class="btn btn-sm btn-{{ $supplierSettings[$supplier->supplier_id]['visible'] ? 'warning' : 'success' }}">
                                             <i
-                                                class="bi bi-{{ $supplierSettings[$supplier->id]['visible'] ? 'eye-slash' : 'eye' }}"></i>
-                                            {{ $supplierSettings[$supplier->id]['visible'] ? 'Hide' : 'Show' }}
+                                                class="bi bi-{{ $supplierSettings[$supplier->supplier_id]['visible'] ? 'eye-slash' : 'eye' }}"></i>
+                                            {{ $supplierSettings[$supplier->supplier_id]['visible'] ? 'Hide' : 'Show' }}
                                         </button>
                                     </div>
                                 </div>

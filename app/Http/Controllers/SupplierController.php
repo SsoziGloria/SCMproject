@@ -13,7 +13,7 @@ class SupplierController extends Controller
     {
         $supplier = Supplier::where('supplier_id', auth()->id())->first();
 
-        $query = Product::where('supplier_id', $supplier->id);
+        $query = Product::where('supplier_id', $supplier->supplier_id);
 
         if ($request->filled('search')) {
             $search = $request->search;

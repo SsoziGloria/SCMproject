@@ -30,7 +30,7 @@ return new class extends Migration {
                 ->onDelete('cascade');
 
             $table->foreign('supplier_id', 'inventory_supplier_fk')
-                ->references('id')
+                ->references('supplier_id')
                 ->on('suppliers')
                 ->onDelete('set null');
         });
@@ -43,7 +43,5 @@ return new class extends Migration {
             $table->dropForeign('inventory_supplier_fk');
         });
         Schema::dropIfExists('inventories');
-
-
     }
 };

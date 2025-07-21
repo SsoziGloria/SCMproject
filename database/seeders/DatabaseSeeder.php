@@ -24,12 +24,12 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AdminConversationSeeder::class,
             SupplierSeeder::class,
+            VendorSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
             InventorySeeder::class,
             OrderSeeder::class,
             OrderItemSeeder::class,
-            VendorSeeder::class,
             CustomerClusterSummarySeeder::class,
         ]);
         // User::factory(10)->create();

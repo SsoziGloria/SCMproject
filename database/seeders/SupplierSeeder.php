@@ -14,7 +14,7 @@ class SupplierSeeder extends Seeder
     {
         $suppliers = [
             [
-                'supplier_id' => 3,
+                'supplier_id' => 6,
                 'name' => 'Kampala Cocoa Ltd',
                 'email' => 'info@kampalacocoa.com',
                 'phone' => '+256700000001',
@@ -25,24 +25,13 @@ class SupplierSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'supplier_id' => 3,
+                'supplier_id' => 5,
                 'name' => 'ChocoFarmers Co-op',
                 'email' => 'contact@chocofarmers.coop',
                 'phone' => '+256700000002',
                 'address' => 'Farm Lane, Hoima',
                 'company' => 'ChocoFarmers Cooperative',
                 'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'supplier_id' => 3,
-                'name' => 'WestNile Beans',
-                'email' => 'beans@westnile.com',
-                'phone' => '+256700000003',
-                'address' => 'Main Street, Arua',
-                'company' => 'WestNile Beans Ltd',
-                'status' => 'inactive',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

@@ -8,23 +8,23 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id(); // Laravel default ID
-            $table->string('product_id')->unique(); // Custom product code
+            $table->id();
+            $table->string('product_id')->unique();
             $table->string('name');
             $table->text('ingredients')->nullable();
             $table->decimal('price', 10, 2);
             $table->text('description')->nullable();
-            $table->string('image')->nullable(); // Path to product image
-            $table->boolean('featured')->default(false); // For special listing
+            $table->string('image')->nullable();
+            $table->boolean('featured')->default(false);
             $table->unsignedInteger('stock')->default(0);
             $table->string('category')->nullable();
-            $table->unsignedBigInteger('supplier_id')->nullable(); // Foreign key if needed
+            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->timestamps(); // created_at and updated_at
         });
         // Indexes and foreign keys
         Schema::table('products', function (Blueprint $table) {
             $table->foreign('supplier_id')
-                ->references('id')
+                ->references('supplier_id')
                 ->on('suppliers')
                 ->onDelete('set null');
 
@@ -32,7 +32,6 @@ return new class extends Migration {
                 ->references('name')
                 ->on('categories')
                 ->onDelete('set null');
-
         });
     }
 

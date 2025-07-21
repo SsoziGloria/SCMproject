@@ -13,6 +13,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SupplierDashboardController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
@@ -108,7 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             case 'admin':
                 return redirect()->route('admin.dashboard');
             case 'supplier':
-                return redirect()->route('dashboard.supplier');
+                return app(SupplierDashboardController::class)->index();
             case 'retailer':
                 return app(InventoryController::class)->dashboard();
             case 'user':

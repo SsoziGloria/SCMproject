@@ -13,16 +13,6 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
 
-        // Create or get supplier users
-        $supplier1 = User::firstOrCreate(
-            ['email' => 'supplier1@example.com'],
-            ['name' => 'Supplier One', 'password' => bcrypt('password'), 'role' => 'supplier']
-        );
-        $supplier2 = User::firstOrCreate(
-            ['email' => 'supplier2@example.com'],
-            ['name' => 'Supplier Two', 'password' => bcrypt('password'), 'role' => 'supplier']
-        );
-
         $products = [
             [
                 'product_id' => 'CHOC-DARK-70',
@@ -33,7 +23,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/dark_chocolate.jpg',
                 'featured' => true,
                 'stock' => 15,
-                'supplier_id' => 3,
+                'supplier_id' => 6,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -46,7 +36,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/milk_chips.jpg',
                 'featured' => false,
                 'stock' => 10,
-                'supplier_id' => 3,
+                'supplier_id' => 5,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -59,7 +49,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/white_block.jpg',
                 'featured' => true,
                 'stock' => 20,
-                'supplier_id' => 3,
+                'supplier_id' => 5,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -72,7 +62,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/drinking_chocolate.jpg',
                 'featured' => false,
                 'stock' => 12,
-                'supplier_id' => 3,
+                'supplier_id' => 5,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -85,7 +75,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/choco_almonds.jpg',
                 'featured' => true,
                 'stock' => 15,
-                'supplier_id' => 3,
+                'supplier_id' => 5,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -98,7 +88,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/eclairs.jpg',
                 'featured' => false,
                 'stock' => 10,
-                'supplier_id' => 3,
+                'supplier_id' => 6,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -111,7 +101,7 @@ class ProductSeeder extends Seeder
                 'image' => 'images/organic_choco_syrup.jpg',
                 'featured' => true,
                 'stock' => 9,
-                'supplier_id' => 3,
+                'supplier_id' => 5,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -124,16 +114,16 @@ class ProductSeeder extends Seeder
                 'image' => 'images/dark_choco_bites.jpg',
                 'featured' => false,
                 'stock' => 11,
-                'supplier_id' => 3,
+                'supplier_id' => 6,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
         ];
-         foreach ($products as $product) {
-        Product::firstOrCreate(
-            ['product_id' => $product['product_id']], 
-            $product
-        );
-    }
+        foreach ($products as $product) {
+            Product::firstOrCreate(
+                ['product_id' => $product['product_id']],
+                $product
+            );
+        }
     }
 }

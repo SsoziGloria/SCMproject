@@ -62,7 +62,8 @@
                 <select class="form-select" id="supplier" name="supplier">
                   <option value="">All Suppliers</option>
                   @foreach($suppliers as $supplier)
-                  <option value="{{ $supplier->id }}" {{ request('supplier')==$supplier->id ? 'selected' : '' }}>
+                  <option value="{{ $supplier->supplier_id }}" {{ request('supplier')==$supplier->supplier_id ?
+                    'selected' : '' }}>
                     {{ $supplier->name }}
                   </option>
                   @endforeach

@@ -44,7 +44,7 @@ class Order extends Model
 
     public function inventory()
     {
-        return $this->belongsTo(Inventory::class, 'product_id', );
+        return $this->belongsTo(Inventory::class, 'product_id',);
     }
     public function user()
     {
@@ -185,5 +185,11 @@ class Order extends Model
     public function statusHistory()
     {
         return $this->hasMany(OrderStatusHistory::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id')
+            ->withPivot('quantity', 'price');
     }
 }

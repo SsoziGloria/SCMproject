@@ -26,7 +26,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
-        $query = Product::with('category')->where('supplier_id', $this->supplier->id);
+        $query = Product::with('category')->where('supplier_id', $this->supplier->supplier_id);
 
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -63,7 +63,7 @@ class ProductController extends Controller
 
         $supplier = Supplier::where('supplier_id', Auth::id())->firstOrFail();
 
-        $validated['supplier_id'] = $this->supplier->id;
+        $validated['supplier_id'] = $this->supplier->supplier_id;
 
         $validated['featured'] = $request->has('featured') ? 1 : 0;
 
@@ -85,7 +85,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = Product::where('supplier_id', $this->supplier->id)->findOrFail($id);
+        $product = Product::where('supplier_id', $this->supplier->supplier_id)->findOrFail($id);
         $categories = Category::orderBy('name')->get();
 
         return view('supplier.products.edit', compact('product', 'categories'));
@@ -93,7 +93,7 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $product = Product::where('supplier_id', $this->supplier->id)->findOrFail($id);
+        $product = Product::where('supplier_id', $this->supplier->supplier_id)->findOrFail($id);
 
         $validated = $request->validate([
             'product_id' => 'required|string|max:50|unique:products,product_id,' . $product->id,
@@ -137,7 +137,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::where('supplier_id', $this->supplier->id)->findOrFail($id);
+        $product = Product::where('supplier_id', $this->supplier->supplier_id)->findOrFail($id);
 
         // Delete the product image if it exists
         if ($product->image && Storage::disk('public')->exists($product->image)) {

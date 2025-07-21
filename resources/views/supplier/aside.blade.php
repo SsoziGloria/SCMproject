@@ -44,7 +44,7 @@ break;
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link {{ request()->fullUrlIs(route('dashboard.supplier', '')) ? '' : 'collapsed' }}"
+            <a class="nav-link {{ request()->fullUrlIs(route('dashboard', '')) ? '' : 'collapsed' }}"
                 href="{{ route('dashboard') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>

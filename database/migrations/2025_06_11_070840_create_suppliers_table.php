@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->unsignedBigInteger('supplier_id')->unique();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
@@ -22,11 +22,11 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-            Schema::table('suppliers', function (Blueprint $table) {
-        $table->foreign('supplier_id')
-            ->references('id')
-            ->on('users')
-            ->onDelete('cascade');
+        Schema::table('suppliers', function (Blueprint $table) {
+            $table->foreign('supplier_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 
