@@ -34,7 +34,7 @@ class Inventory extends Model
 
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
     // Get items that are low in stock (below threshold)

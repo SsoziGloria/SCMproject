@@ -50,14 +50,14 @@
                     <p class="card-text text-muted small mb-2">{{ Str::limit($product->description, 80) }}</p>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <h5 class="text-success mb-0">UGX {{ number_format($product->price, 0) }}</h5>
-                        <span class="badge bg-{{ $product->stock > 0 ? 'success' : 'danger' }}">
-                            {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                        <span class="badge bg-{{ $product->available_stock > 0 ? 'success' : 'danger' }}">
+                            {{ $product->available_stock > 0 ? 'In Stock' : 'Out of Stock' }}
                         </span>
                     </div>
                     <div class="d-grid gap-2 mt-3">
                         <a href="{{ route('shop.product', $product->id) }}" class="btn btn-outline-primary btn-sm">View
                             Details</a>
-                        @if($product->stock > 0)
+                        @if($product->available_stock > 0)
                         <form action="{{ route('cart.add') }}" method="POST">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -119,8 +119,8 @@
                     <p class="card-text text-muted small">{{ Str::limit($product->description, 80) }}</p>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <h5 class="text-success mb-0">UGX {{ number_format($product->price, 0) }}</h5>
-                        <span class="badge bg-{{ $product->stock > 0 ? 'success' : 'danger' }}">
-                            {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                        <span class="badge bg-{{ $product->available_stock > 0 ? 'success' : 'danger' }}">
+                            {{ $product->available_stock > 0 ? 'In Stock' : 'Out of Stock' }}
                         </span>
                     </div>
                     <div class="d-grid gap-2 mt-3">

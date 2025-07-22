@@ -156,8 +156,8 @@ class OrderController extends Controller
             foreach ($request->items as $item) {
                 $product = Product::findOrFail($item['product_id']);
 
-                if ($product->stock < $item['quantity']) {
-                    return back()->withErrors(['items' => "Not enough stock for {$product->name}. Only {$product->stock} available."]);
+                if ($product->available_stock < $item['quantity']) {
+                    return back()->withErrors(['items' => "Not enough stock for {$product->name}. Only {$product->available_stock} available."]);
                 }
 
                 $itemTotal = $product->price * $item['quantity'];
@@ -218,9 +218,8 @@ class OrderController extends Controller
                     'subtotal' => $item['subtotal'],
                 ]);
 
-                // Update product stock
                 $product = Product::find($item['product_id']);
-                $product->stock -= $item['quantity'];
+                $product->allocated_stock += $item['quantity'];
                 $product->save();
             }
 
@@ -281,8 +280,7 @@ class OrderController extends Controller
                 'available' => $availableQuantity,
                 'needed' => $neededQuantity,
                 'sufficient' => $availableQuantity >= $neededQuantity,
-                'status_class' => $availableQuantity >= $neededQuantity ? 'success' :
-                    ($availableQuantity > 0 ? 'warning' : 'danger')
+                'status_class' => $availableQuantity >= $neededQuantity ? 'success' : ($availableQuantity > 0 ? 'warning' : 'danger')
             ];
         }
 
@@ -304,15 +302,11 @@ class OrderController extends Controller
         return view('orders.edit', compact('order', 'products', 'salesChannels'));
     }
 
-    // Update the specified order
     public function update(Request $request, Order $order)
     {
-        // Authorize edit permission
         $this->authorizeEdit($order);
 
-        // Validate based on what's being updated
         if ($request->has('status') && !$request->has('items')) {
-            // Just updating status
             $validated = $request->validate([
                 'status' => 'sometimes|in:pending,processing,shipped,delivered,cancelled',
                 'payment_status' => 'sometimes|in:pending,paid,failed',
@@ -325,7 +319,6 @@ class OrderController extends Controller
                 ->with('success', 'Order status updated successfully!');
         }
 
-        // Full order update
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
@@ -341,23 +334,18 @@ class OrderController extends Controller
             'shipping_fee' => 'nullable|numeric|min:0',
         ]);
 
-        // Begin transaction
         DB::beginTransaction();
 
         try {
-            // Update sales channel name
             $validated['sales_channel'] = SalesChannel::find($validated['sales_channel_id'])->name;
 
-            // Update order details
             $order->update($validated);
 
-            // If updating items too
             if ($request->has('items') && is_array($request->items)) {
-                // First restore stock for all current items
                 foreach ($order->items as $item) {
                     $product = Product::find($item->product_id);
                     if ($product) {
-                        $product->stock += $item->quantity;
+                        $product->allocated_stock -= $item->quantity;
                         $product->save();
                     }
                 }
@@ -427,7 +415,7 @@ class OrderController extends Controller
             foreach ($order->items as $item) {
                 $product = Product::find($item->product_id);
                 if ($product) {
-                    $product->stock += $item->quantity;
+                    $product->allocated_stock -= $item->quantity;
                     $product->save();
                 }
             }
@@ -506,7 +494,6 @@ class OrderController extends Controller
         $user = Auth::user();
         $query = Order::with(['items.product', 'user'])->where('status', $status);
 
-        // Role-based filtering
         if ($user->role === 'supplier') {
             $query->whereHas('items.product', function ($q) use ($user) {
                 $q->where('supplier_id', $user->id);
@@ -581,7 +568,6 @@ class OrderController extends Controller
         abort(403, 'Unauthorized to edit this order.');
     }
 
-    // Update order status only
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
@@ -595,11 +581,9 @@ class OrderController extends Controller
             return redirect()->back()->with('info', 'Order status is already ' . ucfirst($newStatus));
         }
 
-        // Begin transaction
         DB::beginTransaction();
 
         try {
-            // Record order status history
             $statusHistory = OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => $newStatus,
@@ -608,14 +592,12 @@ class OrderController extends Controller
                 'notes' => $request->status_notes ?? 'Status updated from ' . $oldStatus . ' to ' . $newStatus
             ]);
 
-            // Handle inventory changes for shipped/delivered status
             if (in_array($newStatus, ['shipped', 'delivered']) && !in_array($oldStatus, ['shipped', 'delivered'])) {
-                // Check if there's enough inventory
                 foreach ($order->items as $item) {
                     $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
 
                     if ($neededQuantity <= 0) {
-                        continue; // Skip if already fully shipped
+                        continue;
                     }
 
                     $availableQuantity = Inventory::where('product_id', $item->product_id)
@@ -628,7 +610,6 @@ class OrderController extends Controller
                     }
                 }
 
-                // Process inventory reductions
                 foreach ($order->items as $item) {
                     $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
 
@@ -641,26 +622,21 @@ class OrderController extends Controller
                     }
                 }
 
-                // Set shipped_at date
                 if ($newStatus === 'shipped' && !$order->shipped_at) {
                     $order->shipped_at = now();
                 }
 
-                // Set delivered_at date
                 if ($newStatus === 'delivered') {
                     $order->delivered_at = now();
                 }
             }
 
-            // Handle inventory restoration for cancelled orders
             if ($newStatus === 'cancelled' && in_array($oldStatus, ['shipped', 'delivered'])) {
-                // Only restore inventory if it's an admin action and they specifically request it
                 if (auth()->user()->role === 'admin' && $request->has('restore_inventory')) {
                     foreach ($order->items as $item) {
                         if ($item->quantity_shipped > 0) {
                             $this->restoreInventoryForItem($item->product_id, $item->quantity_shipped, $order, $statusHistory);
 
-                            // Reset shipped quantity
                             $item->quantity_shipped = 0;
                             $item->save();
                         }
@@ -668,14 +644,12 @@ class OrderController extends Controller
                 }
             }
 
-            // Update order status
             $order->status = $newStatus;
             $order->save();
 
             DB::commit();
 
             return redirect()->back()->with('success', "Order status updated to " . ucfirst($newStatus));
-
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -688,7 +662,6 @@ class OrderController extends Controller
     {
         $oldStatus = $order->status;
 
-        // Check if there's enough inventory for all items
         $insufficientItems = collect();
 
         foreach ($order->items as $item) {
@@ -709,19 +682,17 @@ class OrderController extends Controller
             return redirect()->back()->with(
                 'error',
                 'Cannot ship order due to insufficient inventory for ' .
-                $insufficientItems->pluck('product_name')->join(', ')
+                    $insufficientItems->pluck('product_name')->join(', ')
             );
         }
 
         DB::beginTransaction();
 
         try {
-            // Update order status
             $order->status = 'shipped';
             $order->delivered_at = now();
             $order->save();
 
-            // Record order status change
             $statusHistory = OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => 'shipped',
@@ -729,12 +700,10 @@ class OrderController extends Controller
                 'notes' => 'Order marked as shipped'
             ]);
 
-            // Update inventory for all items
             foreach ($order->items as $item) {
                 if ($item->quantity_shipped < $item->quantity) {
                     $this->reduceInventoryForItem($item->product_id, $item->quantity - $item->quantity_shipped, $order, $statusHistory);
 
-                    // Update shipped quantity
                     $item->quantity_shipped = $item->quantity;
                     $item->save();
                 }
@@ -806,16 +775,13 @@ class OrderController extends Controller
 
                 $remainingToShip = $orderItem->quantity - ($orderItem->quantity_shipped ?? 0);
 
-                // Ensure not shipping more than remaining
                 if ($shippedItem['quantity_shipped'] > $remainingToShip) {
                     throw new \Exception("Cannot ship more than the remaining quantity for {$orderItem->product_name}");
                 }
 
-                // Update shipped quantity
                 $orderItem->quantity_shipped = ($orderItem->quantity_shipped ?? 0) + $shippedItem['quantity_shipped'];
                 $orderItem->save();
 
-                // Reduce inventory
                 $this->reduceInventoryForItem($orderItem->product_id, $shippedItem['quantity_shipped'], $order, $statusHistory);
             }
 
@@ -842,7 +808,6 @@ class OrderController extends Controller
 
             return redirect()->route('orders.show', $order)
                 ->with('success', 'Items marked as shipped and inventory updated');
-
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -856,7 +821,6 @@ class OrderController extends Controller
      */
     private function reduceInventoryForItem($productId, $quantity, $order, $statusHistory = null)
     {
-        // Get available inventory items, prioritizing those expiring soonest
         $inventoryItems = Inventory::where('product_id', $productId)
             ->where('status', 'available')
             ->where('quantity', '>', 0)
@@ -872,7 +836,6 @@ class OrderController extends Controller
             $reduceAmount = min($inventory->quantity, $remainingToReduce);
             $remainingToReduce -= $reduceAmount;
 
-            // Create adjustment record
             $adjustment = InventoryAdjustment::create([
                 'inventory_id' => $inventory->id,
                 'adjustment_type' => 'decrease',
@@ -900,7 +863,6 @@ class OrderController extends Controller
 
     private function restoreInventoryForItem($productId, $quantity, $order, $statusHistory = null)
     {
-        // Find the original inventory item or create one if needed
         $inventory = Inventory::where('product_id', $productId)
             ->where(function ($query) {
                 $query->where('status', 'available')
@@ -910,7 +872,6 @@ class OrderController extends Controller
             ->first();
 
         if (!$inventory) {
-            // Create new inventory record if none exists
             $product = Product::findOrFail($productId);
             $inventory = Inventory::create([
                 'product_id' => $productId,
@@ -921,7 +882,6 @@ class OrderController extends Controller
             ]);
         }
 
-        // Record inventory adjustment
         $adjustment = InventoryAdjustment::create([
             'inventory_id' => $inventory->id,
             'adjustment_type' => 'increase',
@@ -933,10 +893,8 @@ class OrderController extends Controller
             'status_history_id' => $statusHistory ? $statusHistory->id : null
         ]);
 
-        // Update inventory
         $inventory->quantity += $quantity;
 
-        // If inventory was depleted, mark as available again
         if ($inventory->status === 'depleted') {
             $inventory->status = 'available';
         }

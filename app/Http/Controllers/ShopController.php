@@ -101,12 +101,12 @@ class ShopController extends Controller
         }
 
         $visibleSuppliers = Supplier::whereHas('user', function ($query) {
-            $query->where('is_active', true); // The user account must be active.
+            $query->where('is_active', true);
         })->get();
 
         $visibleSupplierIds = $visibleSuppliers->filter(function ($supplier) {
-            return Setting::get('show_supplier_products', true, $supplier->supplier_id);
-        })->pluck('id');
+            return Setting::get('show_supplier_products', true, $supplier->id);
+        })->pluck('supplier_id');
 
         return Product::query()->where(function ($query) use ($visibleSupplierIds) {
             $query->whereNull('supplier_id')

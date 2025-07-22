@@ -203,6 +203,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $order_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read int|null $activities_count
  * @property-read \App\Models\Inventory|null $inventory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $items
  * @property-read int|null $items_count
@@ -331,10 +333,14 @@ namespace App\Models{
  * @property string|null $image
  * @property bool $featured
  * @property int $stock
+ * @property int $allocated_stock
  * @property \App\Models\Category|null $category
  * @property int|null $supplier_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read int|null $activities_count
+ * @property-read mixed $available_stock
  * @property-read mixed $image_url
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Inventory> $inventories
  * @property-read int|null $inventories_count
@@ -346,6 +352,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereAllocatedStock($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCategory($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCost($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
@@ -526,7 +533,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int|null $supplier_id
+ * @property int $supplier_id
  * @property string $name
  * @property string $email
  * @property string|null $phone
@@ -537,7 +544,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier query()
@@ -576,11 +583,14 @@ namespace App\Models{
  * @property string|null $linkedin
  * @property string|null $certification_status
  * @property int $is_active
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
+ * @property-read int|null $activities_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Namu\WireChat\Models\Conversation> $conversations
  * @property-read int|null $conversations_count
  * @property-read string|null $cover_url
  * @property-read string|null $display_name
  * @property-read string|null $profile_url
+ * @property-read mixed $total_spent
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
@@ -591,6 +601,8 @@ namespace App\Models{
  * @property-read int|null $products_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Supplier> $suppliers
  * @property-read int|null $suppliers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vendor> $vendors
+ * @property-read int|null $vendors_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()

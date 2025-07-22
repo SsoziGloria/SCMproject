@@ -1,7 +1,6 @@
 import os
 import sys
-from datetime import timedelta
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
@@ -12,13 +11,12 @@ from sqlalchemy import create_engine
 from .data_loader import DemandDataLoader
 from .lstm_model import create_lstm_model
 
-sys.path.append(os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "src")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 
 
 def save_to_mysql(df, table_name="demand_predictions"):
     db = MySQLConnector(
-        user="root", password="", host="127.0.0.1", database="chocolate_scm"
+        user="root", password="00000000", host="127.0.0.1", database="chocolate_scm"
     )
     db.connect()
 
@@ -54,15 +52,13 @@ def run_forecast_all_products(csv_path, look_back=30, forecast_days=7, epochs=30
 
         # check train data not empty after split
         if len(X_train) == 0 or len(y_train) == 0:
-            print(
-                f"⚠️ Skipping product '{product}' because training split is empty.")
+            print(f"⚠️ Skipping product '{product}' because training split is empty.")
             continue
 
         model = create_lstm_model((look_back, 1))
         model.compile(optimizer="adam", loss="mse", metrics=["mae"])
         model.fit(
-            X_train, y_train, validation_data=(
-                X_test, y_test), epochs=epochs, verbose=0
+            X_train, y_train, validation_data=(X_test, y_test), epochs=epochs, verbose=0
         )
 
         # Forecast future demand
@@ -77,8 +73,10 @@ def run_forecast_all_products(csv_path, look_back=30, forecast_days=7, epochs=30
             np.array(forecast_scaled).reshape(-1, 1)
         ).flatten()
         last_date = datetime.today()
-        dates = [(last_date + timedelta(days=i + 1)).strftime('%Y-%m-%d') 
-                for i in range(forecast_days)]
+        dates = [
+            (last_date + timedelta(days=i + 1)).strftime("%Y-%m-%d")
+            for i in range(forecast_days)
+        ]
 
         forecast_df = pd.DataFrame(
             {

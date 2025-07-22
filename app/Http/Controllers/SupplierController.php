@@ -40,27 +40,46 @@ class SupplierController extends Controller
         return view('dashboard', compact('inventoryCount'));
     }
 
-    public function approved()
+    public function approved(Request $request)
     {
-        $suppliers = Supplier::all();
+        $query = Supplier::with(['user'])->withCount('products')
+            ->where('status', 'active');
+
+        $query->when($request->filled('search'), function ($q) use ($request) {
+            $search = $request->input('search');
+            return $q->where(function ($subQ) use ($search) {
+                $subQ->where('name', 'like', "%{$search}%")
+                    ->orWhere('company', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('email', 'like', "%{$search}%");
+                    });
+            });
+        });
+
+        $query->when($request->filled('status'), function ($q) use ($request) {
+            $isActive = ($request->input('status') === 'active');
+            return $q->whereHas('user', function ($userQuery) use ($isActive) {
+                $userQuery->where('is_active', $isActive);
+            });
+        });
+
+        $suppliers = $query->latest()->paginate(15)->withQueryString();
+
         return view('supplier.approved', compact('suppliers'));
     }
 
-    public function requests()
+    public function requests(Request $request)
     {
-        // Fetch suppliers with status 'pending' 
-        $suppliers = Supplier::where('status', 'pending')->get();
+        $suppliers = Supplier::where('status', 'pending')
+            ->latest()
+            ->paginate(15);
+
         return view('supplier.requests', compact('suppliers'));
     }
 
     public function orders()
     {
         return view('supplier.orders');
-    }
-
-    public function messages()
-    {
-        return view('supplier.messages');
     }
 
     public function showRegisterForm()

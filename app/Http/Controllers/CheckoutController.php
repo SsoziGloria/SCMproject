@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\Helpers\LocationHelper;
+use Illuminate\Support\Facades\Log;
 
 class CheckoutController extends Controller
 {
@@ -30,10 +31,9 @@ class CheckoutController extends Controller
         foreach ($cart as $id => $details) {
             $product = Product::find($id);
             if ($product) {
-                // Check product is still in stock
-                if ($product->stock < $details['quantity']) {
+                if ($product->available_stock < $details['quantity']) {
                     return redirect()->route('cart.index')
-                        ->with('error', 'Some products in your cart are no longer available in the requested quantity.');
+                        ->with('error', "Sorry, only {$product->available_stock} of {$product->name} are available. Please adjust your cart.");
                 }
 
                 $products[$id] = [
@@ -50,7 +50,6 @@ class CheckoutController extends Controller
     /**
      * Process the checkout
      */
-    // In the process method of CheckoutController, update to include new fields:
 
     public function process(Request $request)
     {
@@ -66,17 +65,24 @@ class CheckoutController extends Controller
             'total_amount' => 'required|numeric',
         ]);
 
-        // Validate cart has items
         $cart = Session::get('cart', []);
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty');
         }
 
-        // Start database transaction
+        $productIds = array_keys($cart);
+        $productsInCart = Product::find($productIds)->keyBy('id');
+
+        foreach ($cart as $id => $details) {
+            $product = $productsInCart->get($id);
+            if (!$product || $product->available_stock < $details['quantity']) {
+                return redirect()->route('cart.index')->with('error', "Sorry, an item in your cart ({$product->name}) is no longer available in the quantity you requested.");
+            }
+        }
+
         DB::beginTransaction();
 
         try {
-            // Calculate shipping fee based on method
             $shippingFee = 0;
             if ($validated['shipping_method'] === 'express') {
                 $shippingFee = 3000;
@@ -84,7 +90,6 @@ class CheckoutController extends Controller
                 $shippingFee = 10000;
             }
 
-            // Calculate subtotal
             $subtotal = 0;
             foreach ($cart as $productId => $details) {
                 $product = Product::find($productId);
@@ -93,13 +98,11 @@ class CheckoutController extends Controller
                 }
             }
 
-            // Generate order number
             $orderNumber = 'ORD-' . date('Y') . '-' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
 
             $region = LocationHelper::getRegionFromCity($validated['shipping_city']);
             $country = LocationHelper::getCountryFromCity($validated['shipping_city']);
 
-            // Create the order with new fields
             $order = Order::create([
                 'order_number' => $orderNumber,
                 'user_id' => Auth::check() ? Auth::id() : null,
@@ -115,13 +118,12 @@ class CheckoutController extends Controller
                 'status' => 'pending',
                 'payment' => $validated['payment'],
                 'notes' => $request->input('notes'),
-                'sales_channel' => 'online', // Since this is from the website
+                'sales_channel' => 'Online Store',
                 'sales_channel_id' => 1,
             ]);
 
-            // Create order items with enhanced fields
             foreach ($cart as $productId => $details) {
-                $product = Product::find($productId);
+                $product = $productsInCart->get($productId);
 
                 if (!$product || $product->stock < $details['quantity']) {
                     throw new \Exception('Product not available in requested quantity.');
@@ -140,23 +142,18 @@ class CheckoutController extends Controller
                 ]);
 
                 // Update product stock
-                $product->stock -= $details['quantity'];
+                $product->allocated_stock += $details['quantity'];
                 $product->save();
             }
 
-            // Clear the cart
             Session::forget('cart');
-
-            // Commit transaction
             DB::commit();
 
-            // Redirect to order confirmation
             return redirect()->route('checkout.confirmation', ['order' => $order->id]);
-
         } catch (\Exception $e) {
-            // Roll back transaction on error
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error processing your order: ' . $e->getMessage());
+            Log::error('Error processing checkout: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'A critical error occurred while processing your order. Please try again.');
         }
     }
 

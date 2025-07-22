@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Order extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $fillable = [
         'order_number',
@@ -191,5 +194,14 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id')
             ->withPivot('quantity', 'price');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['status', 'payment_status', 'shipping_address'])
+            ->setDescriptionForEvent(fn(string $eventName) => "Order #{$this->order_number} has been {$eventName}")
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

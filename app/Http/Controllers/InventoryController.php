@@ -156,7 +156,6 @@ class InventoryController extends Controller
     {
         $products = Product::all();
         return view('inventories.create', compact('products'));
-
     }
 
     public function edit($id)
@@ -177,20 +176,20 @@ class InventoryController extends Controller
             'quantity' => 'required|integer',
             'location' => 'required|string',
             'expiration_date' => 'required|date',
-            'supplier_id' => 'nullable|exists:suppliers,id',
+            'status' => 'required|string',
+            'supplier_id' => 'nullable|exists:suppliers,supplier_id',
         ]);
 
-        $data = $request->only(['product_id', 'product_name', 'quantity', 'location', 'expiration_date', 'supplier_id']);
+        $data = $request->only(['product_id', 'product_name', 'quantity', 'location', 'expiration_date', 'status', 'supplier_id']);
         $inventory->update($data);
 
         $lowStock = Inventory::where('quantity', '<', 10)->get();
         $expiringSoon = Inventory::where('expiration_date', '<=', Carbon::now()->addDays(30))->get();
 
-        //send notification if there's low stock or expiring soon items
         if ($lowStock->count() > 0 || $expiringSoon->count() > 0) {
             Notification::route('mail', env('MAIL_USERNAME'))->notify(new StockAlertNotification($lowStock));
         }
-        return redirect()->route('dashboard')->with('success', 'Inventory updated.');
+        return back()->with('success', 'Inventory updated.');
     }
 
     public function destroy($id)
@@ -330,7 +329,6 @@ class InventoryController extends Controller
                 break;
         }
 
-        // Create adjustment record
         $adjustment = InventoryAdjustment::create([
             'inventory_id' => $validated['inventory_id'],
             'adjustment_type' => $validated['adjustment_type'],
@@ -357,5 +355,80 @@ class InventoryController extends Controller
 
         return redirect()->route('inventories.adjustments')
             ->with('success', 'Inventory adjustment recorded successfully.');
+    }
+
+
+    public function History(Request $request)
+    {
+        // Base query for adjustments only
+        $query = InventoryAdjustment::with(['inventory.product', 'inventory.supplier']);
+
+        // Apply filters
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('inventory', function ($inv) use ($search) {
+                    $inv->where('product_name', 'like', "%{$search}%")
+                        ->orWhere('batch_number', 'like', "%{$search}%");
+                })
+                    ->orWhere('reason', 'like', "%{$search}%")
+                    ->orWhere('user_name', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('adjustment_type')) {
+            $query->where('adjustment_type', $request->adjustment_type);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->where('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->where('created_at', '<=', $request->date_to . ' 23:59:59');
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Sort options
+        $sort = $request->get('sort', 'newest');
+        switch ($sort) {
+            case 'oldest':
+                $query->oldest();
+                break;
+            case 'type':
+                $query->orderBy('adjustment_type', 'asc')->latest();
+                break;
+            case 'quantity_desc':
+                $query->orderBy('quantity_change', 'desc');
+                break;
+            case 'quantity_asc':
+                $query->orderBy('quantity_change', 'asc');
+                break;
+            default:
+                $query->latest();
+        }
+
+        $adjustments = $query->paginate(20);
+
+        // Get users who have made adjustments for filter
+        $adjustmentUsers = InventoryAdjustment::select('user_id', 'user_name')
+            ->distinct()
+            ->whereNotNull('user_id')
+            ->get();
+
+        // Adjustment statistics
+        $adjustmentStats = [
+            'total_adjustments' => InventoryAdjustment::count(),
+            'this_week' => InventoryAdjustment::where('created_at', '>=', now()->startOfWeek())->count(),
+            'this_month' => InventoryAdjustment::where('created_at', '>=', now()->startOfMonth())->count(),
+            'increases' => InventoryAdjustment::where('adjustment_type', 'increase')->sum('quantity_change'),
+            'decreases' => InventoryAdjustment::whereIn('adjustment_type', ['decrease', 'damage', 'expiry'])->sum('quantity_change'),
+            'corrections' => InventoryAdjustment::where('adjustment_type', 'correction')->count(),
+        ];
+
+        return view('inventories.adjustments', compact('adjustments', 'adjustmentUsers', 'adjustmentStats'));
     }
 }

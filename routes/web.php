@@ -146,7 +146,6 @@ Route::middleware('auth')->group(function () {
 */
 
 Route::group(['middleware' => 'auth', 'prefix' => 'inventory'], function () {
-    // Basic inventory CRUD
     Route::get('/', [InventoryController::class, 'index'])->name('inventories.index');
     Route::get('/create', [InventoryController::class, 'create'])->name('inventories.create');
     Route::post('/', [InventoryController::class, 'store'])->name('inventories.store');
@@ -154,7 +153,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'inventory'], function () {
     Route::put('/{inventory}', [InventoryController::class, 'update'])->name('inventories.update');
     Route::delete('/{inventory}', [InventoryController::class, 'destroy'])->name('inventories.destroy');
 
-    // Additional inventory functionality
     Route::put('/{inventory}/status', [InventoryController::class, 'updateStatus'])->name('inventories.update-status');
     Route::get('/{inventory}/history', [InventoryController::class, 'history'])->name('inventories.history');
     Route::get('/export', [InventoryController::class, 'export'])->name('inventories.export');

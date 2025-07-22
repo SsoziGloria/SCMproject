@@ -100,7 +100,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'category_id' => 'nullable|exists:categories,id',
+            'category' => 'nullable|exists:categories,name',
             'description' => 'nullable|string',
             'ingredients' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
@@ -110,7 +110,6 @@ class ProductController extends Controller
         $validated['featured'] = $request->has('featured') ? 1 : 0;
 
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }

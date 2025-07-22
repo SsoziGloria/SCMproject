@@ -43,7 +43,7 @@
             <div class="row g-3">
               <div class="col-md-3">
                 <label for="search" class="form-label">Search</label>
-                <input type="text" class="form-control" id="search" name="search" placeholder="Name or SKU..."
+                <input type="text" class="form-control" id="search" name="search" placeholder="Name..."
                   value="{{ request('search') }}">
               </div>
               <div class="col-md-3">
@@ -158,10 +158,7 @@
                   </td>
                   <td>
                     @if($product->supplier)
-                    {{-- This link is currently disabled, but you could point it to a supplier detail page --}}
-                    <a href="#" class="text-decoration-none">
-                      {{-- Change ->id to ->name to display the supplier's name --}}
-                      {{ $product->supplier->name }}
+                    {{ $product->supplier->name }}
                     </a>
                     @else
                     <span class="text-muted">-</span>

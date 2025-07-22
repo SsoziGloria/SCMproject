@@ -7,12 +7,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Namu\WireChat\Traits\Chatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
     use Chatable;
+    use LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -80,5 +83,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function suppliers()
     {
         return $this->hasMany(Supplier::class, 'supplier_id');
+    }
+
+    public function getTotalSpentAttribute()
+    {
+        return $this->orders()
+            ->whereNotNull('delivered_at')
+            ->sum('total_amount');
+    }
+
+    public function vendors()
+    {
+        return $this->hasMany(Vendor::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'role', 'is_active'])
+            ->setDescriptionForEvent(fn(string $eventName) => "User profile has been {$eventName}")
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

@@ -12,6 +12,8 @@ use Illuminate\Validation\Rules\Password;
 use App\Mail\PasswordReset;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Models\Order;
+use Spatie\Activitylog\Models\Activity;
 
 class AdminUserController extends Controller
 {
@@ -121,28 +123,22 @@ class AdminUserController extends Controller
         // Eager load relationships
         $user->loadCount('orders');
 
-        // Get total spent
-        $user->total_spent = $user->orders()->where('payment_status', 'paid')->sum('total_amount');
+        $totalSpent = Order::where('user_id', $user->id)
+            ->whereNotNull('delivered_at')
+            ->sum('total_amount');
 
-        // Get user's orders with pagination
         $orders = $user->orders()->latest()->paginate(10);
 
-        // If supplier, get their products
         $products = null;
         if ($user->role === 'supplier') {
             $products = $user->products()->latest()->paginate(10);
         }
 
-        // Get activity logs if you have that feature
-        $activities = collect(); // Replace with your actual activity logging logic if implemented
-        if (class_exists('App\Models\Activity')) {
-            $activities = \App\Models\Activity::where('user_id', $user->id)
-                ->latest()
-                ->take(15)
-                ->get();
-        }
+        $activities = Activity::causedBy($user)
+            ->latest() // Get the most recent activities first
+            ->paginate(15, ['*'], 'activity_page');
 
-        return view('admin.users.show', compact('user', 'orders', 'products', 'activities'));
+        return view('admin.users.show', compact('user', 'orders', 'products', 'activities', 'totalSpent'));
     }
 
     /**

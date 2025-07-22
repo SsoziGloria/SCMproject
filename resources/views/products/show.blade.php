@@ -166,10 +166,6 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex gap-2 flex-wrap">
-                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary">
-                            <i class="bi bi-pencil-square"></i> Edit Product
-                        </a>
-
                         <button type="button" class="btn btn-success" data-bs-toggle="modal"
                             data-bs-target="#updateStockModal">
                             <i class="bi bi-plus-circle"></i> Update Stock

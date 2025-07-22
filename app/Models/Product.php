@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Product extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -39,13 +43,14 @@ class Product extends Model
     ];
     public function category()
     {
-        return $this->belongsTo(Category::class, 'name');
+        return $this->belongsTo(Category::class, 'category', 'id');
     }
 
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class, 'supplier_id');
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'supplier_id');
     }
+
     public function inventories()
     {
         return $this->hasMany(\App\Models\Inventory::class, 'product_id');
@@ -82,5 +87,21 @@ class Product extends Model
     {
         return $this->belongsToMany(Order::class, 'order_items', 'product_id', 'order_id')
             ->withPivot('quantity', 'price');
+    }
+
+    protected function availableStock(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->stock - $this->allocated_stock,
+        );
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'price', 'stock'])
+            ->setDescriptionForEvent(fn(string $eventName) => "Product has been {$eventName}")
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

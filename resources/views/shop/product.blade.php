@@ -1,12 +1,17 @@
 @extends('user.app')
 
 @section('content')
-<div class="container py-5">
+<div class="container py-3">
     <div class="row">
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
         </div>
         @endif
 
@@ -50,8 +55,8 @@
             <!-- Availability -->
             <p class="mb-3">
                 <strong>Availability:</strong>
-                <span class="badge bg-{{ $product->stock > 0 ? 'success' : 'danger' }}">
-                    {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                <span class="badge bg-{{ $product->available_stock > 0 ? 'success' : 'danger' }}">
+                    {{ $product->available_stock > 0 ? 'In Stock' : 'Out of Stock' }}
                 </span>
             </p>
 
@@ -72,7 +77,7 @@
             @endif
 
             <!-- Add to Cart Form -->
-            @if($product->stock > 0)
+            @if($product->available_stock > 0)
             <form action="{{ route('cart.add') }}" method="POST" class="mb-4">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -81,7 +86,7 @@
                         <div class="input-group" style="width: 130px;">
                             <span class="input-group-text">Qty</span>
                             <input type="number" class="form-control" name="quantity" value="1" min="1"
-                                max="{{ $product->stock }}">
+                                max="{{ $product->available_stock }}">
                         </div>
                     </div>
                     <div class="col">
@@ -93,7 +98,7 @@
             <button class="btn btn-secondary mb-4" disabled>Out of Stock</button>
             @endif
 
-            <!-- Supplier Info (if available) -->
+            <!-- Supplier Info -->
             @if(isset($product->supplier) && $product->supplier)
             <div class="mt-4 p-3 bg-light rounded">
                 <h5>Supplied by: {{ $product->supplier->name }}</h5>
@@ -296,8 +301,8 @@
                     <h6 class="card-title">{{ $relatedProduct->name }}</h6>
                     <div class="d-flex justify-content-between align-items-center mt-auto">
                         <p class="text-success mb-0">UGX {{ number_format($relatedProduct->price, 0) }}</p>
-                        <span class="badge bg-{{ $relatedProduct->stock > 0 ? 'success' : 'danger' }} small">
-                            {{ $relatedProduct->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                        <span class="badge bg-{{ $relatedProduct->available_stock > 0 ? 'success' : 'danger' }} small">
+                            {{ $relatedProduct->available_stock > 0 ? 'In Stock' : 'Out of Stock' }}
                         </span>
                     </div>
                     <a href="{{ route('shop.product', $relatedProduct->id) }}"

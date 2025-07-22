@@ -47,7 +47,7 @@ class ProductController extends Controller
             }
         });
 
-        $products = $query->paginate(20)->withQueryString();
+        $products = $query->with('supplier')->paginate(20)->withQueryString();
 
         return view('products.all-products', [
             'products' => $products,
@@ -124,9 +124,9 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         if (auth()->user()->role === 'admin') {
-            $suppliers = Vendor::orderBy('name')->get();
+            $suppliers = Supplier::orderBy('name')->get();
         } else {
-            $suppliers = Vendor::where('supplier_id', auth()->user()->id)->orderBy('name')->get();
+            $suppliers = Supplier::where('supplier_id', auth()->user()->id)->orderBy('name')->get();
         }
         $categories = Category::orderBy('name')->get();
         // return view('products.edit', compact('product', 'categories'));
@@ -142,19 +142,16 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category' => 'nullable|string|max:100',
-            'supplier_id' => 'nullable|exists:suppliers,id',
+            'supplier_id' => 'nullable|exists:suppliers,supplier_id',
             'description' => 'nullable|string',
             'ingredients' => 'nullable|string',
-            'image' => 'nullable|image|max:2048', // 2MB Max
+            'image' => 'nullable|image|max:2048',
             'featured' => 'nullable|boolean',
         ]);
 
-        // Handle featured checkbox
         $validated['featured'] = $request->has('featured') ? 1 : 0;
 
-        // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if it exists
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
@@ -162,7 +159,6 @@ class ProductController extends Controller
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        // Handle image removal checkbox
         if ($request->has('remove_image') && $product->image) {
             Storage::disk('public')->delete($product->image);
             $validated['image'] = null;
@@ -173,10 +169,8 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
-    // Delete a product
     public function destroy(Product $product)
     {
-        // Delete the product image if it exists
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
@@ -191,7 +185,6 @@ class ProductController extends Controller
         $productIds = $request->input('product_ids', []);
 
         if ($action === 'featured') {
-            // Toggle featured for each selected product
             $products = Product::whereIn('id', $productIds)->get();
             foreach ($products as $product) {
                 $product->featured = !$product->featured;
@@ -199,8 +192,6 @@ class ProductController extends Controller
             }
             return response()->json(['success' => true]);
         }
-
-        // ... handle other actions ...
 
         return response()->json(['success' => false, 'message' => 'Invalid action.']);
     }

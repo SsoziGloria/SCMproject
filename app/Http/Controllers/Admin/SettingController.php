@@ -19,9 +19,9 @@ class SettingController extends Controller
         $supplierSettings = [];
         foreach ($suppliers as $supplier) {
             if ($supplier->user) {
-                $supplierSettings[$supplier->supplier_id] = [
+                $supplierSettings[$supplier->id] = [
                     'name' => $supplier->user->name,
-                    'visible' => (bool) Setting::get('show_supplier_products', $globalSupplierSetting, $supplier->supplier_id),
+                    'visible' => (bool) Setting::get('show_supplier_products', $globalSupplierSetting, $supplier->id),
                     'is_active' => (bool) $supplier->user->is_active
                 ];
             }
@@ -45,7 +45,7 @@ class SettingController extends Controller
 
         if ($supplierId) {
             $supplier = Supplier::with('user')->findOrFail($supplierId);
-            $userId = $supplier->supplier_id;
+            $userId = $supplier->id;
 
             $currentValue = (bool) Setting::get('show_supplier_products', true, $userId);
             Setting::set('show_supplier_products', !$currentValue, $userId);

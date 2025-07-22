@@ -47,7 +47,6 @@ class CartController extends Controller
         $productId = $validated['product_id'];
         $quantity = $validated['quantity'];
 
-        // Check product exists and has enough stock
         $product = Product::find($productId);
         if (!$product) {
             return back()->with('error', 'Product not found.');
@@ -57,16 +56,12 @@ class CartController extends Controller
             return back()->with('error', 'Not enough stock available.');
         }
 
-        // Get current cart
         $cart = Session::get('cart', []);
 
-        // Check if product already in cart
         if (isset($cart[$productId])) {
-            // Update quantity if already in cart
             $newQuantity = $cart[$productId]['quantity'] + $quantity;
 
-            // Check if new quantity exceeds stock
-            if ($newQuantity > $product->stock) {
+            if ($newQuantity > $product->available_stock) {
                 return back()->with('error', 'Cannot add more of this item (exceeds available stock).');
             }
 

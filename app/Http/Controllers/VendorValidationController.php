@@ -383,21 +383,17 @@ class VendorValidationController extends Controller
         $vendor->validation_status = $request->status;
         $vendor->save();
 
-        $validation = VendorValidation::firstOrCreate(
+        $validation = VendorValidation::updateOrCreate(
             ['vendor_id' => $vendor->vendor_id],
             [
                 'original_filename' => basename($vendor->pdf_path ?? 'manual-validation'),
                 'file_path' => $vendor->pdf_path,
                 'file_size' => 0,
                 'is_valid' => $request->status === 'Approved' ? 1 : 0,
-                'validation_message' => 'Manual Validation',
+                'validation_message' => $request->message ?? 'Manual Validation',
                 'validated_at' => now()
             ]
         );
-
-        $validation->validation_message = $request->message;
-        $validation->is_valid = $request->status === 'Approved' ? 1 : 0;
-        $validation->save();
 
         if ($request->status === 'Approved' && $vendor->vendor_id) {
             if ($vendor->supplier_id) {

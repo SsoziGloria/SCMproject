@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SalesChannel;
 use App\Models\User; // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Worker;
@@ -29,10 +30,10 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             InventorySeeder::class,
             OrderSeeder::class,
+            SalesChannelSeeder::class,
             OrderItemSeeder::class,
             CustomerClusterSummarySeeder::class,
         ]);
-        // User::factory(10)->create();
 
         User::factory()->create([
             'name' => 'Test User',
