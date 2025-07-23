@@ -3,35 +3,35 @@
 @php $user = auth()->user(); @endphp
 
 @if ($user->role === 'user')
-    @include('user.head')
+@include('user.head')
+
+<body>
+    @include('user.header')
+    @elseif ($user->role === 'supplier')
+    @include('layouts.head')
 
     <body>
-        @include('user.header')
-@elseif ($user->role === 'supplier')
+        @include('layouts.header')
+        @include('supplier.aside')
+        @elseif ($user->role === 'retailer')
         @include('layouts.head')
 
         <body>
             @include('layouts.header')
-            @include('supplier.aside')
-    @elseif ($user->role === 'retailer')
+            @include('retailer.aside')
+            @elseif ($user->role === 'admin')
             @include('layouts.head')
 
             <body>
                 @include('layouts.header')
-                @include('retailer.aside')
-        @elseif ($user->role === 'admin')
+                @include('admin.aside')
+                @else
                 @include('layouts.head')
 
                 <body>
                     @include('layouts.header')
-                    @include('admin.aside')
-            @else
-                    @include('layouts.head')
-
-                    <body>
-                        @include('layouts.header')
-                        @include('layouts.aside')
-                @endif
+                    @include('layouts.aside')
+                    @endif
 
 
                     <main class="main" id="main">

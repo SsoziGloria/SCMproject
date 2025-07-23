@@ -1,81 +1,103 @@
 @php
-// List all route names for User Management group
-$userManagementRoutes = [
-'users',
-'admin.users.byRole',
-'admin.users.index',
-];
-// Check if current route matches any in the group
-$isUserManagementActive = false;
-foreach ($userManagementRoutes as $route) {
-if (request()->routeIs($route) || (request()->routeIs('admin.users.byRole') && in_array(request()->route('role'),
-['user', 'retailer', 'supplier', 'admin']))) {
-$isUserManagementActive = true;
-break;
-}
-}
+    $userManagementRoutes = [
+        'users',
+        'admin.users.byRole',
+        'admin.users.index',
+    ];
 
-$productManagementRoutes = [
-'products.index',
-'products',
-'categories.index',
-'categories.edit',
-'productReviews.index',
-'productReviews.create',
-'productReviews.edit',
-// add more if needed
-];
+    $isUserManagementActive = false;
+    foreach ($userManagementRoutes as $route) {
+        if (
+            request()->routeIs($route) || (request()->routeIs('admin.users.byRole') && in_array(
+                request()->route('role'),
+                ['user', 'retailer', 'supplier', 'admin']
+            ))
+        ) {
+            $isUserManagementActive = true;
+            break;
+        }
+    }
 
-$productReviewRoutes = [
-'productReviews.index',
-'productReviews.create',
-'productReviews.edit',
-];
+    $productManagementRoutes = [
+        'products.index',
+        'products',
+        'categories.index',
+        'categories.edit',
+        'productReviews.index',
+        'productReviews.create',
+        'productReviews.edit',
+    ];
 
-// Check if current route matches any in the group
-$isproductManagementActive = false;
-foreach ($productManagementRoutes as $route) {
-if (request()->routeIs($route)) {
-$isproductManagementActive = true;
-break;
-}
-}
+    $productReviewRoutes = [
+        'productReviews.index',
+        'productReviews.create',
+        'productReviews.edit',
+    ];
 
-$orderManagementRoutes = [
-'orders.incoming',
-'orders.details',
-'orders.reject',
-'orders.index',
-'orders.pending',
-'orders',
-'orders.show',
-'orders.edit',
-];
+    $isproductManagementActive = false;
+    foreach ($productManagementRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isproductManagementActive = true;
+            break;
+        }
+    }
 
-$isorderManagementActive = false;
-foreach ($orderManagementRoutes as $route) {
-if (request()->routeIs($route)) {
-$isorderManagementActive = true;
-break;
-}
-}
+    $orderManagementRoutes = [
+        'orders.incoming',
+        'orders.details',
+        'orders.reject',
+        'orders.index',
+        'orders.pending',
+        'orders',
+        'orders.show',
+        'orders.edit',
+    ];
 
-$vManagementRoutes = [
-'admin.vendor-validation',
-'admin.vendor-validation.history',
-];
+    $isorderManagementActive = false;
+    foreach ($orderManagementRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isorderManagementActive = true;
+            break;
+        }
+    }
 
-$analyticsRoutes = [
-'analytics',
-];
-// Check if current route matches any in the group
-$isAnalyticsActive = false;
-foreach ($analyticsRoutes as $route) {
-if (request()->routeIs($route)) {
-$isAnalyticsActive = true;
-break;
-}
-}
+    $vendorManagementRoutes = [
+        'admin.vendor-validation',
+        'admin.vendor-validation.history',
+    ];
+
+    $analyticsRoutes = [
+        'analytics',
+    ];
+
+    $isAnalyticsActive = false;
+    foreach ($analyticsRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isAnalyticsActive = true;
+            break;
+        }
+    }
+
+    $workerManagementRoutes = [
+        'workers.index',
+        'workers.create',
+        'workers.edit',
+        'workforce.index',
+        'workforce.create',
+        'workforce.history',
+        'workforce.unassigned',
+        'tasks.index',
+        'tasks.create',
+        'tasks.edit',
+    ];
+    $isworkerManagementActive = false;
+    foreach ($workerManagementRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isworkerManagementActive = true;
+            break;
+        }
+    }
+
 @endphp
 
 <aside id="sidebar" class="sidebar">
@@ -167,28 +189,33 @@ break;
 
         <!--Workforce Management-->
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ $isworkerManagementActive ? '' : 'collapsed' }}" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-truck-line"></i><span>Workforce Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="icons-nav" class="nav-content collapse {{ $isworkerManagementActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="{{ route('workers.index') }}">
+                    <a href="{{ route('workers.index') }}" class="nav-link {{ request()->routeIs('workers.index') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Workers</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('workforce.index') }}">
-                        <i class="bi bi-circle"></i><span>Assigned Tasks</span>
+                    <a href="{{ route('workforce.index') }}" class="nav-link {{ request()->routeIs('workforce.index') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Assignments</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('workforce.history') }}">
+                    <a href="{{ route('tasks.index') }}" class="nav-link {{ request()->routeIs('tasks.index') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Task Management</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('workforce.history') }}" class="nav-link {{ request()->routeIs('workforce.history') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Task History</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('workforce.unassigned') }}">
-                        <i class="bi bi-circle"></i><span>Unassigned Workers</span>
+                    <a href="{{ route('workforce.unassigned') }}" class="nav-link {{ request()->routeIs('workforce.unassigned') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Assigned Workers</span>
                     </a>
                 </li>
 
@@ -292,7 +319,7 @@ break;
         </li><!-- End User Management Nav -->
 
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs($vManagementRoutes) ? '' : 'collapsed' }}"
+            <a class="nav-link {{ request()->routeIs($vendorManagementRoutes) ? '' : 'collapsed' }}"
                 href="{{ route('admin.vendor-validation') }}">
                 <i class="bi bi-shield-check"></i>
                 <span>Vendor Validation</span>

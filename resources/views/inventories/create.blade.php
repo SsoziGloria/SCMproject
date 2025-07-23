@@ -1,5 +1,4 @@
-{{-- filepath: /Users/user/chocolate-scm/resources/views/inventories/create.blade.php --}}
-@extends('supplier.app')
+@extends(auth()->user()->role . '.app')
 
 @section('content')
 <div class="container py-4">
@@ -27,7 +26,7 @@
                                 @foreach($products as $product)
                                 <option value="{{ $product->id }}" data-name="{{ $product->name }}" {{
                                     old('product_selector')==$product->id ? 'selected' : '' }}>
-                                    {{ $product->name }} (ID: {{ $product->id }})
+                                    {{ $product->name }}
                                 </option>
                                 @endforeach
                             </select>
@@ -51,6 +50,12 @@
                             <label for="quantity" class="form-label">Quantity</label>
                             <input type="number" name="quantity" id="quantity" class="form-control"
                                 value="{{ old('quantity') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="batch_number" class="form-label">Batch Number</label>
+                            <input type="text" name="batch_number" id="batch_number" class="form-control"
+                                value="{{ old('batch_number') }}" required>
                         </div>
 
                         <div class="mb-3">

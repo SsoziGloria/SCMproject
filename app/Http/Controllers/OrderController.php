@@ -216,7 +216,6 @@ class OrderController extends Controller
         }
     }
 
-    // Show a single order
     public function show(Order $order)
     {
         $this->authorizeView($order);
@@ -451,14 +450,12 @@ class OrderController extends Controller
     {
         $user = Auth::user();
 
-        // Admin can view all orders
         if ($user->role === 'admin') {
             return true;
         }
 
-        // Retailer can view their store's orders
         if ($user->role === 'retailer') {
-            if ($order->sales_channel === 'online') {
+            if ($order->sales_channel === 'Online Store') {
                 return true;
             }
         }

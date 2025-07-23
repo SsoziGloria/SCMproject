@@ -71,7 +71,9 @@ class VendorValidationAPIController extends Controller
             DB::table('vendors')
                 ->where('vendor_id', $validation->vendor_id)
                 ->update([
-                    'validation_status' => 'Approved'
+                    'validation_status' => 'Approved',
+                    'certification_status' => 'Certified',
+                    'compliance_status' => 'Compliant'
                 ]);
 
             $supplier = DB::table('suppliers')->where('supplier_id', $vendor->supplier_id)->first();
@@ -82,6 +84,12 @@ class VendorValidationAPIController extends Controller
                         'status' => 'active'
                     ]);
             }
+        } else {
+            DB::table('vendors')
+                ->where('vendor_id', $validation->vendor_id)
+                ->update([
+                    'validation_status' => 'Rejected'
+                ]);
         }
 
         return response()->json($validationResult);
@@ -174,7 +182,9 @@ class VendorValidationAPIController extends Controller
             DB::table('vendors')
                 ->where('vendor_id', $validation->vendor_id)
                 ->update([
-                    'validation_status' => 'Approved'
+                    'validation_status' => 'Approved',
+                    'certification_status' => 'Certified',
+                    'compliance_status' => 'Compliant'
                 ]);
 
             $supplier = DB::table('suppliers')->where('supplier_id', $vendor->supplier_id)->first();
@@ -185,6 +195,12 @@ class VendorValidationAPIController extends Controller
                         'status' => 'active'
                     ]);
             }
+        } else {
+            DB::table('vendors')
+                ->where('vendor_id', $validation->vendor_id)
+                ->update([
+                    'validation_status' => 'Rejected'
+                ]);
         }
 
         return response()->json($validationResult);
@@ -215,13 +231,10 @@ class VendorValidationAPIController extends Controller
                 ], 404);
             }
 
-            // 3. Get the full, absolute path to the file for the validation service.
             $fullPath = Storage::disk($disk)->path($vendor->pdf_path);
 
-            // 4. Call your existing validation service.
             $validationResult = $this->validationService->validateDocument($fullPath, $vendor->vendor_id);
 
-            // 5. Create a new validation log record.
             $validationLog = new \App\Models\VendorValidation();
             $validationLog->vendor_id = $vendor->vendor_id;
             $validationLog->file_path = $vendor->pdf_path;
@@ -232,7 +245,6 @@ class VendorValidationAPIController extends Controller
             $validationLog->validation_results = $validationResult['validationResults'] ?? null;
             $validationLog->save();
 
-            // 6. If validation was successful, update the vendor's status.
             if ($validationLog->is_valid) {
                 $vendor->update(['validation_status' => 'Approved']);
             }

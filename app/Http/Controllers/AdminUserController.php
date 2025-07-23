@@ -163,7 +163,6 @@ class AdminUserController extends Controller
             'city' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
-            'gender' => 'nullable|in:male,female,other',
             'company_name' => 'nullable|string|max:255',
             'business_type' => 'nullable|string|max:255',
             'tax_id' => 'nullable|string|max:50',
@@ -184,9 +183,6 @@ class AdminUserController extends Controller
 
         // Update the user
         $user->update($validated);
-
-        // Log activity if you have that feature
-        // activity()->performedOn($user)->causedBy(auth()->user())->log('Updated user profile');
 
         return redirect()->route('admin.users.show', $user)
             ->with('success', 'User updated successfully.');

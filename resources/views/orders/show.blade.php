@@ -111,6 +111,7 @@
                         </div>
                     </div>
 
+                    @if (auth()->user()->role !== 'user' && auth()->user()->role !== 'supplier')
                     <!-- Inventory Status Alert -->
                     @if(!$allItemsInStock && in_array($order->status, ['pending', 'processing']))
                     <div class="alert alert-warning mb-4">
@@ -118,6 +119,7 @@
                         <strong>Inventory Alert:</strong> Some items in this order have insufficient inventory.
                         Please check the inventory status before shipping.
                     </div>
+                    @endif
                     @endif
 
                     <div class="table-responsive">

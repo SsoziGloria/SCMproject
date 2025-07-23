@@ -7,14 +7,15 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    protected $commands = [\App\Console\Commands\SendStockAlerts::class,
-];
+    protected $commands = [
+        \App\Console\Commands\SendStockAlerts::class,
+    ];
 
 
     protected function schedule(Schedule $schedule)
     {
-        // Schedule your custom command to run daily at 6 AM
         $schedule->command('stock:alert')->everyMinute();
+        $schedule->command('tasks:reset-status')->daily();
     }
 
     /**

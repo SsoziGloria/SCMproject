@@ -150,10 +150,6 @@
                                             <th>Phone</th>
                                             <td>{{ $user->phone ?? $user->vendor->phone ?? 'Not provided' }}</td>
                                         </tr>
-                                        <tr>
-                                            <th>Gender</th>
-                                            <td>{{ ucfirst($user->gender ?? 'Not specified') }}</td>
-                                        </tr>
                                     </table>
                                 </div>
                                 <div class="col-md-6">
@@ -164,16 +160,8 @@
                                             <td>{{ $user->address ?? 'Not provided' }}</td>
                                         </tr>
                                         <tr>
-                                            <th>City</th>
-                                            <td>{{ $user->city ?? 'Not provided' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>State</th>
-                                            <td>{{ $user->state ?? 'Not provided' }}</td>
-                                        </tr>
-                                        <tr>
                                             <th>Country</th>
-                                            <td>{{ $user->country ?? 'Not provided' }}</td>
+                                            <td>{{ $user->country ?? 'Uganda' }}</td>
                                         </tr>
                                     </table>
                                 </div>

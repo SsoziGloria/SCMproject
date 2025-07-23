@@ -85,18 +85,38 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property int $customer_id
+ * @property float|null $quantity
+ * @property float|null $total_quantity
+ * @property int|null $purchase_count
+ * @property int|null $cluster
+ * @property \Illuminate\Support\Carbon $created_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment whereCluster($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment wherePurchaseCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment whereTotalQuantity($value)
  */
 	class CustomerSegment extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
+ * @property string $product_id
+ * @property string $prediction_date
+ * @property int $predicted_quantity
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction wherePredictedQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction wherePredictionDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction whereProductId($value)
  */
 	class DemandPrediction extends \Eloquent {}
 }
@@ -568,6 +588,37 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
+ * @property string|null $description
+ * @property int $required_workers
+ * @property string $location
+ * @property int $priority
+ * @property bool $is_active
+ * @property string $status_for_day
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Workforces> $assignments
+ * @property-read int|null $assignments_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereRequiredWorkers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereStatusForDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Task whereUpdatedAt($value)
+ */
+	class Task extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
@@ -748,11 +799,12 @@ namespace App\Models{
  * @property string $email
  * @property string|null $phone
  * @property string|null $position
+ * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Workforce> $assignments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Workforces> $assignments
  * @property-read int|null $assignments_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Workforce> $workforce
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Workforces> $workforce
  * @property-read int|null $workforce_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Worker newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Worker newQuery()
@@ -763,6 +815,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Worker whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Worker wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Worker wherePosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Worker whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Worker whereUpdatedAt($value)
  */
 	class Worker extends \Eloquent {}
@@ -774,21 +827,25 @@ namespace App\Models{
  * @property int $worker_id
  * @property string $location
  * @property string $task
+ * @property string $status
+ * @property string|null $completed_at
  * @property string $assigned_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Worker $worker
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce whereAssignedDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce whereLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce whereTask($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforce whereWorkerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereAssignedDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereCompletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereTask($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Workforces whereWorkerId($value)
  */
-	class Workforce extends \Eloquent {}
+	class Workforces extends \Eloquent {}
 }
 

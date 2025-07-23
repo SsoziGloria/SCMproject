@@ -57,13 +57,13 @@
                                         </div>
 
                                         @if ($errors->any())
-                                            <div class="alert alert-danger">
-                                                <ul class="mb-0">
-                                                    @foreach ($errors->all() as $error)
-                                                        <li>{{ $error }}</li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                         @endif
 
                                         <div class="col-12">
@@ -90,14 +90,6 @@
                                                         Retailer
                                                     </label>
                                                 </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="role"
-                                                        id="gridRadios2" value="admin">
-                                                    <label class="form-check-label" for="role">
-                                                        Admin
-                                                    </label>
-                                                </div>
-
                                             </div>
                                         </div>
 

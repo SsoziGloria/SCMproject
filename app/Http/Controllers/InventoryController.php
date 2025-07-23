@@ -132,20 +132,20 @@ class InventoryController extends Controller
             'product_id' => 'required|exists:products,id',
             'product_name' => 'required|string',
             'quantity' => 'required|integer',
+            'batch_number' => 'required|string',
             'location' => 'required|string',
             'expiration_date' => 'required|date',
-            'supplier_id' => 'nullable|exists:suppliers,id',
+            'supplier_id' => 'nullable|exists:suppliers,supplier_id',
         ]);
 
         try {
-            $data = $request->only(['product_id', 'product_name', 'quantity', 'location', 'expiration_date', 'supplier_id']);
+            $data = $request->only(['product_id', 'product_name', 'quantity', 'batch_number', 'location', 'expiration_date', 'supplier_id']);
             Inventory::create($data);
-            return redirect()->route('inventories.create')->with('success', 'Inventory submitted.');
+            return redirect()->route('inventories.index')->with('success', 'Inventory submitted.');
         } catch (\Exception $e) {
             return back()->withInput()->withErrors(['error' => 'Failed to submit inventory: ' . $e->getMessage()]);
         }
     }
-    //for displaying all inventories
     public function retailerIndex()
     {
         $inventories = Inventory::all();

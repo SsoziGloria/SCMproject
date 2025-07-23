@@ -27,6 +27,7 @@ use App\Http\Controllers\RetailerSalesController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkforceController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\VendorController;
 use App\Exports\ProductsExport;
 use App\Helpers\LocationHelper;
@@ -377,14 +378,18 @@ Route::middleware(['auth', 'role:admin,retailer'])->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-    // Custom routes for workforce
     Route::get('/workforce/history', [WorkforceController::class, 'history'])->name('workforce.history');
     Route::get('/workforce/unassigned', [WorkforceController::class, 'unassigned'])->name('workforce.unassigned');
-    Route::get('/workforce/optimize', [WorkforceController::class, 'optimize'])->name('workforce.optimize');
+    Route::post('/workforce/{assignment}/finish', [WorkforceController::class, 'finishTask'])->name('workforce.finish');
 
     Route::resource('workers', WorkerController::class);
     Route::resource('workforce', WorkforceController::class);
 });
+
+// Task Management Routes
+Route::resource('tasks', TaskController::class);
+Route::post('tasks/auto-assign', [TaskController::class, 'autoAssign'])->name('tasks.auto-assign');
+
 
 /*
 |--------------------------------------------------------------------------

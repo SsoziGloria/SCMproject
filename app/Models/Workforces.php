@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Worker;
 
-class Workforce extends Model
+class Workforces extends Model
 {
-    
+
     protected $fillable = [
         'worker_id',
         'location',
         'task',
+        'status',
+        'completed_at',
         'assigned_date',
         'created_at',
         'updated_at',
@@ -19,6 +21,6 @@ class Workforce extends Model
 
     public function worker()
     {
-        return $this->belongsTo(Worker ::class);
+        return $this->belongsTo(Worker::class);
     }
 }

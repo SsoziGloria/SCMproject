@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\SalesChannel;
+use App\Models\Task;
 use App\Models\User; // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Worker;
@@ -33,6 +34,7 @@ class DatabaseSeeder extends Seeder
             SalesChannelSeeder::class,
             OrderItemSeeder::class,
             CustomerClusterSummarySeeder::class,
+            TaskSeeder::class,
         ]);
 
         User::factory()->create([

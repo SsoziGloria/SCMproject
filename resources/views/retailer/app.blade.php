@@ -3,12 +3,10 @@
 @include('layouts.head')
 @stack('styles')
 
-@include('layouts.header')
-
-@include('retailer.aside')
-
 <body>
     @include('layouts.header')
+
+    @include('retailer.aside')
 
     @include('retailer.aside')
     <div class="wrapper d-flex flex-column min-vh-100">
