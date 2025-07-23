@@ -101,10 +101,50 @@
             <!-- Supplier Info -->
             @if(isset($product->supplier) && $product->supplier)
             <div class="mt-4 p-3 bg-light rounded">
-                <h5>Supplied by: {{ $product->supplier->name }}</h5>
-                @if(isset($product->supplier->certification_status) && $product->supplier->certification_status)
-                <p class="mb-0"><span class="badge bg-info">{{ $product->supplier->certification_status }}</span></p>
-                @endif
+                <div class="d-flex align-items-start">
+                    <!-- Supplier Info -->
+                    <div class="flex-grow-1 me-3">
+                        <h5 class="mb-1">Supplied by: {{ $product->supplier->name }}</h5>
+
+                        @if($product->supplier->user && $product->supplier->user->about)
+                        <p class="text-muted small mb-2">{{ Str::limit($product->supplier->user->about, 100) }}
+                        </p>
+                        @endif
+
+                        <div class="mb-2">
+                            @if(isset($product->supplier->certification_status) &&
+                            $product->supplier->certification_status)
+                            <span class="badge bg-info me-1">{{ $product->supplier->certification_status
+                                }}</span>
+                            @endif
+                            @if($product->supplier->user && $product->supplier->user->is_active)
+                            <span class="badge bg-success">Verified Supplier</span>
+                            @endif
+                        </div>
+
+                        <!-- Contact Button -->
+                        @if($product->supplier->user && $product->supplier->user->email)
+                        <a href="mailto:{{ $product->supplier->user->email }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-envelope me-1"></i>Contact
+                        </a>
+                        @endif
+                    </div>
+
+                    <!-- Supplier Profile Image -->
+                    <div>
+                        @if($product->supplier->user && $product->supplier->user->profile_photo)
+                        <img src="{{ asset('storage/' . $product->supplier->user->profile_photo) }}"
+                            alt="{{ $product->supplier->name }}" class="rounded-circle"
+                            style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                            data-bs-toggle="tooltip" title="View {{ $product->supplier->name }}'s profile">
+                        @else
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white"
+                            style="width: 80px; height: 80px;">
+                            <i class="bi bi-person-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        @endif
+                    </div>
+                </div>
             </div>
             @endif
         </div>

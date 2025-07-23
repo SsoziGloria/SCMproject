@@ -200,6 +200,7 @@ namespace App\Models{
  * @property string|null $notes
  * @property string|null $referral_source
  * @property \Illuminate\Support\Carbon|null $delivered_at
+ * @property string|null $shipped_at
  * @property \Illuminate\Support\Carbon $order_date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -237,6 +238,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereReferralSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereSalesChannel($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereSalesChannelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereShippedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereShippingAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereShippingCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereShippingCountry($value)

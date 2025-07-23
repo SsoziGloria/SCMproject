@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('product_id')->unique();
             $table->string('name');
             $table->text('ingredients')->nullable();
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 10, 0);
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->boolean('featured')->default(false);

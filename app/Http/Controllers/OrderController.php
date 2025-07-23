@@ -32,27 +32,22 @@ class OrderController extends Controller
         $user = Auth::user();
         $query = Order::with(['items.product', 'user']);
 
-        // Role-based filtering
         if ($user->role === 'supplier') {
             $query->whereHas('items.product', function ($q) use ($user) {
                 $q->where('supplier_id', $user->id);
             });
         } elseif ($user->role === 'retailer' || $user->role === 'admin') {
-            // Show all orders
             if ($user->role === 'retailer' && $user->retailer) {
                 $query->where('retailer_id', $user->retailer->id);
             }
         } else {
-            // Customer: only their own orders
             $query->where('user_id', $user->id);
         }
 
-        // Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Date range filter
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -60,12 +55,10 @@ class OrderController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        // Sales channel filter
         if ($request->filled('sales_channel')) {
             $query->where('sales_channel_id', $request->sales_channel);
         }
 
-        // Search filter (order number, customer name, or product name)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -77,7 +70,6 @@ class OrderController extends Controller
             });
         }
 
-        // Sorting
         switch ($request->get('sort', 'newest')) {
             case 'oldest':
                 $query->oldest();
@@ -92,10 +84,8 @@ class OrderController extends Controller
                 $query->latest();
         }
 
-        // Pagination
         $orders = $query->paginate(15)->withQueryString();
 
-        // Stats (for dashboard cards)
         $statsQuery = Order::query();
 
         if ($user->role === 'retailer' && $user->retailer) {
@@ -104,19 +94,17 @@ class OrderController extends Controller
 
         $stats = [
             'total_orders' => $statsQuery->count(),
-            'total_revenue' => $statsQuery->sum('total_amount'),
+            'total_revenue' => (clone $statsQuery)->where('status', 'delivered')->sum('total_amount'),
             'pending_orders' => (clone $statsQuery)->where('status', 'pending')->count(),
             'shipped_orders' => (clone $statsQuery)->where('status', 'shipped')->count(),
         ];
 
-        // Get sales channels for filter dropdown
         $salesChannels = SalesChannel::where('is_active', true)->get();
 
         return view('orders.index', compact('orders', 'stats', 'salesChannels'));
     }
 
 
-    //show the form for creating a new order
     public function create()
     {
         $products = Product::where('stock', '>', 0)->get();
@@ -124,7 +112,6 @@ class OrderController extends Controller
         return view('orders.create', compact('products', 'salesChannels'));
     }
 
-    // Store a new order (POS/Admin created orders)
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -141,18 +128,14 @@ class OrderController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Generate order number
         $orderNumber = 'ORD-' . date('Y') . '-' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
 
-        // Calculate totals
         $subtotal = 0;
         $items = [];
 
-        // Begin transaction
         DB::beginTransaction();
 
         try {
-            // Verify stock and calculate subtotal
             foreach ($request->items as $item) {
                 $product = Product::findOrFail($item['product_id']);
 
@@ -236,10 +219,8 @@ class OrderController extends Controller
     // Show a single order
     public function show(Order $order)
     {
-        // Authorize view permission
         $this->authorizeView($order);
 
-        // Calculate profit for admin/retailer users
         $profit = 0;
         if (in_array(Auth::user()->role, ['admin', 'retailer'])) {
             foreach ($order->items as $item) {
@@ -253,13 +234,11 @@ class OrderController extends Controller
         $allItemsInStock = true;
 
         foreach ($order->items as $item) {
-            // Sum available inventory for this product
             $availableQuantity = Inventory::where('product_id', $item->product_id)
                 ->where('status', 'available')
                 ->where('quantity', '>', 0)
                 ->sum('quantity');
 
-            // If needed quantity exceeds available quantity
             if ($availableQuantity < $item->quantity - ($item->quantity_shipped ?? 0)) {
                 $allItemsInStock = false;
                 break;
@@ -350,10 +329,8 @@ class OrderController extends Controller
                     }
                 }
 
-                // Delete current items
                 $order->items()->delete();
 
-                // Add new items
                 $subtotal = 0;
 
                 foreach ($request->items as $item) {
@@ -366,7 +343,6 @@ class OrderController extends Controller
                     $itemTotal = $product->price * $item['quantity'];
                     $subtotal += $itemTotal;
 
-                    // Create order item
                     OrderItem::create([
                         'order_id' => $order->id,
                         'product_id' => $product->id,
@@ -378,12 +354,10 @@ class OrderController extends Controller
                         'subtotal' => $itemTotal
                     ]);
 
-                    // Update product stock
                     $product->stock -= $item['quantity'];
                     $product->save();
                 }
 
-                // Update order subtotal and total
                 $order->subtotal = $subtotal;
                 $order->total_amount = $subtotal - $order->discount_amount + $order->shipping_fee;
                 $order->save();
@@ -407,11 +381,9 @@ class OrderController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Begin transaction
         DB::beginTransaction();
 
         try {
-            // Restore stock for all items
             foreach ($order->items as $item) {
                 $product = Product::find($item->product_id);
                 if ($product) {
@@ -420,7 +392,6 @@ class OrderController extends Controller
                 }
             }
 
-            // Delete order items and then order
             $order->items()->delete();
             $order->delete();
 
@@ -435,40 +406,6 @@ class OrderController extends Controller
 
         $order->delete();
         return redirect()->route('orders.index')->with('success', 'Order deleted!');
-    }
-
-    //FOR THE SIDE BAR
-
-    //pending orders
-    public function pending()
-    {
-        $orders = Order::where('user_id', Auth::id())
-            ->where('status', 'pending')->with('product')->get();
-        return view('orders.pending', compact('orders'));
-    }
-
-    //orders in progress
-    public function inProgress()
-    {
-        $orders = Order::where('user_id', Auth::id())
-            ->where('status', 'in_progress')->with('product')->get();
-        return view('orders.in_progress', compact('orders'));
-    }
-
-    //completed orders
-    public function completed()
-    {
-        $orders = Order::where('user_id', Auth::id())
-            ->where('status', 'completed')->with('product')->get();
-        return view('orders.completed', compact('orders'));
-    }
-
-    //cancelled orders
-    public function cancelled()
-    {
-        $orders = Order::where('user_id', Auth::id())
-            ->where('status', 'cancelled')->with('product')->get();
-        return view('orders.cancelled', compact('orders'));
     }
 
     public function dashboard()
@@ -488,7 +425,6 @@ class OrderController extends Controller
         return Excel::download(new OrderExport, 'orders-' . Carbon::now()->format('Y-m-d') . '.xlsx');
     }
 
-    // Filter orders by status
     public function filterByStatus($status)
     {
         $user = Auth::user();
@@ -545,17 +481,14 @@ class OrderController extends Controller
         abort(403, 'Unauthorized to view this order.');
     }
 
-    // Helper method to authorize edit permission
     private function authorizeEdit(Order $order)
     {
         $user = Auth::user();
 
-        // Admin can edit all orders
         if ($user->role === 'admin') {
             return true;
         }
 
-        // Retailer can edit their store's orders if not delivered/cancelled
         if ($user->role === 'retailer') {
             if (
                 $order->sales_channel === 'online' &&
@@ -572,6 +505,7 @@ class OrderController extends Controller
     {
         $request->validate([
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'restore_inventory' => 'nullable|boolean', // For the checkbox
         ]);
 
         $oldStatus = $order->status;
@@ -582,78 +516,31 @@ class OrderController extends Controller
         }
 
         DB::beginTransaction();
-
         try {
             $statusHistory = OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => $newStatus,
                 'user_id' => auth()->id(),
                 'user_name' => auth()->user()->name,
-                'notes' => $request->status_notes ?? 'Status updated from ' . $oldStatus . ' to ' . $newStatus
+                'notes' => $request->status_notes ?? "Status changed from {$oldStatus} to {$newStatus}"
             ]);
 
             if (in_array($newStatus, ['shipped', 'delivered']) && !in_array($oldStatus, ['shipped', 'delivered'])) {
-                foreach ($order->items as $item) {
-                    $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
-
-                    if ($neededQuantity <= 0) {
-                        continue;
-                    }
-
-                    $availableQuantity = Inventory::where('product_id', $item->product_id)
-                        ->where('status', 'available')
-                        ->where('quantity', '>', 0)
-                        ->sum('quantity');
-
-                    if ($availableQuantity < $neededQuantity) {
-                        throw new \Exception("Insufficient inventory for {$item->product_name}. Needed: {$neededQuantity}, Available: {$availableQuantity}");
-                    }
-                }
-
-                foreach ($order->items as $item) {
-                    $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
-
-                    if ($neededQuantity > 0) {
-                        $this->reduceInventoryForItem($item->product_id, $neededQuantity, $order, $statusHistory);
-
-                        // Update shipped quantity
-                        $item->quantity_shipped = $item->quantity;
-                        $item->save();
-                    }
-                }
-
-                if ($newStatus === 'shipped' && !$order->shipped_at) {
-                    $order->shipped_at = now();
-                }
-
-                if ($newStatus === 'delivered') {
-                    $order->delivered_at = now();
-                }
+                $this->processShipment($order, $statusHistory);
             }
 
-            if ($newStatus === 'cancelled' && in_array($oldStatus, ['shipped', 'delivered'])) {
-                if (auth()->user()->role === 'admin' && $request->has('restore_inventory')) {
-                    foreach ($order->items as $item) {
-                        if ($item->quantity_shipped > 0) {
-                            $this->restoreInventoryForItem($item->product_id, $item->quantity_shipped, $order, $statusHistory);
-
-                            $item->quantity_shipped = 0;
-                            $item->save();
-                        }
-                    }
-                }
+            if ($newStatus === 'cancelled') {
+                $this->processCancellation($order, $oldStatus, $request, $statusHistory);
             }
 
             $order->status = $newStatus;
             $order->save();
 
             DB::commit();
-
             return redirect()->back()->with('success', "Order status updated to " . ucfirst($newStatus));
         } catch (\Exception $e) {
             DB::rollBack();
-
-            Log::error('Error updating order status: ' . $e->getMessage());
+            Log::error('Error updating order status for order #' . $order->order_number . ': ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to update order status: ' . $e->getMessage());
         }
     }
@@ -915,5 +802,55 @@ class OrderController extends Controller
             ->get();
 
         return view('orders.history', compact('order', 'statusHistory'));
+    }
+
+    private function processShipment(Order $order, OrderStatusHistory $statusHistory)
+    {
+        foreach ($order->items as $item) {
+            $product = $item->product;
+            if (!$product) continue;
+
+            $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
+            if ($neededQuantity <= 0) continue;
+
+            $this->reduceInventoryForItem($product->id, $neededQuantity, $order, $statusHistory);
+
+            $product->allocated_stock -= $neededQuantity;
+            $product->save();
+
+            $item->quantity_shipped = $item->quantity;
+            $item->save();
+        }
+
+        if (!$order->shipped_at) {
+            $order->shipped_at = now();
+            $order->save();
+        }
+    }
+
+    private function processCancellation(Order $order, string $oldStatus, Request $request, OrderStatusHistory $statusHistory)
+    {
+        if (in_array($oldStatus, ['pending', 'processing'])) {
+            foreach ($order->items as $item) {
+                $product = $item->product;
+                if ($product) {
+                    $product->allocated_stock -= $item->quantity;
+                    $product->save();
+                }
+            }
+        }
+
+        if (in_array($oldStatus, ['shipped', 'delivered'])) {
+            if (auth()->user()->role === 'admin' && $request->input('restore_inventory')) {
+                foreach ($order->items as $item) {
+                    if ($item->quantity_shipped > 0) {
+                        $this->restoreInventoryForItem($item->product_id, $item->quantity_shipped, $order, $statusHistory);
+
+                        $item->quantity_shipped = 0;
+                        $item->save();
+                    }
+                }
+            }
+        }
     }
 }

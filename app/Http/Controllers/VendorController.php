@@ -22,7 +22,6 @@ class VendorController extends Controller
      */
     public function showVerificationForm()
     {
-        // Check if user already has a vendor record
         $vendor = Vendor::where('supplier_id', Auth::id())->first();
 
         if ($vendor) {
@@ -45,9 +44,9 @@ class VendorController extends Controller
             'company_name' => 'required|string|max:150',
             'contact_person' => 'required|string|max:100',
             'email' => 'required|email|max:100',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|max:50',
             'address' => 'required|string|max:255',
-            'country' => 'required|string|max:50',
+            'country' => 'required|string|max:255',
             'bank_name' => 'required|string|max:100',
             'account_number' => 'nullable|string|max:50',
             'monthly_revenue' => 'nullable|numeric',
@@ -57,13 +56,10 @@ class VendorController extends Controller
             'agreement' => 'required|accepted',
         ]);
 
-        // Store PDF document
         $fileName = null;
         if ($request->hasFile('verification_document')) {
             $disk = config('vendor_validation.storage_disk', 'vendor_docs');
-
             $fileName = 'vendor_' . Auth::id() . '_' . time() . '.pdf';
-
             $request->file('verification_document')->storeAs(
                 '/',
                 $fileName,
@@ -71,7 +67,13 @@ class VendorController extends Controller
             );
         }
 
-        // Create vendor record
+        $user = Auth::user();
+        $user->update([
+            'phone' => $validated['phone'],
+            'country' => $validated['country'],
+            'certification_status' => 'pending',
+        ]);
+
         if (Auth::user()->role === 'supplier') {
             $vendor = Vendor::updateOrCreate(
                 ['supplier_id' => Auth::id()],
@@ -134,10 +136,6 @@ class VendorController extends Controller
 
             $message = $systemUser->sendMessageTo($adminConversation, "A new vendor application has been submitted: '{$vendor->name}'. Please review for approval.");
         }
-
-        // Send to external validation service if needed
-        // Call your validation service here...
-        // $this->sendToExternalValidation($vendor);
 
         return redirect()->route('vendor.verification.pending')
             ->with('success', 'Your verification details have been submitted successfully. We will review your application shortly.');

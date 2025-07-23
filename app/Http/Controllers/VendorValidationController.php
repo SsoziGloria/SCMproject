@@ -11,6 +11,7 @@ use App\Models\VendorValidation;
 use Exception;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 
 class VendorValidationController extends Controller
@@ -420,6 +421,18 @@ class VendorValidationController extends Controller
                         ->update([
                             'validation_status' => 'Approved'
                         ]);
+                }
+            }
+        }
+
+        if ($request->status === 'Approved') {
+            $userId = $vendor->supplier_id ?? $vendor->retailer_id;
+            if ($userId) {
+                $user = User::find($userId);
+                if ($user) {
+                    $user->update([
+                        'certification_status' => 'Approved',
+                    ]);
                 }
             }
         }

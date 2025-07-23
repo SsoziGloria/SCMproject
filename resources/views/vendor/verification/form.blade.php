@@ -77,15 +77,16 @@
                                 <label for="country" class="form-label">Country*</label>
                                 <select class="form-select" id="country" name="country" required>
                                     <option value="">Select Country</option>
-                                    <option value="Uganda" {{ old('country')=='Uganda' ? 'selected' : '' }}>Uganda
-                                    </option>
-                                    <option value="Kenya" {{ old('country')=='Kenya' ? 'selected' : '' }}>Kenya</option>
-                                    <option value="Tanzania" {{ old('country')=='Tanzania' ? 'selected' : '' }}>Tanzania
-                                    </option>
-                                    <option value="Rwanda" {{ old('country')=='Rwanda' ? 'selected' : '' }}>Rwanda
-                                    </option>
-                                    <option value="Burundi" {{ old('country')=='Burundi' ? 'selected' : '' }}>Burundi
-                                    </option>
+                                    <option value="Uganda" {{ old('country', 'Uganda' )=='Uganda' ? 'selected' : '' }}>
+                                        Uganda</option>
+                                    <option value="Kenya" {{ old('country', 'Uganda' )=='Kenya' ? 'selected' : '' }}>
+                                        Kenya</option>
+                                    <option value="Tanzania" {{ old('country', 'Uganda' )=='Tanzania' ? 'selected' : ''
+                                        }}>Tanzania</option>
+                                    <option value="Rwanda" {{ old('country', 'Uganda' )=='Rwanda' ? 'selected' : '' }}>
+                                        Rwanda</option>
+                                    <option value="Burundi" {{ old('country', 'Uganda' )=='Burundi' ? 'selected' : ''
+                                        }}>Burundi</option>
                                 </select>
                             </div>
                             {{-- <div class="col-md-6">

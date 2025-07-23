@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string('shipping_country')->nullable();
             $table->string('notes')->nullable();
             $table->date('delivered_at')->nullable();
+            $table->timestamp('shipped_at')->nullable();
             $table->timestamp('order_date')->useCurrent();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

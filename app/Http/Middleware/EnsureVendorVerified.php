@@ -25,13 +25,13 @@ class EnsureVendorVerified
 
         $user = Auth::user();
 
-        if ($user->role === 'admin') {
+        if ($user->role === 'admin' || $user->role === 'user') {
             return $next($request);
         }
 
         if ($user->role === 'supplier') {
             $vendor = Vendor::where('supplier_id', $user->id)->first();
-        } else { // retailer
+        } else {
             $vendor = Vendor::where('retailer_id', $user->id)->first();
         }
 
