@@ -24,7 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register Product Observer for automatic inventory sync
+        \App\Models\Product::observe(\App\Observers\ProductObserver::class);
+
         // DB::listen(function ($query) {
         //     dump($query->sql);
         //     dump($query->bindings);

@@ -90,7 +90,7 @@ namespace App\Models{
  * @property float|null $quantity
  * @property float|null $total_quantity
  * @property int|null $purchase_count
- * @property int|null $cluster
+ * @property int $cluster
  * @property \Illuminate\Support\Carbon $created_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomerSegment newQuery()
@@ -108,15 +108,22 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
  * @property string $product_id
  * @property string $prediction_date
  * @property int $predicted_quantity
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ * @property-read \App\Models\Product|null $product
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction wherePredictedQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction wherePredictionDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DemandPrediction whereUpdatedAt($value)
  */
 	class DemandPrediction extends \Eloquent {}
 }
@@ -226,6 +233,10 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
+ * @property-read string|null $customer_email
+ * @property-read string $customer_name
+ * @property-read string $formatted_price
+ * @property-read string $formatted_total
  * @property-read \App\Models\Inventory|null $inventory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $items
  * @property-read int|null $items_count
@@ -236,6 +247,8 @@ namespace App\Models{
  * @property-read int|null $promotions_count
  * @property-read \App\Models\Retailer|null $retailer
  * @property-read \App\Models\SalesChannel|null $salesChannel
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Shipment> $shipments
+ * @property-read int|null $shipments_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderStatusHistory> $statusHistory
  * @property-read int|null $status_history_count
  * @property-read \App\Models\User|null $supplier
@@ -363,9 +376,13 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Activitylog\Models\Activity> $activities
  * @property-read int|null $activities_count
  * @property-read mixed $available_stock
+ * @property-read string $formatted_cost
+ * @property-read string $formatted_price
  * @property-read mixed $image_url
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Inventory> $inventories
  * @property-read int|null $inventories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $orderItems
+ * @property-read int|null $order_items_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
  * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductReview> $reviews
@@ -451,6 +468,44 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $name
+ * @property string $type
+ * @property \Illuminate\Support\Carbon $date_from
+ * @property \Illuminate\Support\Carbon $date_to
+ * @property string $format
+ * @property string $status
+ * @property int $generated_by
+ * @property array<array-key, mixed>|null $data
+ * @property string|null $file_path
+ * @property string|null $email_recipients
+ * @property string|null $schedule_frequency
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereDateFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereDateTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereEmailRecipients($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereFilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereFormat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereGeneratedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereScheduleFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereUpdatedAt($value)
+ */
+	class Report extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
  * @property-read int|null $orders_count
  * @property-read \App\Models\User|null $user
@@ -514,6 +569,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property int|null $order_id
  * @property string $shipment_number
  * @property int|null $supplier_id
  * @property int|null $product_id
@@ -525,21 +581,23 @@ namespace App\Models{
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int $progress_percentage
+ * @property-read string $status_badge
+ * @property-read string $status_icon
+ * @property-read \App\Models\Order|null $order
  * @property-read \App\Models\Product|null $product
  * @property-read \App\Models\User|null $supplier
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment cancelled()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment delivered()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment forOrders()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment forSuppliers()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment overdue()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment pending()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment shipped()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereDeliveredAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereExpectedDelivery($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereShipmentNumber($value)
@@ -547,7 +605,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereSupplierId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Shipment withStatus($status)
  */
 	class Shipment extends \Eloquent {}
 }

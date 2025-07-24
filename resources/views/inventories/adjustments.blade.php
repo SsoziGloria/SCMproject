@@ -1,4 +1,4 @@
-@extends('supplier.app')
+@extends(auth()->user()->role . '.app')
 
 @section('content')
     <div class="container py-4">

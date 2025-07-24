@@ -292,6 +292,18 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2">
+                        {{-- Payment Confirmation --}}
+                        @if($order->payment_status === 'pending')
+                        <form action="{{ route('orders.confirm-payment', $order->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-credit-card"></i> Confirm Payment Received
+                            </button>
+                        </form>
+                        @endif
+
+                        {{-- Shipping Actions --}}
                         @if(in_array($order->status, ['pending', 'processing']))
                         <form action="{{ route('orders.mark-as-shipped', $order->id) }}" method="POST">
                             @csrf
@@ -335,7 +347,7 @@
             <a href="{{ route('orders.history', $order->id) }}" class="btn btn-outline-secondary">
                 <i class="bi bi-clock-history"></i> View History
             </a>
-            <div class="card shadow-sm mb-4">
+            {{-- <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Admin Actions</h5>
                 </div>
@@ -385,7 +397,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> --}}
             @endif
         </div>
 
@@ -495,7 +507,15 @@
                                 <h6 class="mb-1">Order Cancelled</h6>
                                 <small>{{ $order->updated_at->format('M d, h:i A') }}</small>
                             </div>
-                            <p class="mb-1">Order has been cancelled.</p>
+                            <p class="mb-1">
+                                Order has been cancelled.
+                                @if($order->payment_status === 'cancelled')
+                                <br><small class="text-muted">• Payment status set to cancelled</small>
+                                @endif
+                                @if($order->shipments()->where('status', 'cancelled')->exists())
+                                <br><small class="text-muted">• {{ $order->shipments()->where('status', 'cancelled')->count() }} shipment(s) cancelled</small>
+                                @endif
+                            </p>
                         </div>
                         @endif
                     </div>
@@ -578,6 +598,17 @@
                 </div>
                 <div class="modal-body">
                     <div id="cancellationOptions" class="d-none">
+                        <!-- General cancellation warning -->
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Cancellation Impact:</strong> When cancelling this order:
+                            <ul class="mb-0 mt-2">
+                                <li>Payment status will be set to <strong>cancelled</strong></li>
+                                <li>Any active shipments will be <strong>cancelled</strong></li>
+                                <li>Allocated inventory will be released back to available stock</li>
+                            </ul>
+                        </div>
+
                         @if(in_array($order->status, ['shipped', 'delivered']))
                         <div class="alert alert-danger">
                             <strong>Warning:</strong> This order has already been shipped. Cancelling it will NOT

@@ -16,7 +16,6 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'user_id',
-        'customer_name',
         'email',
         'phone',
         'address',
@@ -129,6 +128,14 @@ class Order extends Model
     }
 
     /**
+     * Get the shipments for this order
+     */
+    public function shipments()
+    {
+        return $this->hasMany(Shipment::class);
+    }
+
+    /**
      * Get the retailer that processed the order.
      */
     public function retailer()
@@ -194,6 +201,61 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, 'order_items', 'order_id', 'product_id')
             ->withPivot('quantity', 'price');
+    }
+
+    /**
+     * Mark order as shipped and create shipment record
+     */
+    public function markAsShipped($expectedDelivery = null): bool
+    {
+        $this->status = 'shipped';
+        $saved = $this->save();
+
+        if ($saved) {
+            // Create shipment record
+            Shipment::create([
+                'order_id' => $this->id,
+                'shipment_number' => 'SH-' . str_pad(Shipment::max('id') + 1, 6, '0', STR_PAD_LEFT),
+                'status' => 'shipped',
+                'expected_delivery' => $expectedDelivery ?: now()->addDays(3),
+                'shipped_at' => now(),
+                'notes' => "Shipment created for order #{$this->order_number}"
+            ]);
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Format total amount in UGX
+     */
+    public function getFormattedTotalAttribute(): string
+    {
+        return 'UGX ' . number_format($this->total_amount, 0);
+    }
+
+    /**
+     * Format price in UGX
+     */
+    public function getFormattedPriceAttribute(): string
+    {
+        return 'UGX ' . number_format($this->price, 0);
+    }
+
+    /**
+     * Get customer name from user relationship
+     */
+    public function getCustomerNameAttribute(): string
+    {
+        return $this->user ? $this->user->name : 'Unknown Customer';
+    }
+
+    /**
+     * Get customer email from user relationship
+     */
+    public function getCustomerEmailAttribute(): ?string
+    {
+        return $this->user ? $this->user->email : null;
     }
 
     public function getActivitylogOptions(): LogOptions

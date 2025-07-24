@@ -1,7 +1,0 @@
-php artisan make:controller NewsPostController
-
-
-php artisan make:controller supplierviewPostController
-    public function supplier(){
-        return(this supplier)
-    }

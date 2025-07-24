@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             OrderItemSeeder::class,
             CustomerClusterSummarySeeder::class,
             TaskSeeder::class,
+            // ComprehensiveBusinessDataSeeder::class,
         ]);
 
         User::factory()->create([
@@ -45,20 +46,20 @@ class DatabaseSeeder extends Seeder
         Worker::create([
             'name' => 'John Doe',
             'email' => 'john@example.com',
-            'phone' => '123-456-7890',
-            'position' => 'Developer'
+            'phone' => '0778-123-291',
+            'position' => 'Head Farmer'
         ]);
         Worker::create([
-            'name' => 'Jane Smith',
-            'email' => 'jane@example.com',
-            'phone' => '098-765-4321',
-            'position' => 'Designer'
+            'name' => 'Moses Bira',
+            'email' => 'mosesbira@gmail.com',
+            'phone' => '0772-765-4331',
+            'position' => 'Assistant'
         ]);
 
         Worker::create([
-            'name' => 'Mike Johnson',
-            'email' => 'mike@example.com',
-            'phone' => '555-123-4567',
+            'name' => 'Micah Tumwesigye',
+            'email' => 'micaht@gmail.com',
+            'phone' => '0754-623-067',
             'position' => 'Manager'
         ]);
     }

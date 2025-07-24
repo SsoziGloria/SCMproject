@@ -74,7 +74,7 @@ This project was developed as part of a collaborative 7-week development process
 - Inventory movement patterns and forecasting
 - Top-performing products analysis
 - User engagement and role-based statistics
-- Export capabilities for external analysis using Maatwebsite Excel
+- Comprehensive export capabilities (PDF, Excel, CSV, JSON) for external analysis
 
 ## Installation
 

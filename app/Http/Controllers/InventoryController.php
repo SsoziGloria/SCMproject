@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\StockAlertNotification;
 use App\Models\Adjustment;
@@ -202,8 +203,8 @@ class InventoryController extends Controller
             'adjustment_type' => 'removal',
             'quantity_change' => $inventory->quantity,
             'reason' => 'Inventory record deleted',
-            'user_id' => auth()->id(),
-            'user_name' => auth()->user()->name,
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->name,
         ]);
 
         $inventory->delete();
@@ -229,7 +230,7 @@ class InventoryController extends Controller
                     'description' => "Inventory for {$item->product->name} updated. Qty: {$item->quantity}",
                 ];
             });
-        $view = auth()->user()->role === 'retailer' ? 'dashboard.retailer' : 'dashboard.supplier';
+        $view = Auth::user()->role === 'retailer' ? 'dashboard.retailer' : 'dashboard.supplier';
         return view($view, compact(
             'inventoryCount',
             'lowStock',
@@ -337,8 +338,8 @@ class InventoryController extends Controller
                 : $validated['quantity_change'],
             'reason' => $validated['reason'],
             'notes' => $validated['notes'],
-            'user_id' => auth()->id(),
-            'user_name' => auth()->user()->name,
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->name,
         ]);
 
         // Update inventory quantity

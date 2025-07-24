@@ -3,214 +3,227 @@
 namespace App\Http\Controllers;
 
 use App\Models\Shipment;
-use App\Models\Product;
+use App\Models\Order;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 
 class ShipmentController extends Controller
 {
     /**
-     * Display a listing of the shipments.
+     * Display shipments list
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        // Base query
-        $query = Shipment::with(['supplier', 'product']);
+        $query = Shipment::with(['order.user', 'supplier', 'product']);
 
-        // Apply filters
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        // Filter by type
+        $type = $request->get('type', 'orders'); // 'orders' or 'suppliers'
+
+        if ($type === 'orders') {
+            $query->forOrders();
+        } else {
+            $query->forSuppliers();
         }
 
-        if ($request->filled('supplier_id')) {
-            $query->where('supplier_id', $request->supplier_id);
-        }
-
+        // Search functionality
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('shipment_number', 'like', "%{$search}%")
-                    ->orWhereHas('product', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%");
+                    ->orWhere('notes', 'like', "%{$search}%")
+                    ->orWhereHas('order', function ($orderQuery) use ($search) {
+                        $orderQuery->where('order_number', 'like', "%{$search}%")
+                            ->orWhereHas('user', function ($userQuery) use ($search) {
+                                $userQuery->where('name', 'like', "%{$search}%");
+                            });
                     });
             });
         }
 
-        // Apply date range filter
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status', $request->get('status'));
         }
 
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
-
-        // Sort options
-        $sort = $request->get('sort', 'newest');
-
-        if ($sort === 'newest') {
-            $query->latest();
-        } elseif ($sort === 'oldest') {
-            $query->oldest();
-        } elseif ($sort === 'expected_delivery') {
-            $query->orderBy('expected_delivery', 'asc');
+        // Filter by supplier (for supplier shipments)
+        if ($type === 'suppliers' && $request->filled('supplier_id')) {
+            $query->where('supplier_id', $request->get('supplier_id'));
         }
 
         // Role-based filtering
-        $user = Auth::user();
-        if ($user->role === 'supplier') {
-            $query->where('supplier_id', $user->id);
+        if (Auth::check() && Auth::user()->role === 'supplier') {
+            $query->where('supplier_id', Auth::user()->id);
         }
 
-        // Get shipments with pagination
-        $shipments = $query->paginate(15)->withQueryString();
+        $shipments = $query->latest()->paginate(15);
 
-        // Get all suppliers for filter dropdown (for admin/retailer only)
-        $suppliers = [];
-        if (in_array($user->role, ['admin', 'retailer'])) {
-            $suppliers = User::where('role', 'supplier')->get();
-        }
+        // Get counts for badges
+        $orderShipmentsCount = Shipment::forOrders()->count();
+        $supplierShipmentsCount = Shipment::forSuppliers()->count();
 
-        // Stats for dashboard cards
-        $stats = [
-            'total' => Shipment::count(),
-            'pending' => Shipment::pending()->count(),
-            'shipped' => Shipment::shipped()->count(),
-            'delivered' => Shipment::delivered()->count(),
-            'overdue' => Shipment::overdue()->count(),
+        // Get filter options
+        $suppliers = User::where('role', 'supplier')->pluck('name', 'id');
+        $orders = Order::with('user:id,name')->select('id', 'order_number', 'user_id')->get();
+
+        return view('shipments.index', compact(
+            'shipments',
+            'type',
+            'orderShipmentsCount',
+            'supplierShipmentsCount',
+            'suppliers',
+            'orders'
+        ));
+    }
+
+    /**
+     * Show the form for creating a new shipment
+     */
+    public function create(Request $request): View
+    {
+        $type = $request->get('type', 'orders'); // Default to orders instead of suppliers
+        $suppliers = User::where('role', 'supplier')->get();
+        $products = Product::all();
+
+        // Only get orders that can be shipped (not already shipped, delivered, or cancelled)
+        $orders = Order::whereNotIn('status', ['shipped', 'delivered', 'cancelled'])->get();
+
+        return view('shipments.create', compact('type', 'suppliers', 'products', 'orders'));
+    }
+
+    /**
+     * Store a newly created shipment
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        // Debug: Log the incoming request data
+        \Log::info('Shipment creation request:', $request->all());
+
+        $rules = [
+            'type' => 'required|in:orders,suppliers',
+            'expected_delivery' => 'nullable|date|after_or_equal:today',
+            'notes' => 'nullable|string|max:1000',
         ];
 
-        return view('shipments.index', compact('shipments', 'suppliers', 'stats'));
-    }
+        // Add conditional validation based on type
+        if ($request->type === 'orders') {
+            $rules['order_id'] = 'required|exists:orders,id';
+        } elseif ($request->type === 'suppliers') {
+            $rules['supplier_id'] = 'required|exists:users,id';
+            $rules['product_id'] = 'required|exists:products,id';
+            $rules['quantity'] = 'required|integer|min:1';
+        }
 
-    /**
-     * Show the form for creating a new shipment.
-     */
-    public function create()
-    {
-        $products = Product::all();
-        $suppliers = User::where('role', 'supplier')->get();
-        return view('shipments.create', compact('products', 'suppliers'));
-    }
-
-    /**
-     * Store a newly created shipment in storage.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'supplier_id' => 'required|exists:users,id',
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'expected_delivery' => 'nullable|date|after_or_equal:today',
-            'notes' => 'nullable|string',
+        $request->validate($rules, [
+            'order_id.required' => 'Please select an order for the shipment.',
+            'supplier_id.required' => 'Please select a supplier for the shipment.',
+            'product_id.required' => 'Please select a product for the shipment.',
+            'quantity.required' => 'Please enter a quantity for the shipment.',
+            'quantity.min' => 'Quantity must be at least 1.',
         ]);
 
-        $shipment = new Shipment($validated);
-        $shipment->shipment_number = Shipment::generateShipmentNumber();
-        $shipment->status = 'pending';
-        $shipment->save();
+        $shipmentData = [
+            'status' => 'processing',
+            'expected_delivery' => $request->expected_delivery ?: now()->addDays(3),
+            'notes' => $request->notes,
+        ];
 
-        return redirect()->route('shipments.index')
-            ->with('success', 'Shipment created successfully.');
+        if ($request->type === 'orders') {
+            // Order shipment
+            $shipmentData['order_id'] = $request->order_id;
+
+            // Mark order as shipped using the Order model method
+            $order = Order::findOrFail($request->order_id);
+            $order->markAsShipped($request->expected_delivery);
+
+            return redirect()->route('shipments.index', ['type' => 'orders'])
+                ->with('success', 'Order shipment created successfully!');
+        } else {
+            // Supplier shipment
+            $shipmentData = array_merge($shipmentData, [
+                'supplier_id' => $request->supplier_id,
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity,
+            ]);
+
+            Shipment::create($shipmentData);
+
+            return redirect()->route('shipments.index', ['type' => 'suppliers'])
+                ->with('success', 'Supplier shipment created successfully!');
+        }
     }
 
     /**
-     * Display the specified shipment.
+     * Display the specified shipment
      */
-    public function show(Shipment $shipment)
+    public function show(Shipment $shipment): View
     {
+        $shipment->load(['order.user', 'supplier', 'product']);
         return view('shipments.show', compact('shipment'));
     }
 
     /**
-     * Show the form for editing the specified shipment.
+     * Show the form for editing the specified shipment
      */
-    public function edit(Shipment $shipment)
+    public function edit(Shipment $shipment): View
     {
-        $products = Product::all();
         $suppliers = User::where('role', 'supplier')->get();
-        return view('shipments.edit', compact('shipment', 'products', 'suppliers'));
+        $products = Product::all();
+        $orders = Order::all();
+
+        return view('shipments.edit', compact('shipment', 'suppliers', 'products', 'orders'));
     }
 
     /**
-     * Update the specified shipment in storage.
+     * Update the specified shipment
      */
-    public function update(Request $request, Shipment $shipment)
+    public function update(Request $request, Shipment $shipment): RedirectResponse
     {
-        $validated = $request->validate([
-            'supplier_id' => 'required|exists:users,id',
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'status' => 'required|in:pending,shipped,delivered,cancelled',
+        $request->validate([
+            'status' => 'required|in:processing,shipped,in_transit,delivered',
             'expected_delivery' => 'nullable|date',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
-        // Handle shipment status changes
-        if ($validated['status'] !== $shipment->status) {
-            if ($validated['status'] === 'shipped' && is_null($shipment->shipped_at)) {
-                $validated['shipped_at'] = now();
-            } elseif ($validated['status'] === 'delivered' && is_null($shipment->delivered_at)) {
-                $validated['delivered_at'] = now();
-            }
-        }
+        $shipment->updateStatus($request->status);
 
-        $shipment->update($validated);
+        $shipment->update([
+            'expected_delivery' => $request->expected_delivery,
+            'notes' => $request->notes,
+        ]);
 
-        return redirect()->route('shipments.index')
-            ->with('success', 'Shipment updated successfully.');
+        $type = $shipment->order_id ? 'orders' : 'suppliers';
+
+        return redirect()->route('shipments.index', ['type' => $type])
+            ->with('success', 'Shipment updated successfully!');
     }
 
     /**
-     * Update the status of a shipment.
+     * Update shipment status
      */
-    public function updateStatus(Request $request, Shipment $shipment)
+    public function updateStatus(Request $request, Shipment $shipment): RedirectResponse
     {
-        $validated = $request->validate([
-            'status' => 'required|in:pending,shipped,delivered,cancelled',
+        $request->validate([
+            'status' => 'required|in:processing,shipped,in_transit,delivered',
         ]);
 
-        // Check if the status change is allowed
-        $allowed = false;
-        switch ($validated['status']) {
-            case 'shipped':
-                $allowed = $shipment->canBeShipped();
-                if ($allowed)
-                    $shipment->shipped_at = now();
-                break;
-            case 'delivered':
-                $allowed = $shipment->canBeDelivered();
-                if ($allowed)
-                    $shipment->delivered_at = now();
-                break;
-            case 'cancelled':
-                $allowed = $shipment->canBeCancelled();
-                break;
-            default:
-                $allowed = true;
-        }
+        $shipment->updateStatus($request->status);
 
-        if (!$allowed) {
-            return back()->with('error', 'Invalid status change.');
-        }
-
-        $shipment->status = $validated['status'];
-        $shipment->save();
-
-        return redirect()->route('shipments.index')
-            ->with('success', 'Shipment status updated successfully.');
+        return back()->with('success', 'Shipment status updated successfully!');
     }
 
     /**
-     * Remove the specified shipment from storage.
+     * Remove the specified shipment
      */
-    public function destroy(Shipment $shipment)
+    public function destroy(Shipment $shipment): RedirectResponse
     {
+        $type = $shipment->order_id ? 'orders' : 'suppliers';
         $shipment->delete();
 
-        return redirect()->route('shipments.index')
-            ->with('success', 'Shipment deleted successfully.');
+        return redirect()->route('shipments.index', ['type' => $type])
+            ->with('success', 'Shipment deleted successfully!');
     }
 }

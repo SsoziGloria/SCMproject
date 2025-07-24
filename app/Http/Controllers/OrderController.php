@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Inventory;
+use App\Models\Shipment;
 use App\Models\SalesChannel;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\OrderExport;
@@ -323,7 +324,8 @@ class OrderController extends Controller
                 foreach ($order->items as $item) {
                     $product = Product::find($item->product_id);
                     if ($product) {
-                        $product->allocated_stock -= $item->quantity;
+                        // Prevent allocated_stock from going negative
+                        $product->allocated_stock = max(0, $product->allocated_stock - $item->quantity);
                         $product->save();
                     }
                 }
@@ -386,7 +388,8 @@ class OrderController extends Controller
             foreach ($order->items as $item) {
                 $product = Product::find($item->product_id);
                 if ($product) {
-                    $product->allocated_stock -= $item->quantity;
+                    // Prevent allocated_stock from going negative
+                    $product->allocated_stock = max(0, $product->allocated_stock - $item->quantity);
                     $product->save();
                 }
             }
@@ -517,8 +520,8 @@ class OrderController extends Controller
             $statusHistory = OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => $newStatus,
-                'user_id' => auth()->id(),
-                'user_name' => auth()->user()->name,
+                'user_id' => Auth::id(),
+                'user_name' => Auth::user() ? Auth::user()->name : 'System',
                 'notes' => $request->status_notes ?? "Status changed from {$oldStatus} to {$newStatus}"
             ]);
 
@@ -573,20 +576,31 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-            $order->status = 'shipped';
-            $order->delivered_at = now();
-            $order->save();
+            // Use the Order model's markAsShipped method which creates shipment records
+            $order->markAsShipped();
 
             $statusHistory = OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => 'shipped',
-                'user_id' => auth()->id(),
-                'notes' => 'Order marked as shipped'
+                'user_id' => Auth::id(),
+                'notes' => 'Order marked as shipped with automatic shipment creation'
             ]);
 
             foreach ($order->items as $item) {
                 if ($item->quantity_shipped < $item->quantity) {
-                    $this->reduceInventoryForItem($item->product_id, $item->quantity - $item->quantity_shipped, $order, $statusHistory);
+                    $neededQuantity = $item->quantity - $item->quantity_shipped;
+
+                    // Reduce inventory
+                    $this->reduceInventoryForItem($item->product_id, $neededQuantity, $order, $statusHistory);
+
+                    // CRITICAL FIX: Also reduce product stock
+                    $product = Product::find($item->product_id);
+                    if ($product) {
+                        $newStock = $product->stock - $neededQuantity;
+                        // Prevent allocated_stock from going negative
+                        $newAllocatedStock = max(0, $product->allocated_stock - $neededQuantity);
+                        $product->updateStockSilently($newStock, $newAllocatedStock);
+                    }
 
                     $item->quantity_shipped = $item->quantity;
                     $item->save();
@@ -624,12 +638,37 @@ class OrderController extends Controller
         OrderStatusHistory::create([
             'order_id' => $order->id,
             'status' => 'delivered',
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'notes' => 'Order marked as delivered'
         ]);
 
         return redirect()->route('orders.show', $order)
             ->with('success', 'Order marked as delivered.');
+    }
+
+    /**
+     * Confirm payment received for an order
+     */
+    public function confirmPayment(Order $order)
+    {
+        if ($order->payment_status === 'paid') {
+            return redirect()->back()->with('info', 'Payment has already been confirmed for this order.');
+        }
+
+        $oldPaymentStatus = $order->payment_status;
+        $order->payment_status = 'paid';
+        $order->save();
+
+        // Record status change
+        OrderStatusHistory::create([
+            'order_id' => $order->id,
+            'status' => $order->status, // Keep current order status
+            'user_id' => Auth::id(),
+            'notes' => "Payment confirmed - status changed from {$oldPaymentStatus} to paid"
+        ]);
+
+        return redirect()->route('orders.show', $order)
+            ->with('success', 'Payment confirmed successfully!');
     }
 
     /**
@@ -650,7 +689,7 @@ class OrderController extends Controller
             $statusHistory = OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'status' => $order->status,
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'notes' => 'Partial shipment processed'
             ]);
 
@@ -683,7 +722,7 @@ class OrderController extends Controller
                 OrderStatusHistory::create([
                     'order_id' => $order->id,
                     'status' => 'shipped',
-                    'user_id' => auth()->id(),
+                    'user_id' => Auth::id(),
                     'notes' => 'All items shipped'
                 ]);
             }
@@ -726,8 +765,8 @@ class OrderController extends Controller
                 'quantity_change' => -$reduceAmount,
                 'reason' => "Order shipment: {$order->order_number}",
                 'notes' => "Automatic reduction for order item",
-                'user_id' => auth()->id(),
-                'user_name' => auth()->user()->name ?? 'System',
+                'user_id' => Auth::id(),
+                'user_name' => Auth::user()->name ?? 'System',
                 'status_history_id' => $statusHistory ? $statusHistory->id : null
             ]);
 
@@ -772,8 +811,8 @@ class OrderController extends Controller
             'quantity_change' => $quantity,
             'reason' => "Order cancelled: {$order->order_number}",
             'notes' => "Automatic adjustment - stock restored for cancelled order",
-            'user_id' => auth()->id(),
-            'user_name' => auth()->user()->name ?? 'System',
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->name ?? 'System',
             'status_history_id' => $statusHistory ? $statusHistory->id : null
         ]);
 
@@ -784,6 +823,11 @@ class OrderController extends Controller
         }
 
         $inventory->save();
+
+        // CRITICAL FIX: Also restore product stock when inventory is restored
+        $product = Product::findOrFail($productId);
+        $newStock = $product->stock + $quantity;
+        $product->updateStockSilently($newStock);
 
         return $adjustment;
     }
@@ -810,10 +854,13 @@ class OrderController extends Controller
             $neededQuantity = $item->quantity - ($item->quantity_shipped ?? 0);
             if ($neededQuantity <= 0) continue;
 
+            // Reduce inventory first
             $this->reduceInventoryForItem($product->id, $neededQuantity, $order, $statusHistory);
 
-            $product->allocated_stock -= $neededQuantity;
-            $product->save();
+            // CRITICAL FIX: Also reduce the product stock
+            $newStock = $product->stock - $neededQuantity;
+            $newAllocatedStock = $product->allocated_stock - $neededQuantity;
+            $product->updateStockSilently($newStock, $newAllocatedStock);
 
             $item->quantity_shipped = $item->quantity;
             $item->save();
@@ -823,22 +870,62 @@ class OrderController extends Controller
             $order->shipped_at = now();
             $order->save();
         }
+
+        // Create outgoing shipment record for tracking
+        $this->createOrderShipment($order);
+    }
+
+    /**
+     * Create an outgoing shipment record when order is shipped
+     */
+    private function createOrderShipment(Order $order)
+    {
+        // Check if shipment already exists for this order
+        $existingShipment = Shipment::where('order_id', $order->id)->first();
+
+        if (!$existingShipment) {
+            Shipment::create([
+                'order_id' => $order->id,
+                'status' => 'shipped',
+                'shipped_at' => now(),
+                'expected_delivery' => now()->addDays(3), // Default 3 days
+                'notes' => "Shipment created for order #{$order->order_number}",
+            ]);
+        }
     }
 
     private function processCancellation(Order $order, string $oldStatus, Request $request, OrderStatusHistory $statusHistory)
     {
+        // 1. Cancel payment status
+        if ($order->payment_status !== 'cancelled') {
+            $order->payment_status = 'cancelled';
+            Log::info("Payment status changed to cancelled for order #{$order->order_number}");
+        }
+
+        // 2. Cancel any shipments tied to this order
+        $shipments = $order->shipments()->whereNotIn('status', ['cancelled', 'delivered'])->get();
+        foreach ($shipments as $shipment) {
+            $shipment->status = 'cancelled';
+            $shipment->save();
+            Log::info("Shipment #{$shipment->shipment_number} cancelled due to order #{$order->order_number} cancellation");
+        }
+
+        // 3. Handle inventory restoration for different order statuses
         if (in_array($oldStatus, ['pending', 'processing'])) {
             foreach ($order->items as $item) {
                 $product = $item->product;
                 if ($product) {
-                    $product->allocated_stock -= $item->quantity;
+                    // Prevent allocated_stock from going negative
+                    $product->allocated_stock = max(0, $product->allocated_stock - $item->quantity);
                     $product->save();
                 }
             }
         }
 
         if (in_array($oldStatus, ['shipped', 'delivered'])) {
-            if (auth()->user()->role === 'admin' && $request->input('restore_inventory')) {
+            // Check if user is admin and restore_inventory is checked
+            $user = Auth::user();
+            if ($user && $user->role === 'admin' && $request->input('restore_inventory')) {
                 foreach ($order->items as $item) {
                     if ($item->quantity_shipped > 0) {
                         $this->restoreInventoryForItem($item->product_id, $item->quantity_shipped, $order, $statusHistory);

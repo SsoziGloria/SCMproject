@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-primary fw-bold">✍️ Manual Assignment</h2>
+    <h2 class="text-primary fw-bold">Manual Assignment</h2>
     <a href="{{ route('workforce.index') }}" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-left"></i> Back to Daily Roster
     </a>

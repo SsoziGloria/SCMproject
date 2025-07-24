@@ -8,6 +8,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RetailerDashboardController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\MLAnalysisController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CustomerSegmentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
@@ -24,6 +26,8 @@ use App\Http\Controllers\VendorValidationController;
 use App\Http\Controllers\API\VendorValidationAPIController;
 use App\Http\Controllers\API\VendorValidationProxyController;
 use App\Http\Controllers\RetailerSalesController;
+use App\Http\Controllers\RetailerReportController;
+use App\Http\Controllers\RetailerAnalyticsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\WorkerController;
 use App\Http\Controllers\WorkforceController;
@@ -112,7 +116,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             case 'supplier':
                 return app(SupplierDashboardController::class)->index();
             case 'retailer':
-                return app(InventoryController::class)->dashboard();
+                return app(RetailerDashboardController::class)->index();
             case 'user':
             default:
                 return redirect()->route('dashboard.user');
@@ -120,11 +124,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::post('/admin/run-ml-analysis', [MLAnalysisController::class, 'runAnalysis'])->name('admin.run-ml-analysis');
+
+    // Individual ML Analysis Routes
+    Route::post('/admin/ml/customer-segmentation', [MLAnalysisController::class, 'runCustomerSegmentation'])->name('admin.ml.customer-segmentation');
+    Route::post('/admin/ml/demand-prediction', [MLAnalysisController::class, 'runDemandPrediction'])->name('admin.ml.demand-prediction');
+
+    // ML Data Views
+    Route::get('/admin/segments', [MLAnalysisController::class, 'segmentsView'])->name('admin.segments');
+    Route::get('/admin/predictions', [MLAnalysisController::class, 'predictionsView'])->name('admin.predictions');
+
+    // ML Integration Routes
+    Route::post('/admin/ml/apply-segmentation', [MLAnalysisController::class, 'applySegmentation'])->name('admin.ml.apply-segmentation');
+    Route::post('/admin/ml/adjust-inventory', [MLAnalysisController::class, 'adjustInventory'])->name('admin.ml.adjust-inventory');
+    Route::post('/admin/ml/generate-recommendations', [MLAnalysisController::class, 'generateRecommendations'])->name('admin.ml.generate-recommendations');
     Route::get('/dashboard-s', [InventoryController::class, 'dashboard'])->name('dashboard.supplier');
     Route::get('/home', function () {
         return view('dashboard.user');
     })->name('dashboard.user');
-    Route::get('/retailer/dashboard', [RetailerDashboardController::class, 'index'])->name('retailer.dashboard');
 });
 
 /*
@@ -223,6 +240,7 @@ Route::middleware(['auth', 'vendor.verified'])->group(function () {
     Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
     Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
     Route::get('/orders/export', [OrderController::class, 'export'])->name('orders.export');
+    Route::patch('/orders/{order}/confirm-payment', [OrderController::class, 'confirmPayment'])->name('orders.confirm-payment');
 });
 
 Route::patch('/orders/{order}/ship', [OrderController::class, 'markAsShipped'])->name('orders.mark-as-shipped');
@@ -303,7 +321,6 @@ Route::middleware(['auth', 'vendor.verified'])->prefix('supplier')->name('suppli
 Route::middleware(['auth'])->group(function () {
     Route::resource('shipments', ShipmentController::class);
     Route::put('/shipments/{shipment}/status', [ShipmentController::class, 'updateStatus'])->name('shipments.update-status');
-    Route::get('/shipments/export', [ShipmentController::class, 'export'])->name('shipments.export');
 });
 
 /*
@@ -339,10 +356,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/user-management', [UserController::class, 'index'])->name('users');
     Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
     Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
+
+    // Reports Routes
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
+    Route::get('/reports/download/{report}', [ReportController::class, 'download'])->name('reports.download');
+
+    // ML Data Export
+    Route::get('/ml/export-data', [MLAnalysisController::class, 'exportData'])->name('ml.export-data');
+
+    // Settings
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+    Route::post('/settings/toggle-supplier-products', [App\Http\Controllers\Admin\SettingController::class, 'toggleSupplierProducts'])->name('settings.toggle-supplier-products');
 });
-Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('admin.settings.index');
-Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('admin.settings.update');
-Route::post('/settings/toggle-supplier-products', [App\Http\Controllers\Admin\SettingController::class, 'toggleSupplierProducts'])->name('admin.settings.toggle-supplier-products');
 Route::get('/admin/users/role/{role}', [UserController::class, 'byRole'])->name('admin.users.byRole')->middleware('auth');
 
 
@@ -368,6 +395,28 @@ Route::middleware(['auth', 'role:admin,retailer'])->group(function () {
     Route::get('/analytics/products', [AnalyticsController::class, 'productAnalytics'])->name('analytics.products');
     Route::get('/analytics/users', [AnalyticsController::class, 'userAnalytics'])->name('analytics.users');
     Route::get('/sales', [RetailerSalesController::class, 'index'])->name('sales');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Retailer Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('retailer')->name('retailer.')->middleware(['auth', 'role:retailer'])->group(function () {
+    Route::get('/dashboard', [RetailerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/sales', [RetailerSalesController::class, 'index'])->name('sales');
+
+    // Retailer-specific reports (excluding ML data)
+    Route::get('/reports', [App\Http\Controllers\RetailerReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/generate', [App\Http\Controllers\RetailerReportController::class, 'generate'])->name('reports.generate');
+    Route::get('/reports/download/{report}', [App\Http\Controllers\RetailerReportController::class, 'download'])->name('reports.download');
+
+    // Analytics specific to retailer
+    Route::get('/analytics', [App\Http\Controllers\RetailerAnalyticsController::class, 'index'])->name('analytics.index');
+    Route::get('/analytics/sales', [App\Http\Controllers\RetailerAnalyticsController::class, 'sales'])->name('analytics.sales');
+    Route::get('/analytics/inventory', [App\Http\Controllers\RetailerAnalyticsController::class, 'inventory'])->name('analytics.inventory');
+    Route::get('/analytics/customers', [App\Http\Controllers\RetailerAnalyticsController::class, 'customers'])->name('analytics.customers');
 });
 
 /*

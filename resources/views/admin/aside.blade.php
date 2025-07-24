@@ -70,10 +70,51 @@
         'analytics',
     ];
 
+    $mlRoutes = [
+        'admin.segments',
+        'admin.predictions',
+    ];
+
+    $inventoryRoutes = [
+        'inventories.index',
+        'inventories.create',
+        'inventories.edit',
+        'inventories.adjustments',
+        'shipments.index',
+    ];
+
+    $settingsRoutes = [
+        'admin.settings.index',
+    ];
+
     $isAnalyticsActive = false;
     foreach ($analyticsRoutes as $route) {
         if (request()->routeIs($route)) {
             $isAnalyticsActive = true;
+            break;
+        }
+    }
+
+    $isMLActive = false;
+    foreach ($mlRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isMLActive = true;
+            break;
+        }
+    }
+
+    $isInventoryActive = false;
+    foreach ($inventoryRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isInventoryActive = true;
+            break;
+        }
+    }
+
+    $isSettingsActive = false;
+    foreach ($settingsRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isSettingsActive = true;
             break;
         }
     }
@@ -187,6 +228,35 @@
             </ul>
         </li><!-- End Order Management Nav -->
 
+        <!-- Inventory Management -->
+        <li class="nav-item">
+            <a class="nav-link {{ $isInventoryActive ? '' : 'collapsed' }}" data-bs-target="#inventory-nav"
+                data-bs-toggle="collapse" href="#">
+                <i class="bi bi-boxes"></i><span>Inventory Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="inventory-nav" class="nav-content collapse {{ $isInventoryActive ? 'show' : '' }}"
+                data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ route('inventories.index') }}"
+                        class="nav-link {{ request()->routeIs('inventories.index') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>All Inventory</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('inventories.adjustments') }}"
+                        class="nav-link {{ request()->routeIs('inventories.adjustments') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Adjustments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('shipments.index') }}"
+                        class="nav-link {{ request()->routeIs('shipments.index') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Shipments</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Inventory Management Nav -->
+
         <!--Workforce Management-->
         <li class="nav-item">
             <a class="nav-link {{ $isworkerManagementActive ? '' : 'collapsed' }}" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
@@ -230,6 +300,29 @@
         </li><!-- End Icons Nav -->
 
         <li class="nav-heading">Stats</li>
+
+        <!-- ML Analytics -->
+        <li class="nav-item">
+            <a class="nav-link {{ $isMLActive ? '' : 'collapsed' }}" data-bs-target="#ml-nav"
+                data-bs-toggle="collapse" href="#">
+                <i class="bi bi-robot"></i><span>ML Analytics</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="ml-nav" class="nav-content collapse {{ $isMLActive ? 'show' : '' }}"
+                data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ route('admin.segments') }}"
+                        class="nav-link {{ request()->routeIs('admin.segments') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Customer Segments</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.predictions') }}"
+                        class="nav-link {{ request()->routeIs('admin.predictions') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Demand Predictions</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End ML Analytics Nav -->
 
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('analytics') ? '' : 'collapsed' }}" data-bs-target="#charts-nav"
@@ -333,6 +426,15 @@
                 <span>Profile</span>
             </a>
         </li><!-- End Profile Page Nav -->
+
+        <!-- Settings -->
+        <li class="nav-item">
+            <a class="nav-link {{ $isSettingsActive ? '' : 'collapsed' }}"
+                href="{{ route('admin.settings.index') }}">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li><!-- End Settings Nav -->
 
     </ul>
 

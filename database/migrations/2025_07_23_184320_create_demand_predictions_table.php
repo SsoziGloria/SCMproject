@@ -12,9 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('demand_predictions', function (Blueprint $table) {
-            $table->text('product_id');
-            $table->text('prediction_date');
+            $table->id();
+            $table->string('product_id', 255);
+            $table->string('prediction_date', 255);
             $table->bigInteger('predicted_quantity');
+            $table->timestamps();
+
+            $table->index('product_id');
+            $table->index('prediction_date');
         });
     }
 
