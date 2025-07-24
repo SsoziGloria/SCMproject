@@ -163,7 +163,7 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::group(['middleware' => 'auth', 'prefix' => 'inventory'], function () {
+Route::group(['middleware' => ['auth', 'role:retailer', 'vendor.verified'], 'prefix' => 'inventory'], function () {
     Route::get('/', [InventoryController::class, 'index'])->name('inventories.index');
     Route::get('/create', [InventoryController::class, 'create'])->name('inventories.create');
     Route::post('/', [InventoryController::class, 'store'])->name('inventories.store');
@@ -185,7 +185,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'inventory'], function () {
 });
 
 // Inventory Adjustments
-Route::group(['middleware' => 'auth', 'prefix' => 'inventory/adjustments'], function () {
+Route::group(['middleware' => ['auth', 'vendor.verified'], 'prefix' => 'inventory/adjustments'], function () {
     Route::get('/', [InventoryAdjustmentController::class, 'index'])->name('inventories.adjustments');
     Route::get('/create', [InventoryAdjustmentController::class, 'create'])->name('inventories.adjustments.create');
     Route::post('/', [InventoryAdjustmentController::class, 'store'])->name('inventories.adjustments.store');
@@ -205,7 +205,7 @@ Route::get('/stock-levels', [InventoryController::class, 'stockLevels'])->name('
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin, retailer'])->group(function () {
+Route::middleware(['auth', 'role:admin,retailer', 'vendor.verified'])->group(function () {
     // Product routes
     Route::resource('products', ProductController::class);
     Route::put('products/{product}/stock', [ProductController::class, 'updateStock'])->name('products.update-stock');

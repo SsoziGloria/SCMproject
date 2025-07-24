@@ -112,13 +112,13 @@ class RetailerAnalyticsController extends Controller
 
         // Current period metrics
         $currentOrders = Order::whereBetween('created_at', [$startDate, $endDate])->get();
-        $currentRevenue = $currentOrders->sum('total_amount');
+        $currentRevenue = $currentOrders->where('status', 'delivered')->sum('total_amount');
         $currentOrderCount = $currentOrders->count();
         $currentAvgOrderValue = $currentOrderCount > 0 ? $currentRevenue / $currentOrderCount : 0;
 
         // Previous period metrics
         $previousOrders = Order::whereBetween('created_at', [$previousStartDate, $previousEndDate])->get();
-        $previousRevenue = $previousOrders->sum('total_amount');
+        $previousRevenue = $previousOrders->where('status', 'delivered')->sum('total_amount');
         $previousOrderCount = $previousOrders->count();
         $previousAvgOrderValue = $previousOrderCount > 0 ? $previousRevenue / $previousOrderCount : 0;
 
@@ -295,7 +295,7 @@ class RetailerAnalyticsController extends Controller
         }])->get();
 
         $customerAnalysis = $customers->map(function ($customer) {
-            $totalSpent = $customer->orders->sum('total_amount');
+            $totalSpent = $customer->orders->where('status', 'delivered')->sum('total_amount');
             $orderCount = $customer->orders->count();
             $firstOrder = $customer->orders->first();
             $lastOrder = $customer->orders->last();

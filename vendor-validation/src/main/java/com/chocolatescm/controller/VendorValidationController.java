@@ -20,7 +20,7 @@ import com.chocolatescm.service.VendorValidationService;
 
 @RestController
 @RequestMapping("/api/v1/vendor")
-@CrossOrigin(origins = "*") // Configure this properly for production
+@CrossOrigin(origins = "*")
 public class VendorValidationController {
 
     @Autowired
@@ -32,25 +32,21 @@ public class VendorValidationController {
             @RequestParam(value = "vendorId", required = false) Long vendorId) {
 
         try {
-            // Validate file
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(createErrorResponse("No file uploaded", "EMPTY_FILE"));
             }
 
-            // Check if it's a PDF
             if (!isPdfFile(file)) {
                 return ResponseEntity.badRequest()
                         .body(createErrorResponse("Only PDF files are allowed", "INVALID_FILE_TYPE"));
             }
 
-            // Check file size (e.g., max 10MB)
             if (file.getSize() > 10 * 1024 * 1024) {
                 return ResponseEntity.badRequest()
                         .body(createErrorResponse("File size exceeds 10MB limit", "FILE_TOO_LARGE"));
             }
 
-            // Process the PDF validation
             ValidationResponse response = vendorValidationService.validateDocument(file, vendorId);
 
             return ResponseEntity.ok(response);

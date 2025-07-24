@@ -122,6 +122,44 @@
                     @endif
                 </div>
             </div>
+
+            <!-- Quick Actions -->
+            @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'supplier' && $shipment->supplier_id === Auth::user()->id) || (Auth::user()->role === 'retailer' && $shipment->order_id))
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    @if($shipment->status !== 'delivered')
+                    <form action="{{ route('shipments.update-status', $shipment) }}" method="POST" class="mb-2">
+                        @csrf
+                        @method('PUT')
+                        @if($shipment->status === 'processing')
+                        <input type="hidden" name="status" value="shipped">
+                        <button type="submit" class="btn btn-info w-100 mb-2">
+                            <i class="bi bi-box-seam me-2"></i>Mark as Shipped
+                        </button>
+                        @elseif($shipment->status === 'shipped')
+                        <input type="hidden" name="status" value="in_transit">
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-truck me-2"></i>Mark in Transit
+                        </button>
+                        @elseif($shipment->status === 'in_transit')
+                        <input type="hidden" name="status" value="delivered">
+                        <button type="submit" class="btn btn-success w-100 mb-2">
+                            <i class="bi bi-check-circle me-2"></i>Mark as Delivered
+                        </button>
+                        @endif
+                    </form>
+                    @else
+                    <div class="text-center">
+                        <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                        <p class="text-success mt-2 mb-0">Delivery Complete!</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
         </div>
 
         <!-- Status & Actions -->
@@ -189,44 +227,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Quick Actions -->
-            @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'supplier' && $shipment->supplier_id === Auth::user()->id))
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
-                </div>
-                <div class="card-body">
-                    @if($shipment->status !== 'delivered')
-                    <form action="{{ route('shipments.update-status', $shipment) }}" method="POST" class="mb-2">
-                        @csrf
-                        @method('PUT')
-                        @if($shipment->status === 'processing')
-                        <input type="hidden" name="status" value="shipped">
-                        <button type="submit" class="btn btn-info w-100 mb-2">
-                            <i class="bi bi-box-seam me-2"></i>Mark as Shipped
-                        </button>
-                        @elseif($shipment->status === 'shipped')
-                        <input type="hidden" name="status" value="in_transit">
-                        <button type="submit" class="btn btn-primary w-100 mb-2">
-                            <i class="bi bi-truck me-2"></i>Mark in Transit
-                        </button>
-                        @elseif($shipment->status === 'in_transit')
-                        <input type="hidden" name="status" value="delivered">
-                        <button type="submit" class="btn btn-success w-100 mb-2">
-                            <i class="bi bi-check-circle me-2"></i>Mark as Delivered
-                        </button>
-                        @endif
-                    </form>
-                    @else
-                    <div class="text-center">
-                        <i class="bi bi-check-circle-fill text-success fs-1"></i>
-                        <p class="text-success mt-2 mb-0">Delivery Complete!</p>
-                    </div>
-                    @endif
-                </div>
-            </div>
-            @endif
         </div>
     </div>
 </div>

@@ -26,12 +26,16 @@ class RetailerDashboardController extends Controller
 
         // Current period metrics
         $currentOrders = Order::whereBetween('created_at', [$startDate, $endDate])->get();
-        $currentRevenue = $currentOrders->sum('total_amount');
+        $currentRevenue = Order::whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'delivered')
+            ->sum('total_amount');
         $currentOrderCount = $currentOrders->count();
 
         // Previous period metrics for comparison
         $previousOrders = Order::whereBetween('created_at', [$previousStartDate, $previousEndDate])->get();
-        $previousRevenue = $previousOrders->sum('total_amount');
+        $previousRevenue = Order::whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->where('status', 'delivered')
+            ->sum('total_amount');
         $previousOrderCount = $previousOrders->count();
 
         // Calculate percentage changes
@@ -42,6 +46,7 @@ class RetailerDashboardController extends Controller
         $topProducts = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('products', 'order_items.product_id', '=', 'products.id')
             ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->where('orders.status', 'delivered')
             ->select(
                 'products.name',
                 'products.price',
@@ -74,6 +79,7 @@ class RetailerDashboardController extends Controller
 
         // Sales chart data (last 7 days)
         $salesChartData = Order::whereBetween('created_at', [now()->subDays(7), $endDate])
+            ->where('status', 'delivered')
             ->select(
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('COUNT(*) as order_count'),
@@ -102,6 +108,7 @@ class RetailerDashboardController extends Controller
         $categoryPerformance = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('products', 'order_items.product_id', '=', 'products.id')
             ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->where('orders.status', 'delivered')
             ->whereNotNull('products.category')
             ->select(
                 'products.category as name',

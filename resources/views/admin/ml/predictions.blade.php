@@ -30,7 +30,7 @@
     @endif
 
     <!-- Product Statistics Cards -->
-    <div class="row mb-4">
+    <div class="row mb-4">;
         @foreach($productStats as $stat)
         <div class="col-lg-4 col-md-6 mb-3">
             <div class="card shadow-sm h-100">
@@ -71,8 +71,6 @@
                                 <th class="ps-3">Product</th>
                                 <th>Prediction Date</th>
                                 <th>Predicted Quantity</th>
-                                <th>Period</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -30,15 +30,15 @@ class VendorValidationController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:pdf|max:10240', // 10MB max
-            'vendor_id' => 'required|exists:vendors,id',
+            'vendor_id' => 'required|exists:vendors,vendor_id', // Fix: use vendor_id column
         ]);
 
         try {
             $file = $request->file('file');
             $vendorId = $request->input('vendor_id');
 
-            // Get vendor details
-            $vendor = Vendor::findOrFail($vendorId);
+            // Get vendor details using vendor_id column
+            $vendor = Vendor::where('vendor_id', $vendorId)->firstOrFail();
 
             // Call the Java validation service
             $validationResult = $this->callValidationService($file, $vendorId);
@@ -48,7 +48,12 @@ class VendorValidationController extends Controller
 
             // Return response based on validation result
             if ($validationResult['success'] && $validationResult['valid']) {
+                // Update vendor status to Approved
                 Vendor::where('vendor_id', $vendorId)->update(['validation_status' => 'Approved']);
+
+                // Also update associated user certification status if applicable
+                $this->updateAssociatedUserStatus($vendor, 'Approved');
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Document validation successful',
@@ -57,7 +62,9 @@ class VendorValidationController extends Controller
                     'validation_results' => $validationResult['validationResults'] ?? []
                 ], 200);
             } else {
+                // Update vendor status to Rejected
                 Vendor::where('vendor_id', $vendorId)->update(['validation_status' => 'Rejected']);
+
                 return response()->json([
                     'success' => false,
                     'message' => $validationResult['message'] ?? 'Document validation failed',
@@ -83,7 +90,8 @@ class VendorValidationController extends Controller
     public function getValidationHistory($vendorId)
     {
         try {
-            $vendor = Vendor::findOrFail($vendorId);
+            // Use vendor_id column, not Laravel primary key
+            $vendor = Vendor::where('vendor_id', $vendorId)->firstOrFail();
             $validations = VendorValidation::where('vendor_id', $vendorId)
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -158,6 +166,18 @@ class VendorValidationController extends Controller
                 'validation_message' => $validationResult['message'] ?? '',
                 'validated_at' => now()
             ]);
+
+            // Update vendor status based on validation result
+            $newStatus = ($validationResult['success'] && $validationResult['valid']) ? 'Approved' : 'Rejected';
+            Vendor::where('vendor_id', $validation->vendor_id)->update(['validation_status' => $newStatus]);
+
+            // Update associated user status if approved
+            if ($newStatus === 'Approved') {
+                $vendor = Vendor::where('vendor_id', $validation->vendor_id)->first();
+                if ($vendor) {
+                    $this->updateAssociatedUserStatus($vendor, 'Approved');
+                }
+            }
 
             return response()->json([
                 'success' => true,
@@ -265,14 +285,16 @@ class VendorValidationController extends Controller
 
     public function showValidationForm(Request $request)
     {
-
         $vendors = Vendor::orderBy('name')->get();
-        // Check if a vendor_id is provided
+
+        // Check if a vendor_id is provided (this could be either Laravel id or vendor_id)
         $vendorId = $request->query('vendor_id');
         $vendor = null;
 
         if ($vendorId) {
-            $vendor = Vendor::findOrFail($vendorId);
+            // Try to find by vendor_id column first, then by Laravel id
+            $vendor = Vendor::where('vendor_id', $vendorId)->first()
+                ?? Vendor::find($vendorId);
         }
 
         // Get pending vendors that need validation
@@ -352,24 +374,39 @@ class VendorValidationController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
-        $vendor = VendorValidation::findOrFail($id);
-        $vendor->validation_message = $request->message;
-        $vendor->save();
+        DB::beginTransaction();
 
-        $vendor = Vendor::findOrFail($id);
-        $vendor->validation_status = $request->status;
-        $vendor->save();
+        try {
+            // Find the validation record first
+            $validation = VendorValidation::findOrFail($id);
 
-        // If vendor is approved, update supplier status if applicable
-        if ($request->status === 'Approved' && $vendor->supplier_id) {
-            $supplier = Supplier::where('supplier_id', $vendor->supplier_id)->first();
-            if ($supplier) {
-                $supplier->status = 'active';
-                $supplier->save();
+            // Update the validation record
+            $validation->update([
+                'validation_message' => $request->message,
+                'is_valid' => $request->status === 'Approved',
+                'validated_at' => now()
+            ]);
+
+            // Update the vendor status
+            $vendor = Vendor::where('vendor_id', $validation->vendor_id)->first();
+            if (!$vendor) {
+                throw new Exception('Associated vendor not found');
             }
-        }
 
-        return back()->with('success', "Vendor status updated to {$request->status}");
+            $vendor->update(['validation_status' => $request->status]);
+
+            // Update associated user status if approved
+            if ($request->status === 'Approved') {
+                $this->updateAssociatedUserStatus($vendor, 'Approved');
+            }
+
+            DB::commit();
+            return back()->with('success', "Vendor status updated to {$request->status}");
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating vendor status: ' . $e->getMessage());
+            return back()->with('error', 'Failed to update vendor status: ' . $e->getMessage());
+        }
     }
 
     public function updateVendorStatusManual(Request $request, $id)
@@ -379,66 +416,42 @@ class VendorValidationController extends Controller
             'message' => 'nullable|string|max:500',
         ]);
 
-        $vendor = Vendor::findOrFail($id);
+        DB::beginTransaction();
 
-        $vendor->validation_status = $request->status;
-        $vendor->save();
+        try {
+            // Find vendor by Laravel primary key (id)
+            $vendor = Vendor::findOrFail($id);
 
-        $validation = VendorValidation::updateOrCreate(
-            ['vendor_id' => $vendor->vendor_id],
-            [
-                'original_filename' => basename($vendor->pdf_path ?? 'manual-validation'),
-                'file_path' => $vendor->pdf_path,
-                'file_size' => 0,
-                'is_valid' => $request->status === 'Approved' ? 1 : 0,
-                'validation_message' => $request->message ?? 'Manual Validation',
-                'validated_at' => now()
-            ]
-        );
+            // Update vendor status
+            $vendor->update(['validation_status' => $request->status]);
 
-        if ($request->status === 'Approved' && $vendor->vendor_id) {
-            if ($vendor->supplier_id) {
-                if ($vendor) {
-                    DB::table('vendors')
-                        ->where('vendor_id', $vendor->vendor_id)
-                        ->update([
-                            'validation_status' => 'Approved'
-                        ]);
-                }
+            // Create or update validation record
+            $validation = VendorValidation::updateOrCreate(
+                ['vendor_id' => $vendor->vendor_id],
+                [
+                    'original_filename' => basename($vendor->pdf_path ?? 'manual-validation'),
+                    'file_path' => $vendor->pdf_path,
+                    'file_size' => 0,
+                    'is_valid' => $request->status === 'Approved',
+                    'validation_message' => $request->message ?? 'Manual Validation',
+                    'validated_at' => now()
+                ]
+            );
 
-                $supplier = DB::table('suppliers')->where('supplier_id', $vendor->supplier_id)->first();
-                if ($supplier) {
-                    DB::table('suppliers')
-                        ->where('supplier_id', $vendor->supplier_id)
-                        ->update([
-                            'status' => 'active'
-                        ]);
-                }
-            } else {
-                if ($vendor) {
-                    DB::table('vendors')
-                        ->where('vendor_id', $vendor->vendor_id)
-                        ->update([
-                            'validation_status' => 'Approved'
-                        ]);
-                }
+            // Update associated user and supplier status if approved
+            if ($request->status === 'Approved') {
+                $this->updateAssociatedUserStatus($vendor, 'Approved');
             }
-        }
 
-        if ($request->status === 'Approved') {
-            $userId = $vendor->supplier_id ?? $vendor->retailer_id;
-            if ($userId) {
-                $user = User::find($userId);
-                if ($user) {
-                    $user->update([
-                        'certification_status' => 'Approved',
-                    ]);
-                }
-            }
+            DB::commit();
+            return redirect()->route('admin.vendor-validation')
+                ->with('success', "Vendor status updated to {$request->status}");
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating vendor status manually: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Failed to update vendor status: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.vendor-validation')
-            ->with('success', "Vendor status updated to {$request->status}");
     }
 
     /**
@@ -496,5 +509,38 @@ class VendorValidationController extends Controller
         }
 
         return route($routePrefix . 'vendor-validation.download', $document);
+    }
+
+    /**
+     * Helper method to update associated user and supplier status when vendor is approved
+     *
+     * @param Vendor $vendor
+     * @param string $status
+     * @return void
+     */
+    private function updateAssociatedUserStatus($vendor, $status)
+    {
+        try {
+            if ($status === 'Approved') {
+                // Update associated supplier status if exists
+                if ($vendor->supplier_id) {
+                    $supplier = Supplier::where('supplier_id', $vendor->supplier_id)->first();
+                    if ($supplier) {
+                        $supplier->update(['status' => 'active']);
+                    }
+                }
+
+                // Update associated user certification status
+                $userId = $vendor->supplier_id ?? $vendor->retailer_id;
+                if ($userId) {
+                    $user = User::find($userId);
+                    if ($user) {
+                        $user->update(['certification_status' => 'Approved']);
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            Log::warning('Failed to update associated user status: ' . $e->getMessage());
+        }
     }
 }

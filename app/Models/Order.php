@@ -152,16 +152,6 @@ class Order extends Model
     }
 
     /**
-     * Get the promotions applied to this order.
-     */
-    public function promotions()
-    {
-        return $this->belongsToMany(Promotion::class, 'order_promotions')
-            ->withPivot('discount_amount')
-            ->withTimestamps();
-    }
-
-    /**
      * Calculate profit for this order.
      */
     public function getProfit()

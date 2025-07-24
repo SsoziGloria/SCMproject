@@ -105,8 +105,8 @@ class ReportController extends Controller
      */
     private function generateReportData($type, $dateFrom, $dateTo)
     {
-        $from = Carbon::parse($dateFrom);
-        $to = Carbon::parse($dateTo);
+        $from = Carbon::parse($dateFrom)->startOfDay();
+        $to = Carbon::parse($dateTo)->endOfDay();
 
         switch ($type) {
             case 'sales':
@@ -173,18 +173,21 @@ class ReportController extends Controller
 
     private function generateMLAnalysisReportData($from, $to)
     {
-        // For customer segments, check if updated_at exists, otherwise use created_at only
-        $segmentsQuery = CustomerSegment::query();
+        // For ML data, we should include recent data even if slightly outside date range
+        // Customer segments: include all segments from 30 days before start date to now
+        $segmentStartDate = $from->copy()->subDays(30);
+        $segmentEndDate = now();
+
         try {
-            $segments = $segmentsQuery->whereBetween('created_at', [$from, $to])->get();
+            $segments = CustomerSegment::whereBetween('created_at', [$segmentStartDate, $segmentEndDate])->get();
         } catch (\Exception $e) {
-            // If created_at filtering fails, get all segments
+            // If date filtering fails, get all segments
             $segments = CustomerSegment::all();
         }
 
-        // For demand predictions, filter by prediction_date
+        // For demand predictions, include predictions for the report period and future predictions
         try {
-            $predictions = DemandPrediction::whereBetween('prediction_date', [$from, $to])->get();
+            $predictions = DemandPrediction::whereBetween('prediction_date', [$from, $to->copy()->addDays(30)])->get();
         } catch (\Exception $e) {
             // If date filtering fails, get all predictions
             $predictions = DemandPrediction::all();
@@ -192,23 +195,32 @@ class ReportController extends Controller
 
         return [
             'period' => "{$from->format('Y-m-d')} to {$to->format('Y-m-d')}",
+            'note' => 'ML data includes recent analysis and future predictions',
             'customer_segments' => [
                 'total_segments' => $segments->count(),
+                'analysis_date_range' => $segments->count() > 0 ? [
+                    'from' => $segments->min('created_at'),
+                    'to' => $segments->max('created_at')
+                ] : null,
                 'cluster_breakdown' => $segments->groupBy('cluster')->map(function ($cluster) {
                     return [
                         'count' => $cluster->count(),
-                        'avg_quantity' => $cluster->avg('total_quantity'),
+                        'avg_quantity' => round($cluster->avg('total_quantity'), 2),
                         'total_quantity' => $cluster->sum('total_quantity')
                     ];
                 })
             ],
             'demand_predictions' => [
                 'total_predictions' => $predictions->count(),
-                'total_predicted_demand' => $predictions->sum('predicted_quantity'),
-                'avg_predicted_demand' => $predictions->avg('predicted_quantity'),
+                'prediction_date_range' => $predictions->count() > 0 ? [
+                    'from' => $predictions->min('prediction_date'),
+                    'to' => $predictions->max('prediction_date')
+                ] : null,
+                'total_predicted_demand' => round($predictions->sum('predicted_quantity'), 2),
+                'avg_predicted_demand' => round($predictions->avg('predicted_quantity'), 2),
                 'top_predicted_products' => $predictions->groupBy('product_id')
                     ->map(function ($productPredictions) {
-                        return $productPredictions->sum('predicted_quantity');
+                        return round($productPredictions->sum('predicted_quantity'), 2);
                     })->sortDesc()->take(10)
             ]
         ];
@@ -216,16 +228,27 @@ class ReportController extends Controller
 
     private function generateCustomerSegmentsReportData($from, $to)
     {
-        $segments = CustomerSegment::whereBetween('created_at', [$from, $to])->get();
+        // Include segments from 30 days before start date to ensure we capture recent ML analysis
+        $segmentStartDate = $from->copy()->subDays(30);
+        $segmentEndDate = now();
+
+        $segments = CustomerSegment::whereBetween('created_at', [$segmentStartDate, $segmentEndDate])->get();
+
+        // If no segments found in extended range, get all segments
+        if ($segments->count() === 0) {
+            $segments = CustomerSegment::all();
+        }
 
         return [
             'period' => "{$from->format('Y-m-d')} to {$to->format('Y-m-d')}",
+            'note' => 'Includes recent customer segmentation analysis',
             'total_customers_segmented' => $segments->count(),
+            'analysis_performed_at' => $segments->count() > 0 ? $segments->first()->created_at : null,
             'clusters' => $segments->groupBy('cluster')->map(function ($cluster, $clusterNum) {
                 return [
                     'cluster_number' => $clusterNum,
                     'customer_count' => $cluster->count(),
-                    'avg_quantity' => $cluster->avg('total_quantity'),
+                    'avg_quantity' => round($cluster->avg('total_quantity'), 2),
                     'total_quantity' => $cluster->sum('total_quantity'),
                     'recommended_strategy' => $this->getMarketingStrategy($clusterNum),
                     'customers' => $cluster->take(10)->map(function ($segment) {
@@ -242,12 +265,28 @@ class ReportController extends Controller
 
     private function generateDemandForecastReportData($from, $to)
     {
-        $predictions = DemandPrediction::with('product')->whereBetween('prediction_date', [$from, $to])->get();
+        // Include predictions for the report period and extend to future predictions
+        // Note: demand_predictions table only has prediction_date, not created_at
+        $predictions = DemandPrediction::with('product')
+            ->whereBetween('prediction_date', [$from, $to->copy()->addDays(60)])
+            ->get();
+
+        // If no predictions found with extended range, get all predictions
+        if ($predictions->count() === 0) {
+            $predictions = DemandPrediction::with('product')->get();
+        }
 
         return [
             'period' => "{$from->format('Y-m-d')} to {$to->format('Y-m-d')}",
+            'note' => 'Includes current and future demand predictions',
             'total_predictions' => $predictions->count(),
+            'prediction_date_range' => $predictions->count() > 0 ? [
+                'from' => $predictions->min('prediction_date'),
+                'to' => $predictions->max('prediction_date')
+            ] : null,
             'forecast_accuracy' => 'N/A', // Would need historical comparison
+            'total_predicted_demand' => round($predictions->sum('predicted_quantity'), 2),
+            'avg_predicted_demand' => round($predictions->avg('predicted_quantity'), 2),
             'product_forecasts' => $predictions->groupBy('product_id')->map(function ($productPredictions, $productId) {
                 $totalPredicted = $productPredictions->sum('predicted_quantity');
                 $avgPredicted = $productPredictions->avg('predicted_quantity');
@@ -255,10 +294,11 @@ class ReportController extends Controller
                 return [
                     'product_id' => $productId,
                     'product_name' => $productPredictions->first()->product->name ?? 'Unknown',
-                    'total_predicted_demand' => $totalPredicted,
-                    'average_predicted_demand' => $avgPredicted,
+                    'total_predicted_demand' => round($totalPredicted, 2),
+                    'average_predicted_demand' => round($avgPredicted, 2),
                     'recommended_stock_level' => ceil($avgPredicted * 1.2),
-                    'prediction_count' => $productPredictions->count()
+                    'prediction_count' => $productPredictions->count(),
+                    'prediction_dates' => $productPredictions->pluck('prediction_date')->unique()->sort()->values()
                 ];
             })->sortByDesc('total_predicted_demand')
         ];

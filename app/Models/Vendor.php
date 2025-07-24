@@ -54,7 +54,7 @@ class Vendor extends Model
      */
     public function validations(): HasMany
     {
-        return $this->hasMany(VendorValidation::class);
+        return $this->hasMany(VendorValidation::class, 'vendor_id', 'vendor_id');
     }
 
     /**
@@ -62,7 +62,7 @@ class Vendor extends Model
      */
     public function latestValidation()
     {
-        return $this->hasOne(VendorValidation::class)->latest('validated_at');
+        return $this->hasOne(VendorValidation::class, 'vendor_id', 'vendor_id')->latest('validated_at');
     }
 
     /**
@@ -70,7 +70,7 @@ class Vendor extends Model
      */
     public function validValidations(): HasMany
     {
-        return $this->hasMany(VendorValidation::class)->where('is_valid', true);
+        return $this->hasMany(VendorValidation::class, 'vendor_id', 'vendor_id')->where('is_valid', true);
     }
 
     /**

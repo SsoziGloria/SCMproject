@@ -99,7 +99,7 @@
                     <div class="quick-stats">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span>This Month Revenue</span>
-                            <span class="fw-bold" style="color: #d98323;">UGX {{ number_format(\App\Models\Order::whereBetween('created_at', [now()->startOfMonth(), now()])->sum('total_amount'), 0) }}</span>
+                            <span class="fw-bold" style="color: #d98323;">UGX {{ number_format(\App\Models\Order::whereBetween('created_at', [now()->startOfMonth(), now()])->where('status', 'delivered')->sum('total_amount'), 0) }}</span>
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">

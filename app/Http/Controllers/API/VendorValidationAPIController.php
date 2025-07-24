@@ -52,6 +52,8 @@ class VendorValidationAPIController extends Controller
 
         $validation->validation_results = $validationResult['validationResults'] ?? null;
 
+        $validation->validated_at = now();
+
         $validation->save();
 
         if (!$validation->is_valid) {
@@ -67,7 +69,7 @@ class VendorValidationAPIController extends Controller
             ]);
         }
 
-        if ($validation->is_valid === 1) {
+        if ($validation->is_valid) {
             DB::table('vendors')
                 ->where('vendor_id', $validation->vendor_id)
                 ->update([
@@ -178,7 +180,7 @@ class VendorValidationAPIController extends Controller
             ]);
         }
 
-        if ($validation->is_valid === 1) {
+        if ($validation->is_valid) {
             DB::table('vendors')
                 ->where('vendor_id', $validation->vendor_id)
                 ->update([

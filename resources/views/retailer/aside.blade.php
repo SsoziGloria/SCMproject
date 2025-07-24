@@ -20,8 +20,13 @@ $orderManagementRoutes = [
 
     $productManagementRoutes = [
         'products.index',
+        'products.create',
+        'products.show',
+        'products.edit',
         'products',
         'categories.index',
+        'categories.create',
+        'categories.show',
         'categories.edit',
         'productReviews.index',
         'productReviews.create',
@@ -37,10 +42,23 @@ $orderManagementRoutes = [
         }
     }
 
+    $shipmentRoutes = [
+        'shipments.index',
+        'shipments.create',
+        'shipments.edit',
+        'shipments.show',
+    ];
+
     $inventoryRoutes = [
         'inventories.index',
+        'inventories.create',
+        'inventories.edit',
+        'inventories.show',
         'inventories.reorders',
         'inventories.adjustments',
+        'inventories.adjustments.create',
+        'inventories.export',
+        'inventories.history',
     ];
 
     $isInventoryActive = false;
@@ -59,6 +77,8 @@ $orderManagementRoutes = [
         'retailer.reports.index',
         'retailer.reports.generate',
         'retailer.reports.download',
+        'analytics',
+        'sales',
     ];
 
     $isAnalyticsActive = false;
@@ -82,6 +102,20 @@ $orderManagementRoutes = [
         }
     }
 
+    $vendorRoutes = [
+        'vendor.verification.form',
+        'vendor.verification.pending',
+        'vendor.verification.approved',
+    ];
+
+    $isVendorActive = false;
+    foreach ($vendorRoutes as $route) {
+        if (request()->routeIs($route)) {
+            $isVendorActive = true;
+            break;
+        }
+    }
+
 @endphp
 
 <aside id="sidebar" class="sidebar">
@@ -99,10 +133,10 @@ $orderManagementRoutes = [
         <!-- Begin Order Management Nav -->
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs($orderManagementRoutes) ? '' : 'collapsed' }}"
-                data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+                data-bs-target="#orders-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-swap-box-line"></i><span>Order Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="tables-nav" class="nav-content collapse {{ $isorderManagementActive ? 'show' : '' }}"
+            <ul id="orders-nav" class="nav-content collapse {{ $isorderManagementActive ? 'show' : '' }}"
                 data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="{{ route('orders.index') }}"
@@ -137,16 +171,29 @@ $orderManagementRoutes = [
             </ul>
         </li><!-- End Order Management Nav -->
 
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('shipments.index') ? '' : 'collapsed' }}"
+                href="{{ route('shipments.index') }}" class="nav-link {{ request()->routeIs($shipmentRoutes) ? 'active' : 'collapsed' }}">
+                <i class="bi bi-truck"></i>
+                <span>Shipments</span>
+            </a>
+        </li><!-- End Shipment Management Nav -->
+
         <!-- Product Management Nav -->
         <li class="nav-item">
-            <a class="nav-link {{ $isProductManagementActive ? '' : 'collapsed' }}" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{ $isProductManagementActive ? '' : 'collapsed' }}" data-bs-target="#products-nav" data-bs-toggle="collapse" href="#">
                 <i class="ri-shopping-bag-2-line"></i><span>Product Catalog</span><i
                     class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="forms-nav" class="nav-content collapse {{ $isProductManagementActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+            <ul id="products-nav" class="nav-content collapse {{ $isProductManagementActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.index') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>All Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('products.create') }}" class="nav-link {{ request()->routeIs('products.create') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Add Product</span>
                     </a>
                 </li>
                 <li>
@@ -159,22 +206,22 @@ $orderManagementRoutes = [
                         <i class="bi bi-circle"></i><span>Product Reviews</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('stockLevels.index') }}" class="nav-link {{ request()->routeIs('stockLevels.index') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Stock Levels</span>
-                    </a>
-                </li>
             </ul>
         </li><!-- End Product Management Nav -->
 
         <li class="nav-item">
-            <a class="nav-link {{ $isInventoryActive ? '' : 'collapsed' }}" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-                <i class="ri-clipboard-line"></i><span>Inventory</span><i class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link {{ $isInventoryActive ? '' : 'collapsed' }}" data-bs-target="#inventory-nav" data-bs-toggle="collapse" href="#">
+                <i class="ri-clipboard-line"></i><span>Inventory Management</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="tables-nav" class="nav-content collapse {{ $isInventoryActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+            <ul id="inventory-nav" class="nav-content collapse {{ $isInventoryActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="{{ route('inventories.index') }}" class="nav-link {{ request()->routeIs('inventories.index') ? 'active' : 'collapsed' }}">
                         <i class="bi bi-circle"></i><span>Current Stock</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('inventories.create') }}" class="nav-link {{ request()->routeIs('inventories.create') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Add New Item</span>
                     </a>
                 </li>
                 <li>
@@ -188,41 +235,7 @@ $orderManagementRoutes = [
                     </a>
                 </li>
             </ul>
-        </li><!-- End Inventory Nav -->
-
-        <!-- Analytics & Reports Nav -->
-        <li class="nav-item">
-            <a class="nav-link {{ $isAnalyticsActive ? '' : 'collapsed' }}" data-bs-target="#analytics-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-bar-chart"></i><span>Analytics & Reports</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="analytics-nav" class="nav-content collapse {{ $isAnalyticsActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{ route('retailer.analytics.index') }}" class="nav-link {{ request()->routeIs('retailer.analytics.index') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Analytics Overview</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('retailer.analytics.sales') }}" class="nav-link {{ request()->routeIs('retailer.analytics.sales') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Sales Analytics</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('retailer.analytics.inventory') }}" class="nav-link {{ request()->routeIs('retailer.analytics.inventory') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Inventory Analytics</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('retailer.analytics.customers') }}" class="nav-link {{ request()->routeIs('retailer.analytics.customers') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Customer Analytics</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('retailer.reports.index') }}" class="nav-link {{ request()->routeIs('retailer.reports.index') ? 'active' : 'collapsed' }}">
-                        <i class="bi bi-circle"></i><span>Generate Reports</span>
-                    </a>
-                </li>
-            </ul>
-        </li><!-- End Analytics & Reports Nav -->
+        </li>
 
         <li class="nav-item">
             <a class="nav-link {{ $isSupplierActive ? '' : 'collapsed' }}" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
@@ -241,6 +254,20 @@ $orderManagementRoutes = [
                 </li>
             </ul>
         </li><!-- End mySupplier Nav -->
+
+        <!-- Vendor Verification Nav -->
+        <li class="nav-item">
+            <a class="nav-link {{ $isVendorActive ? '' : 'collapsed' }}" data-bs-target="#vendor-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-shield-check"></i><span>Vendor Verification</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="vendor-nav" class="nav-content collapse {{ $isVendorActive ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{{ route('vendor.verification.form') }}" class="nav-link {{ request()->routeIs('vendor.verification.form') ? 'active' : 'collapsed' }}">
+                        <i class="bi bi-circle"></i><span>Submit Verification</span>
+                    </a>
+                </li>
+            </ul>
+        </li><!-- End Vendor Verification Nav -->
 
         <li class="nav-heading">Communication</li>
 

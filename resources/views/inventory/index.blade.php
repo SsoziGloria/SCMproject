@@ -17,9 +17,9 @@
             <a href="{{ route('inventories.create') }}" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-1"></i> Add New Stock
             </a>
-            <a href="{{ route('inventories.export') }}" class="btn btn-outline-success ms-2">
+            {{-- <a href="{{ route('inventories.export') }}" class="btn btn-outline-success ms-2">
                 <i class="bi bi-file-earmark-excel me-1"></i> Export
-            </a>
+            </a> --}}
         </div>
     </div>
 
@@ -113,7 +113,6 @@
                             <th>Supplier</th>
                             <th>Location</th>
                             <th>Expiration</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,7 +129,7 @@
                                     @endif
                                     <div>
                                         <div class="fw-bold">{{ $item->product_name }}</div>
-                                        <small class="text-muted">SKU: {{ $item->product->sku ?? 'N/A' }}</small>
+                                        <small class="text-muted">ID: {{ $item->product->product_id ?? 'N/A' }}</small>
                                     </div>
                                 </div>
                             </td>
@@ -170,7 +169,7 @@
                                     @endif
                             </td>
                             <td>
-                                <div class="dropdown">
+                                {{-- <div class="dropdown">
                                     <button class="btn btn-sm btn-light dropdown-toggle" type="button"
                                         data-bs-toggle="dropdown">
                                         Actions
@@ -196,7 +195,7 @@
                                             </form>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> --}}
                             </td>
                         </tr>
                         @empty
@@ -225,7 +224,6 @@
         </div>
     </div>
 
-    <!-- Pending Orders Affecting Inventory -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
@@ -243,7 +241,6 @@
                                     <th>Date</th>
                                     <th>Status</th>
                                     <th>Products</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -399,7 +396,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        {{-- <div class="col-xl-3 col-md-6">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
@@ -416,7 +413,7 @@
                     <i class="bi bi-chevron-right text-danger"></i>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>
 @endsection

@@ -23,7 +23,10 @@ class CheckRole
         $user = Auth::user();
 
         foreach ($roles as $role) {
+            $role = trim($role);
+
             if ($user->role === $role) {
+                \Log::info('CheckRole: Access granted for role', ['role' => $role]);
                 return $next($request);
             }
         }

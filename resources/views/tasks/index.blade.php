@@ -4,11 +4,8 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-primary fw-bold">🎯 Task Management</h2>
+    <h2 class="text-primary fw-bold">Task Management</h2>
     <div>
-        <a href="{{ route('tasks.auto-assign') }}" class="btn btn-primary me-2">
-            <i class="bi bi-magic"></i> Run Auto-Assign
-        </a>
         <a href="{{ route('tasks.create') }}" class="btn btn-success">
             <i class="bi bi-plus-circle-fill"></i> Add New Task
         </a>

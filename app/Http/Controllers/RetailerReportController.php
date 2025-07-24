@@ -79,7 +79,7 @@ class RetailerReportController extends Controller
             ->with(['items.product', 'user'])
             ->get();
 
-        $totalRevenue = $orders->sum('total_amount');
+        $totalRevenue = $orders->where('status', 'delivered')->sum('total_amount');
         $totalOrders = $orders->count();
         $averageOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
 
@@ -87,6 +87,7 @@ class RetailerReportController extends Controller
         $topProducts = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('products', 'order_items.product_id', '=', 'products.id')
             ->whereBetween('orders.created_at', [$dateFrom, $dateTo])
+            ->where('orders.status', 'delivered')
             ->select(
                 'products.name',
                 DB::raw('SUM(order_items.quantity) as total_quantity'),
@@ -99,6 +100,7 @@ class RetailerReportController extends Controller
 
         // Daily sales data for chart
         $dailySales = Order::whereBetween('created_at', [$dateFrom, $dateTo])
+            ->where('status', 'delivered')
             ->select(
                 DB::raw('DATE(created_at) as date'),
                 DB::raw('COUNT(*) as order_count'),
@@ -176,7 +178,7 @@ class RetailerReportController extends Controller
 
         // Customer spending analysis
         $customerSpending = $customers->map(function ($customer) {
-            $totalSpent = $customer->orders->sum('total_amount');
+            $totalSpent = $customer->orders->where('status', 'delivered')->sum('total_amount');
             $orderCount = $customer->orders->count();
             return [
                 'name' => $customer->name,

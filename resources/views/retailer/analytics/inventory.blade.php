@@ -13,7 +13,6 @@
 </div><!-- End Page Title -->
 
 <section class="section">
-    <!-- Inventory Overview Cards -->
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6">
             <div class="card text-center">
@@ -55,7 +54,7 @@
             <div class="card text-center">
                 <div class="card-body">
                     <div class="mb-3">
-                        <i class="bi bi-currency-dollar display-4" style="color: #d98323;"></i>
+                        <i class="bi bi-currency-exchange display-4" style="color: #d98323;"></i>
                     </div>
                     <h4>UGX {{ number_format($inventoryData['total_inventory_value'] ?? 0, 0) }}</h4>
                     <p class="text-muted mb-0">Total Inventory Value</p>

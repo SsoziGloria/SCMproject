@@ -55,6 +55,7 @@ class AnalyticsController extends Controller
     private function getTotalRevenue()
     {
         return Order::where('payment_status', 'paid')
+            ->where('status', 'delivered')
             ->sum('total_amount');
     }
 
@@ -87,11 +88,13 @@ class AnalyticsController extends Controller
         $currentMonth = Order::whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->where('payment_status', 'paid')
+            ->where('status', 'delivered')
             ->sum('total_amount');
 
         $lastMonth = Order::whereMonth('created_at', Carbon::now()->subMonth()->month)
             ->whereYear('created_at', Carbon::now()->subMonth()->year)
             ->where('payment_status', 'paid')
+            ->where('status', 'delivered')
             ->sum('total_amount');
 
         return $lastMonth > 0 ? round((($currentMonth - $lastMonth) / $lastMonth) * 100, 1) : 0;
@@ -394,6 +397,7 @@ class AnalyticsController extends Controller
     private function getMonthlyRevenue()
     {
         return Order::where('payment_status', 'paid')
+            ->where('status', 'delivered')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->sum('total_amount');
@@ -402,6 +406,7 @@ class AnalyticsController extends Controller
     private function getDailyRevenue()
     {
         return Order::where('payment_status', 'paid')
+            ->where('status', 'delivered')
             ->whereDate('created_at', Carbon::today())
             ->sum('total_amount');
     }
@@ -416,6 +421,7 @@ class AnalyticsController extends Controller
             )
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.payment_status', 'paid')
+            ->where('orders.status', 'delivered')
             ->groupBy('order_items.product_name')
             ->orderByDesc('total_revenue')
             ->limit(10)
@@ -432,6 +438,7 @@ class AnalyticsController extends Controller
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->join('products', 'products.id', '=', 'order_items.product_id')
             ->where('orders.payment_status', 'paid')
+            ->where('orders.status', 'delivered')
             ->groupBy('products.category')
             ->orderByDesc('total_revenue')
             ->get();

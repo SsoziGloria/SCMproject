@@ -302,7 +302,7 @@
           <h5 class="card-title">Total Value</h5>
           <div class="d-flex align-items-center">
             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-              <i class="bi bi-currency-dollar"></i>
+              <i class="bi bi-currency-exchange"></i>
             </div>
             <div class="ps-3">
               <h6>UGX {{ number_format($totalInventoryValue, 0) }}</h6>

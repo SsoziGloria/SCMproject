@@ -133,7 +133,7 @@ class RetailerSalesController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
-        $totalSales = $currentOrders->sum('total_amount');
+        $totalSales = $currentOrders->where('status', 'delivered')->sum('total_amount');
         $orderCount = $currentOrders->count();
         $averageOrder = $orderCount > 0 ? $totalSales / $orderCount : 0;
 
@@ -150,7 +150,7 @@ class RetailerSalesController extends Controller
             ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
             ->get();
 
-        $previousTotalSales = $previousOrders->sum('total_amount');
+        $previousTotalSales = $previousOrders->where('status', 'delivered')->sum('total_amount');
         $previousOrderCount = $previousOrders->count();
         $previousAverageOrder = $previousOrderCount > 0 ? $previousTotalSales / $previousOrderCount : 0;
 

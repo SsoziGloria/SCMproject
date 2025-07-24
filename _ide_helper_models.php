@@ -243,8 +243,6 @@ namespace App\Models{
  * @property-read \App\Models\Product|null $product
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Promotion> $promotions
- * @property-read int|null $promotions_count
  * @property-read \App\Models\Retailer|null $retailer
  * @property-read \App\Models\SalesChannel|null $salesChannel
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Shipment> $shipments
@@ -433,37 +431,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductReview whereUpdatedAt($value)
  */
 	class ProductReview extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property string $name
- * @property string|null $code
- * @property string $discount_type
- * @property string $discount_value
- * @property \Illuminate\Support\Carbon $start_date
- * @property \Illuminate\Support\Carbon $end_date
- * @property bool $is_active
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
- * @property-read int|null $orders_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereDiscountType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereDiscountValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereEndDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereStartDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Promotion whereUpdatedAt($value)
- */
-	class Promotion extends \Eloquent {}
 }
 
 namespace App\Models{

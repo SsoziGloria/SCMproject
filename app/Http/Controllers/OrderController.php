@@ -64,7 +64,6 @@ class OrderController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
-                    ->orWhere('customer_name', 'like', "%{$search}%")
                     ->orWhereHas('items.product', function ($q2) use ($search) {
                         $q2->where('name', 'like', "%{$search}%");
                     });

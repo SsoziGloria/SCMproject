@@ -47,7 +47,6 @@ class EnsureVendorVerified
             return redirect()->route('vendor.verification.form')
                 ->with('error', 'Your vendor verification was rejected. Please submit again.');
         } elseif ($vendor->validation_status !== 'Approved') {
-            // Any other status (or null/empty status)
             return redirect()->route('vendor.verification.form')
                 ->with('error', 'Your vendor verification status is invalid. Please contact support.');
         }

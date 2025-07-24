@@ -22,11 +22,20 @@ class VendorController extends Controller
      */
     public function showVerificationForm()
     {
-        $vendor = Vendor::where('supplier_id', Auth::id())->first();
+        $vendor = null;
+
+        if (Auth::user()->role === 'supplier') {
+            $vendor = Vendor::where('supplier_id', Auth::id())->first();
+        } else {
+            $vendor = Vendor::where('retailer_id', Auth::id())->first();
+        }
 
         if ($vendor) {
             if ($vendor->validation_status === 'Approved') {
                 return $this->showApprovedStatus($vendor);
+            } elseif ($vendor->validation_status === 'Rejected') {
+                // Allow resubmission for rejected vendors
+                return view('vendor.verification.form', compact('vendor'));
             } else {
                 return $this->showPendingStatus($vendor);
             }
@@ -109,23 +118,27 @@ class VendorController extends Controller
                 ]);
             }
         } else {
-            $vendor = Vendor::create([
-                'name' => Auth::user()->name,
-                'email' => $validated['email'],
-                'company_name' => $validated['company_name'],
-                'contact_person' => $validated['contact_person'],
-                'phone' => $validated['phone'],
-                'address' => $validated['address'],
-                'country' => $validated['country'],
-                'bank_name' => $validated['bank_name'],
-                'account_number' => null,
-                'monthly_revenue' => null,
-                'revenue' => null,
-                'certification' => null,
-                'pdf_path' => $fileName,
-                'retailer_id' => Auth::id(),
-                'visit_date' => Carbon::now()->addDays(rand(2, 7)),
-            ]);
+            $vendor = Vendor::updateOrCreate(
+                ['retailer_id' => Auth::id()],
+                [
+                    'name' => Auth::user()->name,
+                    'email' => $validated['email'],
+                    'company_name' => $validated['company_name'],
+                    'contact_person' => $validated['contact_person'],
+                    'phone' => $validated['phone'],
+                    'address' => $validated['address'],
+                    'country' => $validated['country'],
+                    'bank_name' => $validated['bank_name'],
+                    'account_number' => null,
+                    'monthly_revenue' => null,
+                    'revenue' => null,
+                    'certification' => null,
+                    'pdf_path' => $fileName,
+                    'validation_status' => 'Pending',
+                    'retailer_id' => Auth::id(),
+                    'visit_date' => Carbon::now()->addDays(rand(2, 7)),
+                ]
+            );
         }
 
         $systemUser = User::where('email', 'system@chocolatescm')->first();
@@ -144,10 +157,14 @@ class VendorController extends Controller
     /**
      * Show pending verification status
      */
-    public function showPendingStatus(Vendor $vendor)
+    public function showPendingStatus(Vendor $vendor = null)
     {
         if (!$vendor) {
-            $vendor = Vendor::where('supplier_id', Auth::id())->first();
+            if (Auth::user()->role === 'supplier') {
+                $vendor = Vendor::where('supplier_id', Auth::id())->first();
+            } else {
+                $vendor = Vendor::where('retailer_id', Auth::id())->first();
+            }
 
             if (!$vendor) {
                 return redirect()->route('vendor.verification.form');
@@ -160,10 +177,14 @@ class VendorController extends Controller
     /**
      * Show approved verification status
      */
-    public function showApprovedStatus(Vendor $vendor)
+    public function showApprovedStatus(Vendor $vendor = null)
     {
         if (!$vendor) {
-            $vendor = Vendor::where('supplier_id', Auth::id())->first();
+            if (Auth::user()->role === 'supplier') {
+                $vendor = Vendor::where('supplier_id', Auth::id())->first();
+            } else {
+                $vendor = Vendor::where('retailer_id', Auth::id())->first();
+            }
 
             if (!$vendor || $vendor->validation_status !== 'Approved') {
                 return redirect()->route('vendor.verification.pending');

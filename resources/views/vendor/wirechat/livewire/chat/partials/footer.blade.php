@@ -146,7 +146,7 @@
                                         <span class=" p-2">
                                             {{-- document svg:HI --}}
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                fill="currentColor" class="w-8 h-8 text-gray-500 dark:text-gray-100">
+                                                fill="currentColor" class="w-8 h-8 text-black dark:text-gray-100">
                                                 <path
                                                     d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625Z" />
                                                 <path
@@ -154,7 +154,7 @@
                                             </svg>
                                         </span>
 
-                                        <p class="mt-auto  p-2 text-gray-600 dark:text-gray-100 text-sm">
+                                        <p class="mt-auto  p-2 text-black dark:text-gray-100 text-sm">
                                             {{ $file->getClientOriginalName() }}
                                         </p>
                                     </div>
@@ -172,7 +172,7 @@
                                 <span class="  m-auto">
 
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-6 h-6 dark:text-gray-50">
+                                        class="w-6 h-6 dark:text-black">
                                         <path fill-rule="evenodd"
                                             d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
                                             clip-rule="evenodd" />
@@ -271,7 +271,7 @@
                             <svg x-bind:style="openEmojiPicker && { color: 'var(--wc-brand-primary)' }"
                                 viewBox="0 0 24 24" height="24" width="24"
                                 preserveAspectRatio="xMidYMid meet"
-                                class="w-7 h-7 text-gray-600 dark:text-gray-300 srtoke-[1.3] dark:stroke-[1.2]"
+                                class="w-7 h-7 text-black dark:text-gray-300 srtoke-[1.3] dark:stroke-[1.2]"
                                 version="1.1" x="0px" y="0px" enable-background="new 0 0 24 24">
                                 <title>smiley</title>
                                 <path fill="currentColor"
@@ -442,7 +442,7 @@
                             wire:loading.attr="disabled" wire:target="sendMessage" type="submit"
                             id="sendMessageButton" class="cursor-pointer hover:text-[var(--wc-brand-primary)] transition-color ml-auto disabled:cursor-progress cursor-pointer font-bold">
 
-                            <svg class="w-7 h-7   dark:text-gray-200" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="w-7 h-7   dark:text-green" xmlns="http://www.w3.org/2000/svg"
                                 width="36" height="36" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                                 stroke-linejoin="round" class="ai ai-Send">

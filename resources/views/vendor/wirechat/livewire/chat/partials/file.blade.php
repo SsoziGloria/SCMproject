@@ -15,7 +15,7 @@
         
         
     </span>
-    <p class="mt-auto  p-2 text-gray-600 dark:text-gray-100 text-sm">
+    <p class="mt-auto  p-2 text-black dark:text-gray-100 text-sm">
         {{$attachment->original_name}}
     </p>
 

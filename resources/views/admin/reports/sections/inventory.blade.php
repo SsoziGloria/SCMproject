@@ -1,7 +1,7 @@
 <div class="sec        <div class="stat-item">
             <span class="stat-value">UGX {{ number_format($data['total_inventory_value'], 0) }}</span>
             <span class="stat-label">Total Inventory Value</span>
-        </div>">
+        </div>
     <h2>Inventory Overview</h2>
     <div class="stats-grid">
         <div class="stat-item">
